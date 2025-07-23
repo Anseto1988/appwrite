@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnackTrack - Team-Einladung</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <img src="logo.png" alt="SnackTrack Logo" class="logo">
+            <h1>Willkommen bei SnackTrack Teams!</h1>
+            <div id="loading">
+                <p>Deine Einladung wird verarbeitet...</p>
+                <div class="spinner"></div>
+            </div>
+            <div id="success" style="display: none;">
+                <p class="success-message">Du bist erfolgreich dem Team beigetreten!</p>
+                <p>Du kannst diese Seite jetzt schließen und die SnackTrack-App öffnen.</p>
+                <button id="openApp">App öffnen</button>
+            </div>
+            <div id="error" style="display: none;">
+                <p class="error-message">Es ist ein Fehler aufgetreten.</p>
+                <p id="error-details"></p>
+                <button id="retry">Erneut versuchen</button>
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 SnackTrack</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

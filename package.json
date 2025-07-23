@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node-appwrite": "^17.0.0",
+    "react-native-camera": "^4.2.1"
+  }
+}
