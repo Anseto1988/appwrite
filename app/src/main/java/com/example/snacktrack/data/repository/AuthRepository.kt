@@ -1,7 +1,7 @@
 package com.example.snacktrack.data.repository
 
-import android.app.Activity
 import android.content.Context
+import androidx.activity.ComponentActivity
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.models.User
 import io.appwrite.ID
@@ -100,7 +100,7 @@ class AuthRepository(private val context: Context) {
     /**
      * Startet Google OAuth2 Login
      */
-    suspend fun loginWithGoogle(activity: Activity): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun loginWithGoogle(activity: ComponentActivity): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             account.createOAuth2Session(
                 activity = activity,
