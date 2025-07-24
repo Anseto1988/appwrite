@@ -31,6 +31,7 @@ import com.example.snacktrack.ui.screens.community.CommunityFeedScreen
 import com.example.snacktrack.ui.screens.community.CreatePostScreen
 import com.example.snacktrack.ui.screens.community.PostDetailScreen
 import com.example.snacktrack.ui.screens.community.ProfileScreen
+import com.example.snacktrack.ui.screens.statistics.StatisticsScreen
 
 // ViewModel Factory für DogViewModel (sollte in einer eigenen Datei oder DogViewModel.kt sein)
 class DogViewModelFactory(private val context: android.content.Context) : ViewModelProvider.Factory {
@@ -104,6 +105,10 @@ sealed class Screen(val route: String) {
 
     object WeightHistory : Screen("weight_history/{dogId}") {
         fun createRoute(dogId: String) = "weight_history/$dogId"
+    }
+    
+    object Statistics : Screen("statistics/{dogId}") {
+        fun createRoute(dogId: String) = "statistics/$dogId"
     }
 }
 
@@ -375,6 +380,18 @@ fun SnackTrackNavGraph(navController: NavHostController) {
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId")
             ProfileScreen(navController = navController, userId = userId)
+        }
+        
+        // Statistics Screen
+        composable(
+            route = Screen.Statistics.route,
+            arguments = listOf(navArgument("dogId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val dogId = backStackEntry.arguments?.getString("dogId") ?: ""
+            StatisticsScreen(
+                dogId = dogId,
+                navController = navController
+            )
         }
     }
 }

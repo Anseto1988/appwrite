@@ -13,3 +13,15 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Ignoriere Android Studio Dateien
+.idea/
+*.iml
+local.properties
+.gradle/
+build/
+app/build/
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx
+

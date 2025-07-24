@@ -242,7 +242,7 @@ fun DashboardGrid(
                 color = tertiary,
                 onClick = {
                     selectedDog?.let { dog ->
-                        navController.navigate("statistics/${dog.id}")
+                        navController.navigate(Screen.Statistics.createRoute(dog.id))
                     }
                 }
             ),
