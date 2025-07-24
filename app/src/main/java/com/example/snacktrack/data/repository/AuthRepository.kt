@@ -1,5 +1,6 @@
 package com.example.snacktrack.data.repository
 
+import android.app.Activity
 import android.content.Context
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.models.User
@@ -99,14 +100,15 @@ class AuthRepository(private val context: Context) {
     /**
      * Startet Google OAuth2 Login
      */
-    suspend fun loginWithGoogle(): Result<String> = withContext(Dispatchers.IO) {
+    suspend fun loginWithGoogle(activity: Activity): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val session = account.createOAuth2Session(
+            account.createOAuth2Session(
+                activity = activity,
                 provider = "google",
                 success = "appwrite-callback-${appwriteService.client.config["project"]}://auth",
                 failure = "appwrite-callback-${appwriteService.client.config["project"]}://auth"
             )
-            Result.success(session)
+            Result.success(Unit)
         } catch (e: AppwriteException) {
             Result.failure(e)
         }

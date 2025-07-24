@@ -104,7 +104,7 @@ fun ModernDashboardScreen(
                     subtitle = "Füge deinen ersten Hund hinzu, um zu starten",
                     icon = Icons.Default.Pets,
                     buttonText = "Hund hinzufügen",
-                    onButtonClick = { navController.navigate(Screen.DogManagement.route) }
+                    onButtonClick = { navController.navigate(Screen.DogList.route) }
                 )
             } else {
                 // Dashboard Kacheln
@@ -145,14 +145,19 @@ fun DashboardGrid(
     selectedDog: Dog?,
     navController: NavController
 ) {
-    val tiles = remember(selectedDog) {
+    val primary = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+    val tertiary = MaterialTheme.colorScheme.tertiary
+    val outline = MaterialTheme.colorScheme.outline
+    
+    val tiles = remember(selectedDog, primary, secondary, tertiary, outline) {
         listOf(
             // Hauptfunktionen (große Kacheln)
             DashboardTile(
                 title = "Futter Tracking",
                 subtitle = "Kalorien & Nährstoffe verfolgen",
                 icon = Icons.Default.Restaurant,
-                color = MaterialTheme.colorScheme.primary,
+                color = primary,
                 isLarge = true,
                 onClick = {
                     selectedDog?.let { dog ->
@@ -164,7 +169,7 @@ fun DashboardGrid(
                 title = "Gewichtsverlauf",
                 subtitle = "Gewicht dokumentieren",
                 icon = Icons.Default.TrendingUp,
-                color = MaterialTheme.colorScheme.secondary,
+                color = secondary,
                 isLarge = true,
                 onClick = {
                     selectedDog?.let { dog ->
@@ -178,14 +183,14 @@ fun DashboardGrid(
                 title = "Meine Hunde",
                 subtitle = "Verwalten",
                 icon = Icons.Default.Pets,
-                color = MaterialTheme.colorScheme.tertiary,
-                onClick = { navController.navigate(Screen.DogManagement.route) }
+                color = tertiary,
+                onClick = { navController.navigate(Screen.DogList.route) }
             ),
             DashboardTile(
                 title = "Barcode Scanner",
                 subtitle = "Schnell erfassen",
                 icon = Icons.Default.QrCodeScanner,
-                color = MaterialTheme.colorScheme.primary,
+                color = primary,
                 onClick = {
                     selectedDog?.let { dog ->
                         navController.navigate("barcode_scanner/${dog.id}")
@@ -196,21 +201,21 @@ fun DashboardGrid(
                 title = "Community",
                 subtitle = "Austauschen",
                 icon = Icons.Default.Forum,
-                color = MaterialTheme.colorScheme.secondary,
+                color = secondary,
                 onClick = { navController.navigate("community_feed") }
             ),
             DashboardTile(
                 title = "Einstellungen",
                 subtitle = "App konfigurieren",
                 icon = Icons.Default.Settings,
-                color = MaterialTheme.colorScheme.outline,
+                color = outline,
                 onClick = { navController.navigate(Screen.AccountManagement.route) }
             ),
             DashboardTile(
                 title = "Statistiken",
                 subtitle = "Auswertungen",
                 icon = Icons.Default.Analytics,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = tertiary,
                 onClick = {
                     selectedDog?.let { dog ->
                         navController.navigate("statistics/${dog.id}")
@@ -221,8 +226,8 @@ fun DashboardGrid(
                 title = "Teams",
                 subtitle = "Gemeinsam tracken",
                 icon = Icons.Default.Group,
-                color = MaterialTheme.colorScheme.primary,
-                onClick = { navController.navigate(Screen.TeamManagement.route) }
+                color = primary,
+                onClick = { navController.navigate("team_management") }
             )
         )
     }

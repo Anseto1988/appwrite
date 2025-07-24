@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -159,7 +160,7 @@ fun LoginScreen(
                 isLoading = true
                 errorMessage = null
                 scope.launch {
-                    authRepository.loginWithGoogle()
+                    authRepository.loginWithGoogle(context as ComponentActivity)
                         .onSuccess {
                             isLoading = false
                             onLoginSuccess()
