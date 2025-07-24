@@ -1,5 +1,6 @@
 package com.example.snacktrack.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

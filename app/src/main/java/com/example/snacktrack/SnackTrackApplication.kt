@@ -7,6 +7,7 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
+import com.example.snacktrack.BuildConfig
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 

@@ -1,6 +1,7 @@
 package com.example.snacktrack.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.example.snacktrack.utils.SecureLogger
 // Composables may throw cancellation exceptions during composition changes
 // We'll handle them generically rather than using the private class directly

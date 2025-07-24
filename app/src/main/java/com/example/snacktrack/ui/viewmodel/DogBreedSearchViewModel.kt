@@ -1,6 +1,7 @@
 package com.example.snacktrack.ui.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.snacktrack.data.model.DogBreed

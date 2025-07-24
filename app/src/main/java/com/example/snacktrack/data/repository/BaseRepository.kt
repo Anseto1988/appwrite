@@ -70,7 +70,7 @@ abstract class BaseRepository {
     /**
      * Maps network and Appwrite exceptions to user-friendly messages
      */
-    protected fun getErrorMessage(throwable: Throwable): String {
+    fun getErrorMessage(throwable: Throwable): String {
         return when (throwable) {
             is UnauthorizedException -> "Bitte melden Sie sich erneut an"
             is ForbiddenException -> "Sie haben keine Berechtigung für diese Aktion"
