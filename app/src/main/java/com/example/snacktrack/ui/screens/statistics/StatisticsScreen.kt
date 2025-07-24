@@ -89,7 +89,7 @@ fun StatisticsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = uiState.errorMessage,
+                        text = uiState.errorMessage ?: "Ein Fehler ist aufgetreten",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
