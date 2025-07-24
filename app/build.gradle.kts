@@ -78,8 +78,8 @@ dependencies {
     // OkHttp BOM - explizit hinzugefügt um Konflikte zu vermeiden
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
     
-    // Appwrite SDK - Using earliest stable version that exists
-    implementation("io.appwrite:sdk-for-android:0.0.1") {
+    // Appwrite SDK
+    implementation("io.appwrite:sdk-for-android:4.0.1") {
         exclude(group = "com.squareup.okhttp3", module = "okhttp-bom")
     }
     
