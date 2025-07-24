@@ -390,7 +390,7 @@ fun TeamMemberItem(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        TeamRole.values().forEach { role ->
+                        TeamRole.entries.forEach { role ->
                             DropdownMenuItem(
                                 text = { Text(role.displayName) },
                                 onClick = {
@@ -567,7 +567,7 @@ fun InviteUserDialog(
                         onDismissRequest = { showRoleDropdown = false },
                         modifier = Modifier.fillMaxWidth(0.7f)
                     ) {
-                        TeamRole.values().forEach { role ->
+                        TeamRole.entries.forEach { role ->
                             DropdownMenuItem(
                                 text = { Text(role.displayName) },
                                 onClick = {

@@ -383,7 +383,7 @@ fun PostTypeSelector(
     selectedPostType: PostType,
     onPostTypeSelected: (PostType) -> Unit
 ) {
-    val postTypes = PostType.values()
+    val postTypes = PostType.entries
     
     Column(
         modifier = Modifier.fillMaxWidth()

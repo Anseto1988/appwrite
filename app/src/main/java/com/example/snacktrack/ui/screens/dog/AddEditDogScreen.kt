@@ -114,8 +114,8 @@ fun AddEditDogScreen(
     var sexExpanded by remember { mutableStateOf(false) }
     var activityLevelExpanded by remember { mutableStateOf(false) }
 
-    val sexOptions = Sex.values().map { it.displayName }
-    val activityLevelOptions = ActivityLevel.values().map { it.displayName }
+    val sexOptions = Sex.entries.map { it.displayName }
+    val activityLevelOptions = ActivityLevel.entries.map { it.displayName }
 
     // Laden eines existierenden Hundes
     LaunchedEffect(dogId) {
@@ -496,9 +496,9 @@ fun AddEditDogScreen(
                                 }
 
                                 // Hund speichern
-                                val sexToSave = Sex.values()[selectedSexIndex]
+                                val sexToSave = Sex.entries[selectedSexIndex]
                                 val activityLevelToSave =
-                                    ActivityLevel.values()[selectedActivityLevelIndex]
+                                    ActivityLevel.entries[selectedActivityLevelIndex]
 
                                 val dogToSave = Dog(
                                     id = dogId

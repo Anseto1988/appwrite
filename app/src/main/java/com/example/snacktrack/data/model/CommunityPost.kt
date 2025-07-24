@@ -34,7 +34,7 @@ enum class PostType(val displayName: String, val databaseValue: String) {
     
     companion object {
         fun fromDatabaseValue(value: String): PostType {
-            return values().find { it.databaseValue == value } 
+            return entries.find { it.databaseValue == value } 
                 ?: throw IllegalArgumentException("Unknown PostType database value: $value")
         }
     }
