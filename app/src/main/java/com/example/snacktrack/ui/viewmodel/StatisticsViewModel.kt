@@ -27,6 +27,7 @@ data class StatisticsUiState(
     val feedingTimeDistribution: Map<Int, Int> = emptyMap(), // Hour -> Count
     val totalFoodIntakes: Int = 0,
     val averageDailyIntakes: Double = 0.0,
+    val periodDays: Int = 7, // Number of days in the statistics period
     val errorMessage: String? = null
 )
 
@@ -146,6 +147,14 @@ class StatisticsViewModel(
             .sortedByDescending { it.count }
             .take(5)
         
+        // Calculate the number of days with data
+        val daysWithData = dailyCaloriesMap.keys.size
+        val periodDays = if (daysWithData > 0) {
+            ChronoUnit.DAYS.between(dailyCaloriesMap.keys.minOrNull(), dailyCaloriesMap.keys.maxOrNull()).toInt() + 1
+        } else {
+            7 // Default to 7 days if no data
+        }
+        
         _uiState.update {
             it.copy(
                 isLoading = false,
@@ -157,7 +166,8 @@ class StatisticsViewModel(
                 feedingTimeDistribution = feedingHoursMap.toSortedMap(),
                 totalFoodIntakes = allIntakes.size,
                 averageDailyIntakes = if (dailyCaloriesMap.isNotEmpty()) 
-                    allIntakes.size.toDouble() / dailyCaloriesMap.size else 0.0
+                    allIntakes.size.toDouble() / dailyCaloriesMap.size else 0.0,
+                periodDays = periodDays
             )
         }
     }

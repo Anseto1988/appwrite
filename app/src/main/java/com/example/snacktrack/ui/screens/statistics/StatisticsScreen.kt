@@ -505,11 +505,22 @@ fun FeedingTimeSection(uiState: StatisticsUiState) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(
-                text = "Fütterungszeiten",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Fütterungszeiten",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    imageVector = Icons.Default.Schedule,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
             
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -519,11 +530,80 @@ fun FeedingTimeSection(uiState: StatisticsUiState) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
+                // Calculate statistics
+                val totalFeedings = uiState.feedingTimeDistribution.values.sum()
+                val avgFeedingsPerDay = if (uiState.periodDays > 0) {
+                    totalFeedings.toFloat() / uiState.periodDays
+                } else 0f
+                val peakHour = uiState.feedingTimeDistribution.maxByOrNull { it.value }
+                
+                // Show summary stats
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "%.1f".format(avgFeedingsPerDay),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "Ø pro Tag",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    
+                    if (peakHour != null) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "${peakHour.key}:00",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Häufigste Zeit",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = totalFeedings.toString(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "Gesamt",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                
                 FeedingTimeChart(
                     distribution = uiState.feedingTimeDistribution,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
+                        .height(180.dp)
+                )
+                
+                // Legend
+                Text(
+                    text = "Die Zahlen über den Balken zeigen die Anzahl der Fütterungen",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
         }
@@ -536,36 +616,63 @@ fun FeedingTimeChart(
     modifier: Modifier = Modifier
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
+    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
     val maxCount = distribution.maxOfOrNull { it.value }?.toFloat() ?: 1f
     
     Canvas(modifier = modifier) {
         val barWidth = size.width / 24
-        val maxHeight = size.height * 0.8f
+        val maxHeight = size.height * 0.7f // Reduced to make room for labels
+        val bottomPadding = 30.dp.toPx()
         
         distribution.forEach { (hour, count) ->
             val barHeight = (count / maxCount) * maxHeight
             val x = hour * barWidth
+            val y = size.height - bottomPadding - barHeight
             
+            // Draw bar
             drawRect(
-                color = primaryColor,
-                topLeft = Offset(x + barWidth * 0.1f, size.height - barHeight),
+                color = primaryColor.copy(alpha = 0.8f),
+                topLeft = Offset(x + barWidth * 0.1f, y),
                 size = Size(barWidth * 0.8f, barHeight)
             )
             
-            // Draw hour labels for key hours
-            if (hour % 6 == 0) {
+            // Draw count on top of bar if count > 0
+            if (count > 0) {
                 drawContext.canvas.nativeCanvas.drawText(
-                    "${hour}h",
+                    count.toString(),
                     x + barWidth / 2,
-                    size.height + 15.dp.toPx(),
+                    y - 5.dp.toPx(),
                     android.graphics.Paint().apply {
-                        color = primaryColor.toArgb()
+                        color = onSurfaceColor.toArgb()
+                        textSize = 9.sp.toPx()
+                        textAlign = android.graphics.Paint.Align.CENTER
+                        isFakeBoldText = true
+                    }
+                )
+            }
+            
+            // Draw hour labels for every 3 hours
+            if (hour % 3 == 0) {
+                drawContext.canvas.nativeCanvas.drawText(
+                    "${hour}:00",
+                    x + barWidth / 2,
+                    size.height - 5.dp.toPx(),
+                    android.graphics.Paint().apply {
+                        color = onSurfaceColor.toArgb()
                         textSize = 10.sp.toPx()
                         textAlign = android.graphics.Paint.Align.CENTER
                     }
                 )
             }
         }
+        
+        // Draw a baseline
+        drawLine(
+            color = onSurfaceColor.copy(alpha = 0.3f),
+            start = Offset(0f, size.height - bottomPadding),
+            end = Offset(size.width, size.height - bottomPadding),
+            strokeWidth = 1.dp.toPx()
+        )
     }
 }
 
