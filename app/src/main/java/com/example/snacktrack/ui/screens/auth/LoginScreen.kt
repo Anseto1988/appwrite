@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.snacktrack.data.repository.AuthRepository
+import com.example.snacktrack.utils.ValidationUtils
 import kotlinx.coroutines.launch
 
 @Composable
@@ -120,23 +121,36 @@ fun LoginScreen(
         
         Button(
             onClick = {
-                if (email.isNotBlank() && password.isNotBlank()) {
-                    isLoading = true
-                    errorMessage = null
-                    
-                    scope.launch {
-                        authRepository.login(email, password)
-                            .onSuccess {
-                                isLoading = false
-                                onLoginSuccess()
+                errorMessage = null
+                
+                // Validate email
+                if (!ValidationUtils.isValidEmail(email.trim())) {
+                    errorMessage = "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+                    return@Button
+                }
+                
+                // Validate password
+                if (password.isBlank()) {
+                    errorMessage = "Bitte geben Sie Ihr Passwort ein"
+                    return@Button
+                }
+                
+                isLoading = true
+                
+                scope.launch {
+                    authRepository.login(email.trim(), password)
+                        .onSuccess {
+                            isLoading = false
+                            onLoginSuccess()
+                        }
+                        .onFailure { e ->
+                            isLoading = false
+                            errorMessage = when {
+                                e.message?.contains("401") == true -> "E-Mail oder Passwort falsch"
+                                e.message?.contains("network", ignoreCase = true) == true -> "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung"
+                                else -> "Anmeldung fehlgeschlagen. Bitte versuchen Sie es später erneut"
                             }
-                            .onFailure { e ->
-                                isLoading = false
-                                errorMessage = "Anmeldung fehlgeschlagen: ${e.message}"
-                            }
-                    }
-                } else {
-                    errorMessage = "Bitte E-Mail und Passwort eingeben"
+                        }
                 }
             },
             enabled = !isLoading,

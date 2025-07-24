@@ -1,10 +1,12 @@
 package com.example.snacktrack.data.model
 
+import androidx.compose.runtime.Stable
 import java.time.LocalDate
 
 /**
  * Repräsentiert einen Hund im SnackTrack-System
  */
+@Stable
 data class Dog(
     val id: String = "",
     val ownerId: String = "",

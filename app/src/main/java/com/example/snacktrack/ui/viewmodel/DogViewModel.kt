@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import android.util.Log
+import com.example.snacktrack.utils.SecureLogger
 import com.example.snacktrack.data.model.Dog
 import com.example.snacktrack.data.repository.DogRepository
 import com.example.snacktrack.data.service.AppwriteService
@@ -29,7 +29,6 @@ class DogViewModel(context: Context) : ViewModel() {
     // Speichert Bilddaten zwischen
     private val _imageData = mutableMapOf<String, MutableStateFlow<ByteArray?>>()
     
-    // Import für Log hinzufügen
     private val TAG = "DogViewModel"
     
     init {
@@ -46,31 +45,53 @@ class DogViewModel(context: Context) : ViewModel() {
         }
     }
     
-    fun saveDog(dog: Dog) {
+    fun saveDog(dog: Dog?) {
+        if (dog == null) {
+            _errorMessage.value = "Ungültige Hundedaten"
+            return
+        }
+        
         viewModelScope.launch {
             _isLoading.value = true
-            dogRepository.saveDog(dog)
-                .onSuccess {
-                    loadDogs()
-                }
-                .onFailure { e ->
-                    _errorMessage.value = "Fehler beim Speichern: ${e.message}"
-                    _isLoading.value = false
-                }
+            try {
+                dogRepository.saveDog(dog)
+                    .onSuccess {
+                        loadDogs()
+                    }
+                    .onFailure { e ->
+                        _errorMessage.value = dogRepository.getErrorMessage(e)
+                        _isLoading.value = false
+                    }
+            } catch (e: Exception) {
+                SecureLogger.e(TAG, "Unexpected error saving dog", e)
+                _errorMessage.value = "Ein unerwarteter Fehler ist aufgetreten"
+                _isLoading.value = false
+            }
         }
     }
     
-    fun deleteDog(dogId: String) {
+    fun deleteDog(dogId: String?) {
+        if (dogId.isNullOrBlank()) {
+            _errorMessage.value = "Ungültige Hunde-ID"
+            return
+        }
+        
         viewModelScope.launch {
             _isLoading.value = true
-            dogRepository.deleteDog(dogId)
-                .onSuccess {
-                    loadDogs()
-                }
-                .onFailure { e ->
-                    _errorMessage.value = "Fehler beim Löschen: ${e.message}"
-                    _isLoading.value = false
-                }
+            try {
+                dogRepository.deleteDog(dogId)
+                    .onSuccess {
+                        loadDogs()
+                    }
+                    .onFailure { e ->
+                        _errorMessage.value = dogRepository.getErrorMessage(e)
+                        _isLoading.value = false
+                    }
+            } catch (e: Exception) {
+                SecureLogger.e(TAG, "Unexpected error deleting dog", e)
+                _errorMessage.value = "Ein unerwarteter Fehler ist aufgetreten"
+                _isLoading.value = false
+            }
         }
     }
     
@@ -84,10 +105,10 @@ class DogViewModel(context: Context) : ViewModel() {
     suspend fun getCurrentUserId(): String {
         return try {
             val user = appwriteService.account.get()
-            Log.d("DogViewModel", "Benutzer-ID erfolgreich abgerufen: ${user.id}")
+            SecureLogger.d(TAG, "Benutzer-ID erfolgreich abgerufen")
             user.id
         } catch (e: Exception) {
-            Log.e("DogViewModel", "Fehler beim Abrufen der Benutzer-ID: ${e.message}", e)
+            SecureLogger.e(TAG, "Fehler beim Abrufen der Benutzer-ID", e)
             ""
         }
     }
@@ -98,7 +119,11 @@ class DogViewModel(context: Context) : ViewModel() {
      * HINWEIS: Diese Methode wurde überarbeitet, um das Problem mit nicht-authentifizierten Bildabrufen zu beheben.
      * Anstatt direkt getFileView zu verwenden, wird nun ein authentifizierter Download durchgeführt.
      */
-    fun getImageDataFlow(fileId: String): StateFlow<ByteArray?> {
+    fun getImageDataFlow(fileId: String?): StateFlow<ByteArray?> {
+        if (fileId.isNullOrBlank()) {
+            return MutableStateFlow<ByteArray?>(null).asStateFlow()
+        }
+        
         // Wenn wir bereits einen Flow für diese ID haben, geben wir ihn zurück
         if (_imageData.containsKey(fileId)) {
             return _imageData[fileId]!!.asStateFlow()
@@ -120,9 +145,10 @@ class DogViewModel(context: Context) : ViewModel() {
                 
                 // Daten im Flow speichern
                 flow.value = imageData
-                android.util.Log.d(TAG, "Bilddaten für ID $fileId erfolgreich geladen mit authentifizierter Methode")
+                SecureLogger.d(TAG, "Bilddaten erfolgreich geladen")
             } catch (e: Exception) {
-                android.util.Log.e(TAG, "Fehler beim Laden der Bilddaten: ${e.message}", e)
+                SecureLogger.e(TAG, "Fehler beim Laden der Bilddaten", e)
+                flow.value = null
             }
         }
         
@@ -145,7 +171,7 @@ class DogViewModel(context: Context) : ViewModel() {
             // Den Pfad zur authentifizierten URL zurückgeben
             previewUrl.toString()
         } catch (e: Exception) {
-            android.util.Log.e(TAG, "Fehler beim Generieren der authentifizierten URL: ${e.message}")
+            SecureLogger.e(TAG, "Fehler beim Generieren der authentifizierten URL", e)
             ""
         }
     }

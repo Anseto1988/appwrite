@@ -1,7 +1,7 @@
 package com.example.snacktrack.data.repository
 
 import android.content.Context
-import android.util.Log
+import com.example.snacktrack.utils.SecureLogger
 // Composables may throw cancellation exceptions during composition changes
 // We'll handle them generically rather than using the private class directly
 import com.example.snacktrack.data.model.Dog
@@ -25,7 +25,7 @@ import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class DogRepository(private val context: Context) {
+class DogRepository(private val context: Context) : BaseRepository() {
     
     private val appwriteService = AppwriteService.getInstance(context)
     private val databases = appwriteService.databases
@@ -45,7 +45,7 @@ class DogRepository(private val context: Context) {
     fun getDogs(): Flow<List<Dog>> = flow {
         try {
             val startTime = System.currentTimeMillis()
-            Log.d("DogRepository", "=== STARTE ABRUF ALLER HUNDE ===")
+            SecureLogger.d("DogRepository", "=== STARTE ABRUF ALLER HUNDE ===")
             
             // Prüfe, ob eine gültige Session vorhanden ist
             if (!appwriteService.ensureValidSession()) {
@@ -266,14 +266,18 @@ class DogRepository(private val context: Context) {
      * Erstellt oder aktualisiert einen Hund
      */
     suspend fun saveDog(dog: Dog): Result<Dog> = withContext(Dispatchers.IO) {
-        try {
+        safeApiCall {
             val user = appwriteService.account.get()
+            
+            // Validate input data
+            require(dog.name.isNotBlank()) { "Hundename darf nicht leer sein" }
+            require(dog.weight > 0) { "Gewicht muss größer als 0 sein" }
             
             val data = mapOf(
                 "ownerId" to user.id,
-                "name" to dog.name,
+                "name" to dog.name.trim(),
                 "birthDate" to dog.birthDate?.let { DateUtils.formatToISO(it) },
-                "breed" to dog.breed,
+                "breed" to dog.breed.trim(),
                 "sex" to dog.sex.name,
                 "weight" to dog.weight,
                 "targetWeight" to dog.targetWeight,
@@ -285,6 +289,7 @@ class DogRepository(private val context: Context) {
             
             val response = if (dog.id.isNotEmpty()) {
                 // Update
+                SecureLogger.d("DogRepository", "Updating dog with ID: ${dog.id}")
                 databases.updateDocument(
                     databaseId = AppwriteService.DATABASE_ID,
                     collectionId = AppwriteService.COLLECTION_DOGS,
@@ -293,6 +298,7 @@ class DogRepository(private val context: Context) {
                 )
             } else {
                 // Create
+                SecureLogger.d("DogRepository", "Creating new dog")
                 databases.createDocument(
                     databaseId = AppwriteService.DATABASE_ID,
                     collectionId = AppwriteService.COLLECTION_DOGS,
@@ -301,28 +307,24 @@ class DogRepository(private val context: Context) {
                 )
             }
             
-            Result.success(
-                Dog(
-                    id = response.id,
-                    ownerId = response.data["ownerId"].toString(),
-                    name = response.data["name"].toString(),
-                    birthDate = (response.data["birthDate"] as? String)?.let {
-                        DateUtils.parseISODate(it)
-                    },
-                    breed = response.data["breed"]?.toString() ?: "",
-                    sex = response.data["sex"]?.toString()?.let { enumValueOf<com.example.snacktrack.data.model.Sex>(it) }
-                        ?: com.example.snacktrack.data.model.Sex.UNKNOWN,
-                    weight = (response.data["weight"] as? Number)?.toDouble() ?: 0.0,
-                    targetWeight = (response.data["targetWeight"] as? Number)?.toDouble(),
-                    activityLevel = response.data["activityLevel"]?.toString()?.let {
-                        enumValueOf<com.example.snacktrack.data.model.ActivityLevel>(it)
-                    } ?: com.example.snacktrack.data.model.ActivityLevel.NORMAL,
-                    imageId = response.data["imageId"]?.toString(),
-                    teamId = response.data["teamId"]?.toString()
-                )
+            Dog(
+                id = response.id,
+                ownerId = response.data["ownerId"].toString(),
+                name = response.data["name"].toString(),
+                birthDate = (response.data["birthDate"] as? String)?.let {
+                    DateUtils.parseISODate(it)
+                },
+                breed = response.data["breed"]?.toString() ?: "",
+                sex = response.data["sex"]?.toString()?.let { enumValueOf<com.example.snacktrack.data.model.Sex>(it) }
+                    ?: com.example.snacktrack.data.model.Sex.UNKNOWN,
+                weight = (response.data["weight"] as? Number)?.toDouble() ?: 0.0,
+                targetWeight = (response.data["targetWeight"] as? Number)?.toDouble(),
+                activityLevel = response.data["activityLevel"]?.toString()?.let {
+                    enumValueOf<com.example.snacktrack.data.model.ActivityLevel>(it)
+                } ?: com.example.snacktrack.data.model.ActivityLevel.NORMAL,
+                imageId = response.data["imageId"]?.toString(),
+                teamId = response.data["teamId"]?.toString()
             )
-        } catch (e: AppwriteException) {
-            Result.failure(e)
         }
     }
     

@@ -157,18 +157,25 @@ fun DogListScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(dogs) { dog ->
+                    items(
+                        items = dogs,
+                        key = { dog -> dog.id } // Stable key for better recomposition
+                    ) { dog ->
                         DogItem(
                             dog = dog,
                             dogViewModel = dogViewModel,
-                            onClick = { onDogClick(dog.id) },
-                            onEditClick = {
-                                // Navigiere zum Bearbeiten des Hundes
-                                navController.navigate(Screen.EditDog.createRoute(dog.id))
+                            onClick = remember(dog.id) { { onDogClick(dog.id) } },
+                            onEditClick = remember(dog.id) {
+                                {
+                                    // Navigiere zum Bearbeiten des Hundes
+                                    navController.navigate(Screen.EditDog.createRoute(dog.id))
+                                }
                             },
-                            onDeleteClick = {
-                                dogToDelete = dog
-                                showDeleteDialog = true
+                            onDeleteClick = remember(dog) {
+                                {
+                                    dogToDelete = dog
+                                    showDeleteDialog = true
+                                }
                             }
                         )
                     }

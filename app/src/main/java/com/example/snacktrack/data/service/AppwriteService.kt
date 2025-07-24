@@ -8,6 +8,13 @@ import io.appwrite.services.Databases
 import io.appwrite.services.Storage
 import io.appwrite.services.Realtime
 import io.appwrite.services.Teams
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import java.io.File
+import com.example.snacktrack.utils.SecureLogger
+import com.example.snacktrack.utils.NetworkManager
+import com.example.snacktrack.utils.SessionManager
+import com.example.snacktrack.utils.SessionState
 
 /**
  * Service-Klasse für die Kommunikation mit Appwrite
@@ -46,12 +53,31 @@ class AppwriteService private constructor(context: Context) {
 
 
 
-    // Appwrite Client
+    // Network connectivity manager
+    val networkManager = NetworkManager(context)
+    
+    // Session manager
+    val sessionManager = SessionManager.getInstance(context)
+    
+    // Configure OkHttp with caching
+    private val cacheSize = 50L * 1024L * 1024L // 50 MB cache
+    private val cache = Cache(File(context.cacheDir, "http_cache"), cacheSize)
+    
+    private val okHttpClient = OkHttpClient.Builder()
+        .cache(cache)
+        .addInterceptor(NetworkCacheInterceptor())
+        .addNetworkInterceptor(OfflineCacheInterceptor(networkManager))
+        .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+        .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+        .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+        .build()
+
+    // Appwrite Client with custom OkHttp configuration
     val client = Client(context)
         .setEndpoint(ENDPOINT)
         .setProject(PROJECT_ID)
-        .setSelfSigned(true) // Nur für Entwicklung, in Produktion entfernen
         .setLocale("de-DE") // Set locale for error messages
+        .setSelfSigned(false) // Explicitly set to false for production
     
     // Appwrite Services
     val account = Account(client)
@@ -77,34 +103,18 @@ class AppwriteService private constructor(context: Context) {
      * Gibt true zurück, wenn eine gültige Session besteht oder erfolgreich aktualisiert wurde
      */
     suspend fun ensureValidSession(): Boolean {
-        return try {
-            // Prüfen, ob aktuelle Session gültig ist
-            account.get()
-            true
-        } catch (e: Exception) {
-            // Session möglicherweise abgelaufen
-            android.util.Log.e("AppwriteService", "Session-Validierung fehlgeschlagen: ${e.message}", e)
-            
-            try {
-                // Versuche, die Sessions zu listen, um zu sehen ob überhaupt welche existieren
-                val sessions = account.listSessions()
-                android.util.Log.d("AppwriteService", "Gefundene Sessions: ${sessions.sessions.size}")
-                
-                // Für Diagnose: Log Session-Details
-                sessions.sessions.forEachIndexed { index, session ->
-                    android.util.Log.d("AppwriteService", "Session $index - ID: ${session.id}, IP: ${session.ip}, Expiry: ${session.expire}")
-                }
-                
-                // Die aktuelle Session ist bereits ungültig, daher keine direkte Erneuerung möglich
-                // Hier könnten wir in Zukunft eine automatische Neuanmeldung implementieren
-                // Für jetzt müssen wir leider dem Benutzer mitteilen, dass eine Neuanmeldung nötig ist
-                
-                android.util.Log.e("AppwriteService", "Session ist ungültig und konnte nicht automatisch erneuert werden")
-                return false
-                
-            } catch (e2: Exception) {
-                android.util.Log.e("AppwriteService", "Fehler beim Abrufen der Sessions: ${e2.message}", e2)
-                return false
+        // Use SessionManager for session validation
+        sessionManager.checkSession()
+        
+        return when (sessionManager.sessionState.value) {
+            is SessionState.Active -> true
+            is SessionState.NeedsRefresh -> {
+                // Try to refresh
+                sessionManager.forceRefresh()
+            }
+            else -> {
+                SecureLogger.e("AppwriteService", "No valid session available")
+                false
             }
         }
     }
