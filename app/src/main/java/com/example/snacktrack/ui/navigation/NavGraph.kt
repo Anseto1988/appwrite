@@ -321,8 +321,7 @@ fun SnackTrackNavGraph(navController: NavHostController) {
             val postId = backStackEntry.arguments?.getString("postId") ?: ""
             PostDetailScreen(
                 postId = postId,
-                navController = navController,
-                onProfileClick = { userId -> navController.navigate(Screen.Profile.createRoute(userId)) }
+                navController = navController
             )
         }
         
