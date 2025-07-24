@@ -303,8 +303,7 @@ class CommunityRepository(private val context: Context) {
                     "imageUrls" to imageUrls,
                     "hashtags" to hashtags,
                     "likesCount" to 0,
-                    "commentsCount" to 0,
-                    "created_at" to now
+                    "commentsCount" to 0
                 ).filterValues { it != null }
             )
             
@@ -330,7 +329,7 @@ class CommunityRepository(private val context: Context) {
                 hashtags = (response.data["hashtags"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
                 likesCount = 0,
                 commentsCount = 0,
-                createdAt = now,
+                createdAt = response.createdAt,
                 userProfile = userProfile
             )
             
@@ -353,7 +352,7 @@ class CommunityRepository(private val context: Context) {
                 databaseId = COMMUNITY_DATABASE_ID,
                 collectionId = COLLECTION_COMMUNITY_POSTS,
                 queries = listOf(
-                    Query.orderDesc("created_at"),
+                    Query.orderDesc("\$createdAt"),
                     Query.limit(50)
                 )
             )
@@ -395,7 +394,7 @@ class CommunityRepository(private val context: Context) {
                     hashtags = (doc.data["hashtags"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
                     likesCount = (doc.data["likesCount"] as? Number)?.toInt() ?: 0,
                     commentsCount = (doc.data["commentsCount"] as? Number)?.toInt() ?: 0,
-                    createdAt = doc.data["createdAt"]?.toString() ?: doc.data["created_at"]?.toString(), // Try both attributes for compatibility
+                    createdAt = doc.createdAt, // Use Appwrite's automatic timestamp
                     userProfile = userProfile
                 )
             }
@@ -485,8 +484,7 @@ class CommunityRepository(private val context: Context) {
                     documentId = ID.unique(),
                     data = mapOf(
                         "userId" to userId,
-                        "postId" to postId,
-                        "created_at" to now
+                        "postId" to postId
                     )
                 )
                 
