@@ -174,7 +174,9 @@ fun PostItem(
                             model = post.userProfile.profileImageUrl,
                             contentDescription = "Profilbild",
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                            error = painterResource(R.drawable.ic_launcher_foreground)
                         )
                     } else {
                         Icon(
@@ -225,7 +227,9 @@ fun PostItem(
                         model = post.imageUrls.first(),
                         contentDescription = "Beitragsbild",
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                        error = painterResource(R.drawable.ic_launcher_foreground)
                     )
                     
                     // Anzeigen, wenn mehr als ein Bild vorhanden ist

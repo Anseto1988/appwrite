@@ -299,8 +299,7 @@ class CommunityRepository(private val context: Context) {
                     "hashtags" to hashtags,
                     "likesCount" to 0,
                     "commentsCount" to 0,
-                    "createdAt" to now,
-                    "created_at" to now
+                    "created_at" to now  // Only use created_at as required by database schema
                 ).filterValues { it != null }
             )
             
