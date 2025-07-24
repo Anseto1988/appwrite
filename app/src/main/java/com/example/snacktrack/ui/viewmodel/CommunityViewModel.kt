@@ -183,6 +183,32 @@ class CommunityViewModel(private val context: Context) : ViewModel() {
     }
 
     /**
+     * Aktualisiert das Benutzerprofil
+     */
+    fun updateProfile(
+        displayName: String,
+        bio: String,
+        profileImageUri: Uri? = null
+    ) {
+        viewModelScope.launch {
+            profileEditState = ProfileEditState.Saving
+            communityRepository.createOrUpdateProfile(
+                displayName = displayName,
+                bio = bio,
+                profileImageUri = profileImageUri
+            ).fold(
+                onSuccess = { profile ->
+                    profileEditState = ProfileEditState.Success(profile)
+                    _userProfile.value = profile
+                },
+                onFailure = { error ->
+                    profileEditState = ProfileEditState.Error(error.message ?: "Fehler beim Speichern")
+                }
+            )
+        }
+    }
+
+    /**
      * Zustandsreset für Postersterllung
      */
     fun resetPostCreationState() {
@@ -262,6 +288,23 @@ class CommunityViewModel(private val context: Context) : ViewModel() {
      */
     fun resetCommentState() {
         commentState = CommentState.Idle
+    }
+    
+    /**
+     * Löscht einen Post (Admin-Funktion)
+     */
+    fun deletePost(postId: String) {
+        viewModelScope.launch {
+            communityRepository.deletePost(postId).fold(
+                onSuccess = {
+                    // Feed neu laden
+                    loadFeed()
+                },
+                onFailure = { error ->
+                    // Error handling könnte hier erweitert werden
+                }
+            )
+        }
     }
 }
 
