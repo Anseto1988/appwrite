@@ -32,7 +32,7 @@ fun ProfileEditScreen(
     val context = LocalContext.current
     val viewModel: CommunityViewModel = viewModel(factory = CommunityViewModelFactory(context))
     val userProfile by viewModel.userProfile.collectAsState()
-    val profileEditState by viewModel::profileEditState
+    val profileEditState = viewModel.profileEditState
     
     var displayName by remember { mutableStateOf("") }
     var bio by remember { mutableStateOf("") }

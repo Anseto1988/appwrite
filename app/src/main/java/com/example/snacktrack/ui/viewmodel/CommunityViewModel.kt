@@ -154,19 +154,6 @@ class CommunityViewModel(private val context: Context) : ViewModel() {
         }
     }
 
-    /**
-     * Löscht einen Post
-     */
-    fun deletePost(postId: String) {
-        viewModelScope.launch {
-            try {
-                communityRepository.deletePost(postId)
-                loadFeed() // Feed neu laden
-            } catch (e: Exception) {
-                // Fehler behandeln
-            }
-        }
-    }
 
     /**
      * Liked oder Unlikes einen Post
@@ -199,7 +186,7 @@ class CommunityViewModel(private val context: Context) : ViewModel() {
             ).fold(
                 onSuccess = { profile ->
                     profileEditState = ProfileEditState.Success(profile)
-                    _userProfile.value = profile
+                    // Profile updated successfully
                 },
                 onFailure = { error ->
                     profileEditState = ProfileEditState.Error(error.message ?: "Fehler beim Speichern")
