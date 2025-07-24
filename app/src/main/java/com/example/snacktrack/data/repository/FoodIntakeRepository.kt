@@ -33,9 +33,9 @@ class FoodIntakeRepository(private val context: Context) {
                 collectionId = AppwriteService.COLLECTION_FOOD_INTAKE,
                 queries = listOf(
                     Query.equal("dogId", dogId),
-                    Query.greaterThanEqual("timestamp", startOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
-                    Query.lessThanEqual("timestamp", endOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
-                    Query.orderDesc("timestamp")
+                    Query.greaterThanEqual("date", startOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
+                    Query.lessThanEqual("date", endOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
+                    Query.orderDesc("date")
                 )
             )
             
@@ -44,13 +44,20 @@ class FoodIntakeRepository(private val context: Context) {
                     id = doc.id,
                     dogId = doc.data["dogId"].toString(),
                     foodId = doc.data["foodId"]?.toString(),
-                    foodName = doc.data["foodName"].toString(),
-                    amountGram = (doc.data["amountGram"] as? Number)?.toDouble() ?: 0.0,
+                    // Try "name" first (new schema), fallback to "foodName" (backwards compatibility)
+                    foodName = doc.data["name"]?.toString() ?: doc.data["foodName"]?.toString() ?: "",
+                    // Try "amount" first (new schema), fallback to "amountGram" (backwards compatibility)
+                    amountGram = (doc.data["amount"] as? Number)?.toDouble() 
+                        ?: (doc.data["amountGram"] as? Number)?.toDouble() ?: 0.0,
                     calories = (doc.data["calories"] as? Number)?.toInt() ?: 0,
-                    timestamp = (doc.data["timestamp"] as? String)?.let {
+                    // Try "date" first (new schema), fallback to "timestamp" (backwards compatibility)
+                    timestamp = (doc.data["date"] as? String)?.let {
+                        LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
+                    } ?: (doc.data["timestamp"] as? String)?.let {
                         LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
                     } ?: LocalDateTime.now(),
-                    note = doc.data["note"]?.toString(),
+                    // Try "notes" first (new schema), fallback to "note" (backwards compatibility)
+                    note = doc.data["notes"]?.toString() ?: doc.data["note"]?.toString(),
                     protein = (doc.data["protein"] as? Number)?.toDouble(),
                     fat = (doc.data["fat"] as? Number)?.toDouble(),
                     carbs = (doc.data["carbs"] as? Number)?.toDouble()
@@ -70,22 +77,25 @@ class FoodIntakeRepository(private val context: Context) {
             // Erstelle eine Map und filtere null-Werte heraus, um 'invalid type data' Fehler zu vermeiden
             val dataMap = mutableMapOf<String, Any>(
                 "dogId" to intake.dogId,
-                "foodName" to intake.foodName,
-                "amountGram" to intake.amountGram,
-                // Füge auch das generische 'amount'-Feld hinzu, das der Server erwartet
-                "amount" to intake.amountGram,
+                "name" to intake.foodName,  // Changed from "foodName" to "name" to match schema
+                "amount" to intake.amountGram,  // Using "amount" as expected by schema
                 "calories" to intake.calories,
-                "timestamp" to intake.timestamp.format(DateTimeFormatter.ISO_DATE_TIME),
-                // Füge das date-Feld hinzu (nur das Datum ohne Uhrzeit)
-                "date" to intake.timestamp.toLocalDate().format(DateTimeFormatter.ISO_DATE)
+                "date" to intake.timestamp.format(DateTimeFormatter.ISO_DATE_TIME)  // Using "date" for timestamp
             )
             
             // Füge optionale Felder nur hinzu, wenn sie nicht null sind
             intake.foodId?.let { dataMap["foodId"] = it }
-            intake.note?.let { dataMap["note"] = it }
+            intake.note?.let { dataMap["notes"] = it }  // Changed from "note" to "notes" to match schema
+            
+            // Diese Felder sind nicht im Schema definiert, aber können als zusätzliche Daten gespeichert werden
             intake.protein?.let { dataMap["protein"] = it }
             intake.fat?.let { dataMap["fat"] = it }
             intake.carbs?.let { dataMap["carbs"] = it }
+            
+            // Behalte diese für Rückwärtskompatibilität, falls alte Clients sie noch verwenden
+            dataMap["foodName"] = intake.foodName
+            dataMap["amountGram"] = intake.amountGram
+            dataMap["timestamp"] = intake.timestamp.format(DateTimeFormatter.ISO_DATE_TIME)
             
             val response = databases.createDocument(
                 databaseId = AppwriteService.DATABASE_ID,
@@ -99,13 +109,20 @@ class FoodIntakeRepository(private val context: Context) {
                     id = response.id,
                     dogId = response.data["dogId"].toString(),
                     foodId = response.data["foodId"]?.toString(),
-                    foodName = response.data["foodName"].toString(),
-                    amountGram = (response.data["amountGram"] as? Number)?.toDouble() ?: 0.0,
+                    // Try "name" first (new schema), fallback to "foodName" (backwards compatibility)
+                    foodName = response.data["name"]?.toString() ?: response.data["foodName"]?.toString() ?: "",
+                    // Try "amount" first (new schema), fallback to "amountGram" (backwards compatibility)
+                    amountGram = (response.data["amount"] as? Number)?.toDouble()
+                        ?: (response.data["amountGram"] as? Number)?.toDouble() ?: 0.0,
                     calories = (response.data["calories"] as? Number)?.toInt() ?: 0,
-                    timestamp = (response.data["timestamp"] as? String)?.let {
+                    // Try "date" first (new schema), fallback to "timestamp" (backwards compatibility)
+                    timestamp = (response.data["date"] as? String)?.let {
+                        LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
+                    } ?: (response.data["timestamp"] as? String)?.let {
                         LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
                     } ?: LocalDateTime.now(),
-                    note = response.data["note"]?.toString(),
+                    // Try "notes" first (new schema), fallback to "note" (backwards compatibility)
+                    note = response.data["notes"]?.toString() ?: response.data["note"]?.toString(),
                     protein = (response.data["protein"] as? Number)?.toDouble(),
                     fat = (response.data["fat"] as? Number)?.toDouble(),
                     carbs = (response.data["carbs"] as? Number)?.toDouble()
@@ -145,8 +162,8 @@ class FoodIntakeRepository(private val context: Context) {
                 collectionId = AppwriteService.COLLECTION_FOOD_INTAKE,
                 queries = listOf(
                     Query.equal("dogId", dogId),
-                    Query.greaterThanEqual("timestamp", startOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
-                    Query.lessThanEqual("timestamp", endOfDay.format(DateTimeFormatter.ISO_DATE_TIME))
+                    Query.greaterThanEqual("date", startOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
+                    Query.lessThanEqual("date", endOfDay.format(DateTimeFormatter.ISO_DATE_TIME))
                 )
             )
             
