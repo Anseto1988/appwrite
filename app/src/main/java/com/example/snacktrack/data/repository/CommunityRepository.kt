@@ -304,7 +304,8 @@ class CommunityRepository(private val context: Context) {
                     "imageUrls" to imageUrls,
                     "hashtags" to hashtags,
                     "likesCount" to 0,
-                    "commentsCount" to 0
+                    "commentsCount" to 0,
+                    "created_at" to java.time.Instant.now().toString()
                 ).filterValues { it != null }
             )
             
@@ -531,7 +532,8 @@ class CommunityRepository(private val context: Context) {
                 data = mapOf(
                     "postId" to postId,
                     "userId" to userId,
-                    "content" to content
+                    "content" to content,
+                    "created_at" to java.time.Instant.now().toString()
                 )
             )
             
