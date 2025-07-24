@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.example.snacktrack.ui.screens.auth.LoginScreen
 import com.example.snacktrack.ui.screens.auth.RegisterScreen
 import com.example.snacktrack.ui.screens.dashboard.DashboardScreen
+import com.example.snacktrack.ui.screens.dashboard.ModernDashboardScreen
 import com.example.snacktrack.ui.screens.dog.AddEditDogScreen
 import com.example.snacktrack.ui.screens.dog.DogDetailScreen
 import com.example.snacktrack.ui.screens.dog.DogListScreen
@@ -45,7 +46,8 @@ class DogViewModelFactory(private val context: android.content.Context) : ViewMo
 sealed class Screen(val route: String) {
     object Login : Screen("login")
     object Register : Screen("register")
-
+    
+    object Home : Screen("home")
     object DogList : Screen("dog_list")
     
     object AccountManagement : Screen("account_management")
@@ -113,7 +115,7 @@ fun SnackTrackNavGraph(navController: NavHostController) {
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(Screen.DogList.route) { // Zu DogList nach Login
+                    navController.navigate(Screen.Home.route) { // Zum neuen Home Dashboard
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
@@ -129,6 +131,18 @@ fun SnackTrackNavGraph(navController: NavHostController) {
                     }
                 },
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        // Neues Home Dashboard
+        composable(Screen.Home.route) {
+            ModernDashboardScreen(
+                navController = navController,
+                onLogoutClick = { 
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
 

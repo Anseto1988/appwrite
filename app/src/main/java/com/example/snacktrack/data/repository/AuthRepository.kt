@@ -4,6 +4,7 @@ import android.content.Context
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.models.User
 import io.appwrite.ID
+import io.appwrite.models.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -92,6 +93,22 @@ class AuthRepository(private val context: Context) {
             true
         } catch (e: Exception) {
             false
+        }
+    }
+    
+    /**
+     * Startet Google OAuth2 Login
+     */
+    suspend fun loginWithGoogle(): Result<String> = withContext(Dispatchers.IO) {
+        try {
+            val session = account.createOAuth2Session(
+                provider = "google",
+                success = "appwrite-callback-${appwriteService.client.config["project"]}://auth",
+                failure = "appwrite-callback-${appwriteService.client.config["project"]}://auth"
+            )
+            Result.success(session)
+        } catch (e: AppwriteException) {
+            Result.failure(e)
         }
     }
     

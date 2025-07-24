@@ -2,18 +2,24 @@ package com.example.snacktrack.ui.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Login
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -143,6 +149,56 @@ fun LoginScreen(
             } else {
                 Text("Anmelden")
             }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Google Login Button
+        OutlinedButton(
+            onClick = {
+                isLoading = true
+                errorMessage = null
+                scope.launch {
+                    authRepository.loginWithGoogle()
+                        .onSuccess {
+                            isLoading = false
+                            onLoginSuccess()
+                        }
+                        .onFailure { e ->
+                            isLoading = false
+                            errorMessage = "Google-Anmeldung fehlgeschlagen: ${e.message}"
+                        }
+                }
+            },
+            enabled = !isLoading,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Login,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Mit Google anmelden")
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Divider
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Divider(modifier = Modifier.weight(1f))
+            Text(
+                text = " oder ",
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Divider(modifier = Modifier.weight(1f))
         }
         
         Spacer(modifier = Modifier.height(16.dp))
