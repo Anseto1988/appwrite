@@ -238,6 +238,26 @@ fun SnackTrackNavGraph(navController: NavHostController) {
                 onBackClick = { navController.popBackStack() }
             )
         }
+        
+        // Backwards compatibility route for deep links
+        composable(
+            route = "barcode_scanner/{dogId}",
+            arguments = listOf(navArgument("dogId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val dogId = backStackEntry.arguments?.getString("dogId") ?: ""
+            BarcodeScanner(
+                dogId = dogId,
+                onFoodFound = { foodId ->
+                    navController.popBackStack()
+                    navController.navigate(Screen.FoodDetail.createRoute(foodId, dogId))
+                },
+                onFoodNotFound = { ean ->
+                    navController.popBackStack()
+                    navController.navigate(Screen.FoodSubmission.createRoute(dogId, ean))
+                },
+                onBackClick = { navController.popBackStack() }
+            )
+        }
 
         composable(
             route = Screen.FoodDetail.route,
