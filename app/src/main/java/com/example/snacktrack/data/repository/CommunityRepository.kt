@@ -149,22 +149,26 @@ class CommunityRepository(private val context: Context) {
                 )
             } else {
                 // Neues Profil erstellen
+                val profileData = mutableMapOf(
+                    "userId" to userId,
+                    "displayName" to displayName,
+                    "bio" to (bio ?: ""),
+                    "isPremium" to false,
+                    "followersCount" to 0,
+                    "followingCount" to 0,
+                    "postsCount" to 0,
+                    "createdAt" to now,
+                    "created_at" to now
+                )
+                
+                // Only add profileImageUrl if it's not null
+                profileImageUrl?.let { profileData["profileImageUrl"] = it }
+                
                 val response = databases.createDocument(
                     databaseId = COMMUNITY_DATABASE_ID,
                     collectionId = COLLECTION_COMMUNITY_PROFILES,
                     documentId = ID.unique(),
-                    data = mapOf(
-                        "userId" to userId,
-                        "displayName" to displayName,
-                        "bio" to (bio ?: ""),
-                        "profileImageUrl" to profileImageUrl,
-                        "isPremium" to false,
-                        "followersCount" to 0,
-                        "followingCount" to 0,
-                        "postsCount" to 0,
-                        "createdAt" to now,
-                        "created_at" to now
-                    )
+                    data = profileData
                 )
                 
                 CommunityProfile(
