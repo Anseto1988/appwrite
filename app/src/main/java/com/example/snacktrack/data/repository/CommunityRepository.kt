@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import com.example.snacktrack.data.model.CommunityPost
 import com.example.snacktrack.data.model.CommunityProfile
+import com.example.snacktrack.data.model.CommunityComment
 import com.example.snacktrack.data.model.Dog
 import com.example.snacktrack.data.model.PostType
 import com.example.snacktrack.data.service.AppwriteService
@@ -507,6 +508,153 @@ class CommunityRepository(private val context: Context) {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Fehler beim Liken/Unliken: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * Erstellt einen neuen Kommentar zu einem Post
+     */
+    suspend fun createComment(
+        postId: String,
+        content: String
+    ): Result<CommunityComment> = withContext(Dispatchers.IO) {
+        try {
+            val currentUser = account.get()
+            val userId = currentUser.id
+            
+            // Kommentar erstellen
+            val response = databases.createDocument(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_COMMENTS,
+                documentId = ID.unique(),
+                data = mapOf(
+                    "postId" to postId,
+                    "userId" to userId,
+                    "content" to content
+                )
+            )
+            
+            // User-Profil für den Kommentar abrufen
+            val userProfile = getCurrentUserProfile().getOrNull()
+            
+            val comment = CommunityComment(
+                id = response.id,
+                postId = response.data["postId"].toString(),
+                userId = response.data["userId"].toString(),
+                content = response.data["content"].toString(),
+                createdAt = response.createdAt,
+                userProfile = userProfile
+            )
+            
+            // Kommentar-Anzahl im Post aktualisieren
+            val postResponse = databases.getDocument(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_POSTS,
+                documentId = postId
+            )
+            
+            val currentComments = (postResponse.data["commentsCount"] as? Number)?.toInt() ?: 0
+            databases.updateDocument(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_POSTS,
+                documentId = postId,
+                data = mapOf("commentsCount" to currentComments + 1)
+            )
+            
+            Result.success(comment)
+        } catch (e: Exception) {
+            Log.e(TAG, "Fehler beim Erstellen eines Kommentars: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * Holt alle Kommentare zu einem Post
+     */
+    suspend fun getCommentsForPost(postId: String): Result<List<CommunityComment>> = withContext(Dispatchers.IO) {
+        try {
+            val response = databases.listDocuments(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_COMMENTS,
+                queries = listOf(
+                    Query.equal("postId", postId),
+                    Query.orderAsc("\$createdAt")
+                )
+            )
+            
+            val comments = response.documents.map { doc ->
+                // User-Profil für jeden Kommentar abrufen
+                val userProfileResponse = try {
+                    databases.listDocuments(
+                        databaseId = COMMUNITY_DATABASE_ID,
+                        collectionId = COLLECTION_COMMUNITY_PROFILES,
+                        queries = listOf(Query.equal("userId", doc.data["userId"].toString()))
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+                
+                val userProfile = userProfileResponse?.documents?.firstOrNull()?.let { profileDoc ->
+                    CommunityProfile(
+                        id = profileDoc.id,
+                        userId = profileDoc.data["userId"].toString(),
+                        displayName = profileDoc.data["displayName"].toString(),
+                        bio = profileDoc.data["bio"]?.toString(),
+                        profileImageUrl = profileDoc.data["profileImageUrl"]?.toString(),
+                        isPremium = profileDoc.data["isPremium"] as? Boolean ?: false,
+                        followersCount = (profileDoc.data["followersCount"] as? Number)?.toInt() ?: 0,
+                        followingCount = (profileDoc.data["followingCount"] as? Number)?.toInt() ?: 0,
+                        postsCount = (profileDoc.data["postsCount"] as? Number)?.toInt() ?: 0
+                    )
+                }
+                
+                CommunityComment(
+                    id = doc.id,
+                    postId = doc.data["postId"].toString(),
+                    userId = doc.data["userId"].toString(),
+                    content = doc.data["content"].toString(),
+                    createdAt = doc.createdAt,
+                    userProfile = userProfile
+                )
+            }
+            
+            Result.success(comments)
+        } catch (e: Exception) {
+            Log.e(TAG, "Fehler beim Abrufen der Kommentare: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * Löscht einen Kommentar
+     */
+    suspend fun deleteComment(commentId: String, postId: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            databases.deleteDocument(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_COMMENTS,
+                documentId = commentId
+            )
+            
+            // Kommentar-Anzahl im Post aktualisieren
+            val postResponse = databases.getDocument(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_POSTS,
+                documentId = postId
+            )
+            
+            val currentComments = (postResponse.data["commentsCount"] as? Number)?.toInt() ?: 0
+            databases.updateDocument(
+                databaseId = COMMUNITY_DATABASE_ID,
+                collectionId = COLLECTION_COMMUNITY_POSTS,
+                documentId = postId,
+                data = mapOf("commentsCount" to maxOf(0, currentComments - 1))
+            )
+            
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e(TAG, "Fehler beim Löschen des Kommentars: ${e.message}", e)
             Result.failure(e)
         }
     }

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.snacktrack.data.model.CommunityPost
 import com.example.snacktrack.data.model.CommunityProfile
+import com.example.snacktrack.data.model.CommunityComment
 import com.example.snacktrack.data.model.PostType
 import com.example.snacktrack.data.repository.CommunityRepository
 import com.example.snacktrack.data.repository.DogRepository
@@ -194,6 +195,74 @@ class CommunityViewModel(private val context: Context) : ViewModel() {
     fun resetProfileEditState() {
         profileEditState = ProfileEditState.Idle
     }
+    
+    // Kommentar-Funktionen
+    private val _comments = MutableStateFlow<List<CommunityComment>>(emptyList())
+    val comments: StateFlow<List<CommunityComment>> = _comments.asStateFlow()
+    
+    var commentState by mutableStateOf<CommentState>(CommentState.Idle)
+        private set
+    
+    /**
+     * Lädt Kommentare für einen Post
+     */
+    fun loadCommentsForPost(postId: String) {
+        viewModelScope.launch {
+            commentState = CommentState.Loading
+            communityRepository.getCommentsForPost(postId).fold(
+                onSuccess = { comments ->
+                    _comments.value = comments
+                    commentState = CommentState.Success
+                },
+                onFailure = { error ->
+                    commentState = CommentState.Error(error.message ?: "Unbekannter Fehler")
+                }
+            )
+        }
+    }
+    
+    /**
+     * Erstellt einen neuen Kommentar
+     */
+    fun createComment(postId: String, content: String) {
+        viewModelScope.launch {
+            commentState = CommentState.Loading
+            communityRepository.createComment(postId, content).fold(
+                onSuccess = { newComment ->
+                    // Kommentare neu laden
+                    loadCommentsForPost(postId)
+                    commentState = CommentState.Success
+                },
+                onFailure = { error ->
+                    commentState = CommentState.Error(error.message ?: "Fehler beim Erstellen des Kommentars")
+                }
+            )
+        }
+    }
+    
+    /**
+     * Löscht einen Kommentar
+     */
+    fun deleteComment(commentId: String, postId: String) {
+        viewModelScope.launch {
+            communityRepository.deleteComment(commentId, postId).fold(
+                onSuccess = {
+                    // Kommentare neu laden
+                    loadCommentsForPost(postId)
+                },
+                onFailure = { error ->
+                    commentState = CommentState.Error(error.message ?: "Fehler beim Löschen des Kommentars")
+                }
+            )
+        }
+    }
+    
+    /**
+     * Reset Kommentar-Status
+     */
+    fun resetCommentState() {
+        commentState = CommentState.Idle
+    }
 }
 
 /**
@@ -223,6 +292,16 @@ sealed class ProfileEditState {
     object Saving : ProfileEditState()
     data class Success(val profile: CommunityProfile) : ProfileEditState()
     data class Error(val message: String) : ProfileEditState()
+}
+
+/**
+ * Zustände für Kommentare
+ */
+sealed class CommentState {
+    object Idle : CommentState()
+    object Loading : CommentState()
+    object Success : CommentState()
+    data class Error(val message: String) : CommentState()
 }
 
 // CommunityViewModelFactory wurde in eine separate Datei verschoben

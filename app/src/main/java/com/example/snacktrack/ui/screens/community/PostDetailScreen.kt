@@ -1,12 +1,10 @@
 package com.example.snacktrack.ui.screens.community
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,87 +12,99 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import com.example.snacktrack.data.model.CommunityPost
+import com.example.snacktrack.data.model.CommunityComment
 import com.example.snacktrack.ui.viewmodel.CommunityViewModel
 import com.example.snacktrack.ui.viewmodel.CommunityViewModelFactory
+import com.example.snacktrack.ui.viewmodel.CommentState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostDetailScreen(
-    postId: String,
     navController: NavController,
-    onProfileClick: (String) -> Unit = {}
+    postId: String
 ) {
     val context = LocalContext.current
     val viewModel: CommunityViewModel = viewModel(factory = CommunityViewModelFactory(context))
     val posts by viewModel.posts.collectAsState()
+    val comments by viewModel.comments.collectAsState()
+    val commentState by viewModel::commentState
     
-    // Finden des Posts aus der Liste anhand der ID
-    val post = remember(posts, postId) {
-        posts.find { it.id == postId }
+    var commentText by remember { mutableStateOf("") }
+    
+    val post = posts.find { it.id == postId }
+    
+    LaunchedEffect(postId) {
+        viewModel.loadCommentsForPost(postId)
     }
     
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Beitrag") },
+                title = { Text("Post Details") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Zurück",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            contentDescription = "Zurück"
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                actions = {
-                    // Löschen-Button, wenn es der eigene Post ist
-                    if (post?.userId == viewModel.userProfile.value?.userId) {
-                        IconButton(onClick = {
-                            post?.id?.let { 
-                                viewModel.deletePost(it)
-                                navController.popBackStack()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Löschen",
-                                tint = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
                     }
                 }
             )
         }
-    ) { innerPadding ->
-        Box(
+    ) { paddingValues ->
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (post == null) {
-                // Zeige Ladeanimation oder Fehlermeldung, wenn Post nicht gefunden
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-                // Hauptinhalt mit Post und Kommentaren
-                PostDetailContent(
-                    post = post,
-                    onProfileClick = { onProfileClick(post.userId) },
-                    onLikeClick = { viewModel.toggleLike(post.id) }
+            // Post anzeigen
+            post?.let { post ->
+                item {
+                    PostCard(
+                        post = post,
+                        onPostClick = { },
+                        onProfileClick = { },
+                        onLikeClick = { viewModel.toggleLike(post.id) }
+                    )
+                }
+                
+                // Kommentar-Eingabe
+                item {
+                    CommentInput(
+                        text = commentText,
+                        onTextChange = { commentText = it },
+                        onSendClick = {
+                            if (commentText.isNotBlank()) {
+                                viewModel.createComment(postId, commentText.trim())
+                                commentText = ""
+                            }
+                        },
+                        isLoading = commentState is CommentState.Loading
+                    )
+                }
+                
+                // Kommentare-Header
+                item {
+                    Text(
+                        text = "Kommentare (${comments.size})",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+            }
+            
+            // Kommentare anzeigen
+            items(comments) { comment ->
+                CommentCard(
+                    comment = comment,
+                    onDeleteClick = { viewModel.deleteComment(comment.id, postId) }
                 )
             }
         }
@@ -102,196 +112,125 @@ fun PostDetailScreen(
 }
 
 @Composable
-fun PostDetailContent(
-    post: CommunityPost,
-    onProfileClick: () -> Unit,
-    onLikeClick: () -> Unit
+fun CommentInput(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSendClick: () -> Unit,
+    isLoading: Boolean
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
-        // Post Header
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            OutlinedTextField(
+                value = text,
+                onValueChange = onTextChange,
+                label = { Text("Kommentar schreiben...") },
+                modifier = Modifier.weight(1f),
+                maxLines = 3
+            )
+            
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            IconButton(
+                onClick = onSendClick,
+                enabled = text.isNotBlank() && !isLoading
             ) {
-                // Header mit Profilbild und Namen
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Send,
+                        contentDescription = "Senden",
+                        tint = if (text.isNotBlank()) MaterialTheme.colorScheme.primary 
+                               else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CommentCard(
+    comment: CommunityComment,
+    onDeleteClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            // Header: Profilbild und Name
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Profilbild
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    // Profilbild
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
-                            .clickable(onClick = onProfileClick),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (post.userProfile?.profileImageUrl != null) {
-                            AsyncImage(
-                                model = post.userProfile.profileImageUrl,
-                                contentDescription = "Profilbild",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "Profilbild",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.width(12.dp))
-                    
-                    // Name und Posttyp
-                    Column {
+                    Text(
+                        text = comment.userProfile?.displayName?.take(1)?.uppercase() ?: "?",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = comment.userProfile?.displayName ?: "Unbekannt",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    comment.createdAt?.let { date ->
                         Text(
-                            text = post.userProfile?.displayName ?: "Unbekannter Benutzer",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = post.postType.displayName,
+                            text = date,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Post-Inhalt
-                Text(
-                    text = post.content,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Bilder, falls vorhanden
-                if (post.imageUrls.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        post.imageUrls.forEach { imageUrl ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(250.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                            ) {
-                                AsyncImage(
-                                    model = imageUrl,
-                                    contentDescription = "Beitragsbild",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-                    }
-                }
-                
-                // Hashtags, falls vorhanden
-                if (post.hashtags.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = post.hashtags.joinToString(" ") { "#$it" },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
+                // Delete Button (nur für eigene Kommentare)
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Löschen",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(18.dp)
                     )
                 }
-                
-                // Hund, falls verknüpft
-                post.dogInfo?.let { dog ->
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Pets,
-                            contentDescription = "Hund",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = dog.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Likes und Kommentare
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Likes
-                    Row(
-                        modifier = Modifier.clickable(onClick = onLikeClick),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = if (post.isLikedByCurrentUser) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Like",
-                            tint = if (post.isLikedByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${post.likesCount}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    
-                    // Kommentare
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Comment,
-                            contentDescription = "Kommentare",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${post.commentsCount}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                )
             }
-        }
-        
-        // Kommentarbereich - hier würden in einer vollständigen Implementierung die Kommentare angezeigt werden
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Kommentare werden in zukünftigen Updates hinzugefügt.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Kommentar-Inhalt
+            Text(
+                text = comment.content,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
