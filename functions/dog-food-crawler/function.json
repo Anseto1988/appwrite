@@ -1,0 +1,25 @@
+{
+  "name": "Dog Food Crawler",
+  "runtime": "node-18.0",
+  "execute": ["any"],
+  "events": [],
+  "schedule": "0 2 * * *",
+  "timeout": 900,
+  "enabled": true,
+  "logging": true,
+  "entrypoint": "src/index.js",
+  "commands": "npm install",
+  "ignore": [
+    "node_modules",
+    ".npm"
+  ],
+  "env": {
+    "APPWRITE_ENDPOINT": "https://parse.nordburglarp.de/v1",
+    "APPWRITE_FUNCTION_PROJECT_ID": "snackrack2",
+    "DATABASE_ID": "snacktrack-db",
+    "SUBMISSIONS_COLLECTION_ID": "foodSubmissions", 
+    "CRAWL_STATE_COLLECTION_ID": "crawlState",
+    "CRAWLER_USER_ID": "system_crawler",
+    "MAX_PRODUCTS_PER_RUN": "500"
+  }
+}
