@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -180,7 +181,7 @@ fun DashboardGrid(
             DashboardTile(
                 title = "Gewichtsverlauf",
                 subtitle = "Gewicht dokumentieren",
-                icon = Icons.Default.TrendingUp,
+                icon = Icons.AutoMirrored.Filled.TrendingUp,
                 color = secondary,
                 isLarge = true,
                 onClick = {
@@ -205,7 +206,7 @@ fun DashboardGrid(
                 color = primary,
                 onClick = {
                     selectedDog?.let { dog ->
-                        navController.navigate("barcode_scanner/${dog.id}")
+                        navController.navigate("barcode_scanner_nav/${dog.id}")
                     }
                 }
             ),

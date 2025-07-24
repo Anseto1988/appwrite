@@ -16,6 +16,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -97,7 +100,7 @@ fun CreatePostScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Zurück",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
@@ -412,11 +415,11 @@ fun PostTypeChip(
 ) {
     val icon = when(postType) {
         PostType.PHOTO -> Icons.Default.PhotoCamera
-        PostType.PROGRESS -> Icons.Default.TrendingUp
+        PostType.PROGRESS -> Icons.AutoMirrored.Filled.TrendingUp
         PostType.RECIPE -> Icons.Default.Restaurant
         PostType.TIP -> Icons.Default.Lightbulb
         PostType.STORY -> Icons.Default.Book
-        PostType.QUESTION -> Icons.Default.Help
+        PostType.QUESTION -> Icons.AutoMirrored.Filled.Help
     }
     
     FilterChip(
