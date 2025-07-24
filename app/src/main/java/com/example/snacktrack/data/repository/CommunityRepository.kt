@@ -304,7 +304,8 @@ class CommunityRepository(private val context: Context) {
                     "imageUrls" to imageUrls,
                     "hashtags" to hashtags,
                     "likesCount" to 0,
-                    "commentsCount" to 0
+                    "commentsCount" to 0,
+                    "created_at" to now
                 ).filterValues { it != null }
             )
             
@@ -524,6 +525,7 @@ class CommunityRepository(private val context: Context) {
             val userId = currentUser.id
             
             // Kommentar erstellen
+            val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
             val response = databases.createDocument(
                 databaseId = COMMUNITY_DATABASE_ID,
                 collectionId = COLLECTION_COMMUNITY_COMMENTS,
@@ -531,7 +533,8 @@ class CommunityRepository(private val context: Context) {
                 data = mapOf(
                     "postId" to postId,
                     "userId" to userId,
-                    "content" to content
+                    "content" to content,
+                    "created_at" to now
                 )
             )
             

@@ -1,5 +1,6 @@
 package com.example.snacktrack.ui.screens.dashboard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -107,6 +108,17 @@ fun ModernDashboardScreen(
                     onButtonClick = { navController.navigate(Screen.DogList.route) }
                 )
             } else {
+                // Hund-Auswahl falls mehrere Hunde vorhanden
+                if (dogs.size > 1) {
+                    DogSelectionCard(
+                        dogs = dogs,
+                        selectedDog = selectedDog,
+                        onDogSelected = { selectedDog = it }
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                
                 // Dashboard Kacheln
                 DashboardGrid(
                     selectedDog = selectedDog,
@@ -194,6 +206,17 @@ fun DashboardGrid(
                 onClick = {
                     selectedDog?.let { dog ->
                         navController.navigate("barcode_scanner/${dog.id}")
+                    }
+                }
+            ),
+            DashboardTile(
+                title = "Futter Eingabe",
+                subtitle = "Manuell hinzufügen",
+                icon = Icons.Default.Add,
+                color = secondary,
+                onClick = {
+                    selectedDog?.let { dog ->
+                        navController.navigate("manual_food_entry/${dog.id}")
                     }
                 }
             ),
@@ -369,6 +392,104 @@ fun EmptyStateCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(buttonText)
+            }
+        }
+    }
+}
+
+@Composable
+fun DogSelectionCard(
+    dogs: List<Dog>,
+    selectedDog: Dog?,
+    onDogSelected: (Dog) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Hund auswählen",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                dogs.forEach { dog ->
+                    val isSelected = selectedDog?.id == dog.id
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onDogSelected(dog) },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isSelected) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                            } else {
+                                MaterialTheme.colorScheme.surface
+                            }
+                        ),
+                        border = if (isSelected) {
+                            BorderStroke(
+                                2.dp, 
+                                MaterialTheme.colorScheme.primary
+                            )
+                        } else null
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(
+                                        if (isSelected) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                                        }
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Pets,
+                                    contentDescription = null,
+                                    tint = if (isSelected) {
+                                        MaterialTheme.colorScheme.onPrimary
+                                    } else {
+                                        MaterialTheme.colorScheme.primary
+                                    },
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(4.dp))
+                            
+                            Text(
+                                text = dog.name,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                color = if (isSelected) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
