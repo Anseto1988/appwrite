@@ -98,11 +98,7 @@ class CommunityRepository(private val context: Context) {
                         )
                         
                         // Generiere URL für das Bild
-                        val fileView = storage.getFileView(
-                            bucketId = BUCKET_COMMUNITY_IMAGES,
-                            fileId = uploadResult.id
-                        )
-                        profileImageUrl = fileView.toString()
+                        profileImageUrl = "${AppwriteService.ENDPOINT}/storage/buckets/$BUCKET_COMMUNITY_IMAGES/files/${uploadResult.id}/view?project=${AppwriteService.PROJECT_ID}"
                         
                         file.delete() // Temporäre Datei löschen
                     }
@@ -166,7 +162,8 @@ class CommunityRepository(private val context: Context) {
                         "followersCount" to 0,
                         "followingCount" to 0,
                         "postsCount" to 0,
-                        "createdAt" to now
+                        "createdAt" to now,
+                        "created_at" to now
                     )
                 )
                 
@@ -274,12 +271,9 @@ class CommunityRepository(private val context: Context) {
                         )
                         
                         // URL für das Bild generieren
-                        val imageUrl = storage.getFileView(
-                            bucketId = BUCKET_COMMUNITY_IMAGES,
-                            fileId = uploadResult.id
-                        )
+                        val imageUrl = "${AppwriteService.ENDPOINT}/storage/buckets/$BUCKET_COMMUNITY_IMAGES/files/${uploadResult.id}/view?project=${AppwriteService.PROJECT_ID}"
                         
-                        imageUrls.add(imageUrl.toString())
+                        imageUrls.add(imageUrl)
                         
                         file.delete() // Temporäre Datei löschen
                     }
@@ -305,6 +299,7 @@ class CommunityRepository(private val context: Context) {
                     "hashtags" to hashtags,
                     "likesCount" to 0,
                     "commentsCount" to 0,
+                    "createdAt" to now,
                     "created_at" to now
                 ).filterValues { it != null }
             )
@@ -486,7 +481,9 @@ class CommunityRepository(private val context: Context) {
                     documentId = ID.unique(),
                     data = mapOf(
                         "userId" to userId,
-                        "postId" to postId
+                        "postId" to postId,
+                        "createdAt" to now,
+                        "created_at" to now
                     )
                 )
                 
@@ -534,6 +531,7 @@ class CommunityRepository(private val context: Context) {
                     "postId" to postId,
                     "userId" to userId,
                     "content" to content,
+                    "createdAt" to now,
                     "created_at" to now
                 )
             )
