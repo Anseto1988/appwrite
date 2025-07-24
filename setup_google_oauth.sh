@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Script to set up Google OAuth for SnackTrack Android App
+# This script generates the SHA-1 fingerprint and provides all necessary information
+
+echo "=== SnackTrack Google OAuth Setup Script ==="
+echo ""
+
+# Generate debug SHA-1 fingerprint
+echo "1. Generating SHA-1 fingerprint for debug build:"
+echo "------------------------------------------------"
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android 2>/dev/null | grep SHA1
+
+echo ""
+echo "2. App Configuration Details:"
+echo "------------------------------------------------"
+echo "Package Name: com.example.snacktrack"
+echo "Appwrite Project ID: snackrack2"
+echo "Appwrite Endpoint: https://parse.nordburglarp.de/v1"
+echo ""
+
+echo "3. Required Redirect URIs for Google Console:"
+echo "------------------------------------------------"
+echo "Authorized JavaScript origins:"
+echo "  - https://parse.nordburglarp.de"
+echo ""
+echo "Authorized redirect URIs (ADD BOTH):"
+echo "  - https://parse.nordburglarp.de/v1/account/sessions/oauth2/callback/google/snackrack2"
+echo "  - appwrite-callback-snackrack2://auth"
+echo ""
+
+echo "4. Steps to complete setup:"
+echo "------------------------------------------------"
+echo "A. In Google Cloud Console (https://console.cloud.google.com/):"
+echo "   1. Create/select a project"
+echo "   2. Enable Google+ API"
+echo "   3. Go to 'APIs & Services' > 'Credentials'"
+echo "   4. Click '+ CREATE CREDENTIALS' > 'OAuth 2.0 Client ID'"
+echo "   5. Choose 'Android' as Application type"
+echo "   6. Enter:"
+echo "      - Name: SnackTrack Android App"
+echo "      - Package name: com.example.snacktrack"
+echo "      - SHA-1 certificate fingerprint: (use the one generated above)"
+echo "   7. Also create a 'Web application' OAuth client for the web redirect"
+echo "      - Add the JavaScript origins and redirect URIs listed above"
+echo ""
+echo "B. In Appwrite Dashboard (https://parse.nordburglarp.de):"
+echo "   1. Navigate to 'Auth' > 'Settings'"
+echo "   2. Find 'OAuth2 Providers' and enable 'Google'"
+echo "   3. Enter the Client ID and Client Secret from Google Console"
+echo "   4. Save the configuration"
+echo ""
+echo "C. Test the implementation:"
+echo "   1. Run the app"
+echo "   2. Click 'Mit Google anmelden' (Login with Google)"
+echo "   3. Complete the Google authentication flow"
+echo "   4. Verify successful login"
+echo ""
+
+echo "5. Important Notes:"
+echo "------------------------------------------------"
+echo "- The OAuth callback URL scheme in AndroidManifest.xml is: appwrite-callback-snackrack2"
+echo "- The Appwrite endpoint is correctly set to v1 (not v2)"
+echo "- For production, generate a new SHA-1 fingerprint with your release keystore"
+echo "- Monitor OAuth usage in Google Cloud Console"
+echo ""
+
+echo "6. Troubleshooting:"
+echo "------------------------------------------------"
+echo "- Error 400 redirect_uri_mismatch: Check all redirect URIs are added in Google Console"
+echo "- Invalid OAuth provider: Ensure Google provider is enabled in Appwrite"
+echo "- OAuth callback failed: Check AndroidManifest.xml callback activity configuration"
+echo ""

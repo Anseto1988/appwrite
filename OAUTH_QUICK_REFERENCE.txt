@@ -1,0 +1,26 @@
+SNACKTRACK GOOGLE OAUTH QUICK REFERENCE
+=======================================
+
+COPY THESE EXACT VALUES TO GOOGLE CONSOLE:
+
+Package Name:
+com.example.snacktrack
+
+SHA-1 Fingerprint:
+(Run: keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android)
+
+Authorized JavaScript Origins (for Web OAuth Client):
+https://parse.nordburglarp.de
+
+Authorized Redirect URIs (for Web OAuth Client - ADD BOTH):
+https://parse.nordburglarp.de/v1/account/sessions/oauth2/callback/google/snackrack2
+appwrite-callback-snackrack2://auth
+
+APPWRITE CONFIGURATION:
+- Use the Client ID and Client Secret from the WEB APPLICATION OAuth client (not Android)
+- The redirect URL shown in Appwrite should match the first URI above
+
+TESTING:
+- The callback URL in the app is: appwrite-callback-snackrack2://auth
+- This matches the AndroidManifest.xml configuration
+- The Appwrite endpoint is correctly set to v1 (not v2)
