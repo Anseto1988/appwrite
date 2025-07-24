@@ -274,12 +274,12 @@ class CommunityRepository(private val context: Context) {
                         )
                         
                         // URL für das Bild generieren
-                        val imageView = storage.getFileView(
+                        val imageUrl = storage.getFileView(
                             bucketId = BUCKET_COMMUNITY_IMAGES,
                             fileId = uploadResult.id
                         )
                         
-                        imageView?.toString()?.let { imageUrls.add(it) }
+                        imageUrls.add(imageUrl.toString())
                         
                         file.delete() // Temporäre Datei löschen
                     }
@@ -304,8 +304,7 @@ class CommunityRepository(private val context: Context) {
                     "imageUrls" to imageUrls,
                     "hashtags" to hashtags,
                     "likesCount" to 0,
-                    "commentsCount" to 0,
-                    "created_at" to java.time.Instant.now().toString()
+                    "commentsCount" to 0
                 ).filterValues { it != null }
             )
             
@@ -532,8 +531,7 @@ class CommunityRepository(private val context: Context) {
                 data = mapOf(
                     "postId" to postId,
                     "userId" to userId,
-                    "content" to content,
-                    "created_at" to java.time.Instant.now().toString()
+                    "content" to content
                 )
             )
             
