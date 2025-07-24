@@ -13,8 +13,6 @@ import okhttp3.OkHttpClient
 import java.io.File
 import com.example.snacktrack.utils.SecureLogger
 import com.example.snacktrack.utils.NetworkManager
-import com.example.snacktrack.utils.SessionManager
-import com.example.snacktrack.utils.SessionState
 
 /**
  * Service-Klasse für die Kommunikation mit Appwrite
@@ -55,9 +53,6 @@ class AppwriteService private constructor(context: Context) {
 
     // Network connectivity manager
     val networkManager = NetworkManager(context)
-    
-    // Session manager
-    val sessionManager = SessionManager.getInstance(context)
     
     // Configure OkHttp with caching
     private val cacheSize = 50L * 1024L * 1024L // 50 MB cache
@@ -103,19 +98,13 @@ class AppwriteService private constructor(context: Context) {
      * Gibt true zurück, wenn eine gültige Session besteht oder erfolgreich aktualisiert wurde
      */
     suspend fun ensureValidSession(): Boolean {
-        // Use SessionManager for session validation
-        sessionManager.checkSession()
-        
-        return when (sessionManager.sessionState.value) {
-            is SessionState.Active -> true
-            is SessionState.NeedsRefresh -> {
-                // Try to refresh
-                sessionManager.forceRefresh()
-            }
-            else -> {
-                SecureLogger.e("AppwriteService", "No valid session available")
-                false
-            }
+        return try {
+            // Try to get current account - this will fail if session is invalid
+            account.get()
+            true
+        } catch (e: Exception) {
+            SecureLogger.e("AppwriteService", "No valid session available", e)
+            false
         }
     }
 } 
