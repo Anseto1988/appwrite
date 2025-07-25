@@ -226,8 +226,8 @@ class StatisticsRepository(
             mealRegularityScore = mealRegularity,
             treatPercentage = treatPercentage,
             hydrationScore = hydrationEstimate,
-            nutrientDeficiencies = deficiencies.take(5),
-            nutrientExcesses = excesses.take(5),
+            nutrientDeficiencies = deficiencies.take(5).map { it.nutrient },
+            nutrientExcesses = excesses.take(5).map { it.nutrient },
             scheduleAdherence = scheduleAdherence,
             portionControlScore = portionControl
         )
@@ -496,7 +496,7 @@ class StatisticsRepository(
         val eatingSpeed = analyzeEatingSpeed(intakes)
         
         // Begging frequency (would need observation data)
-        val beggingLevel = BeggingLevel.OCCASIONAL // Mock
+        val beggingLevel = BeggingLevel.MODERATE // Mock
         
         // Stress indicators
         val stressIndicators = identifyStressEatingPatterns(intakes)
@@ -680,7 +680,7 @@ class StatisticsRepository(
         val reportData = collectReportData(report)
         
         // Format report based on selected format
-        when (report.format) {
+        return@safeApiCall when (report.schedule?.format ?: ReportFormat.PDF) {
             ReportFormat.PDF -> generatePdfReport(report, reportData)
             ReportFormat.EXCEL -> generateExcelReport(report, reportData)
             ReportFormat.CSV -> generateCsvReport(report, reportData)
@@ -943,9 +943,9 @@ class StatisticsRepository(
     private suspend fun getVaccineStatus(dogId: String): VaccineStatus {
         // This would fetch vaccination records
         return VaccineStatus(
-            coreVaccinesUpToDate = true,
-            nonCoreVaccinesUpToDate = true,
-            nextVaccineDue = LocalDate.now().plusMonths(6)
+            upToDate = true,
+            overdue = emptyList(),
+            upcoming = listOf("Rabies (${LocalDate.now().plusMonths(6)})")
         )
     }
     
@@ -955,8 +955,8 @@ class StatisticsRepository(
     ): Double {
         var score = 100.0
         
-        if (!vaccineStatus.coreVaccinesUpToDate) score -= 30
-        if (!vaccineStatus.nonCoreVaccinesUpToDate) score -= 10
+        if (!vaccineStatus.upToDate) score -= 30
+        if (vaccineStatus.overdue.isNotEmpty()) score -= (10 * vaccineStatus.overdue.size)
         
         // Check for regular checkups
         val checkups = entries.count { it.notes.contains("checkup", ignoreCase = true) }
@@ -978,14 +978,13 @@ class StatisticsRepository(
                 HealthRiskFactor(
                     factor = "Allergie: ${allergy.allergen}",
                     riskLevel = when (allergy.severity) {
-                        DogAllergySeverity.MILD -> StatisticsRiskLevel.LOW
-                        DogAllergySeverity.MODERATE -> StatisticsRiskLevel.MODERATE
-                        DogAllergySeverity.SEVERE -> StatisticsRiskLevel.HIGH
-                        DogAllergySeverity.CRITICAL -> StatisticsRiskLevel.HIGH
+                        DogAllergySeverity.MILD -> RiskLevel.LOW
+                        DogAllergySeverity.MODERATE -> RiskLevel.MEDIUM
+                        DogAllergySeverity.SEVERE -> RiskLevel.HIGH
+                        DogAllergySeverity.CRITICAL -> RiskLevel.HIGH
                     },
-                    category = StatisticsRiskCategory.MEDICAL,
-                    mitigationStrategies = listOf("Allergen vermeiden", "Medikamente bereithalten"),
-                    monitoringRequired = allergy.severity == DogAllergySeverity.SEVERE
+                    description = "Schweregrad: ${allergy.severity.name}. ${if (allergy.severity == DogAllergySeverity.SEVERE) "Überwachung erforderlich" else "Regelmäßige Kontrolle"}",
+                    recommendations = listOf("Allergen vermeiden", "Medikamente bereithalten")
                 )
             )
         }
@@ -1016,8 +1015,9 @@ class StatisticsRepository(
     private fun analyzeChronicConditions(
         entries: List<DogHealthEntry>,
         medications: List<DogMedication>
-    ): Map<String, ConditionManagement> {
+    ): Map<String, Double> {
         // This would identify and track chronic conditions
+        // Returns condition name to management score (0-100)
         return emptyMap()
     }
     
@@ -1042,7 +1042,7 @@ class StatisticsRepository(
                     SeverityLevel.MILD
                 },
                 outcome = entry.notes,
-                followUpRequired = entry.notes.contains("follow", ignoreCase = true)
+                treatmentGiven = if (entry.veterinaryVisit) "Tierärztliche Behandlung" else null
             )
         }
     }
@@ -1301,7 +1301,7 @@ class StatisticsRepository(
         return WeightPrediction(
             predictedWeight30Days = analytics.projectedWeight,
             predictedWeight90Days = projectWeightLongTerm(analytics, 90),
-            confidenceLevel = calculateConfidence(analytics.consistencyScore),
+            confidenceLevel = calculateConfidence(analytics.consistencyScore).toFloat(),
             assumptions = listOf(
                 "Aktuelle Fütterung bleibt gleich",
                 "Aktivitätslevel bleibt konstant"
@@ -1328,41 +1328,29 @@ class StatisticsRepository(
         return consistencyScore * 0.9 // 90% of consistency score
     }
     
-    private fun predictNutritionalIssues(analytics: NutritionAnalytics): List<NutritionPrediction> {
-        val predictions = mutableListOf<NutritionPrediction>()
+    private fun predictNutritionalIssues(analytics: NutritionAnalytics): List<PredictedHealthIssue> {
+        val predictions = mutableListOf<PredictedHealthIssue>()
         
         // Check for developing deficiencies
-        analytics.topNutrientDeficiencies.forEach { deficiency ->
-            if (deficiency.deficiencyPercent > 20) {
-                predictions.add(
-                    NutritionPrediction(
-                        predictedDeficiency = deficiency.nutrient,
-                        timeToDeficiency = estimateTimeToDeficiency(deficiency),
-                        optimalAdjustments = listOf(
-                            NutritionAdjustment(
-                                nutrient = deficiency.nutrient,
-                                currentAmount = deficiency.currentLevel,
-                                recommendedAmount = deficiency.recommendedLevel,
-                                adjustmentMethod = "Nahrungsergänzung hinzufügen",
-                                expectedOutcome = "Defizit innerhalb 30 Tagen behoben"
-                            )
-                        )
-                    )
+        analytics.nutrientDeficiencies.forEach { deficiency ->
+            predictions.add(
+                PredictedHealthIssue(
+                    condition = "Nährstoffmangel: $deficiency",
+                    probability = 0.7,
+                    timeframe = "30-60 Tage",
+                    preventiveMeasures = listOf(
+                        "Nahrungsergänzung hinzufügen",
+                        "Ernährung anpassen",
+                        "Tierarzt konsultieren"
+                    ),
+                    riskFactors = listOf("Unausgewogene Ernährung")
                 )
-            }
+            )
         }
         
         return predictions
     }
     
-    private fun estimateTimeToDeficiency(deficiency: NutrientDeficiency): Int {
-        return when (deficiency.deficiencyPercent) {
-            in 0.0..20.0 -> 90
-            in 20.0..40.0 -> 60
-            in 40.0..60.0 -> 30
-            else -> 14
-        }
-    }
     
     private suspend fun predictCosts(dogId: String): CostPrediction {
         // Simple linear projection for now
@@ -1431,8 +1419,7 @@ class StatisticsRepository(
         
         val trendRisk = when (analytics.weightTrend) {
             StatisticsTrendDirection.INCREASING, StatisticsTrendDirection.DECREASING -> 25.0
-            StatisticsTrendDirection.VOLATILE -> 50.0
-            else -> 0.0
+            StatisticsTrendDirection.STABLE -> 0.0
         }
         
         return (bcsRisk + trendRisk).coerceIn(0.0, 100.0)
@@ -1443,8 +1430,8 @@ class StatisticsRepository(
         
         if (analytics.calorieBalance != CalorieBalance.BALANCED) risk += 25.0
         if (analytics.treatPercentage > 20) risk += 25.0
-        if (analytics.nutritionalCompleteness < 80) risk += 25.0
-        if (analytics.topNutrientDeficiencies.isNotEmpty()) risk += 25.0
+        if (analytics.micronutrientAnalysis.adequacyScore < 80) risk += 25.0
+        if (analytics.nutrientDeficiencies.isNotEmpty()) risk += 25.0
         
         return risk.coerceIn(0.0, 100.0)
     }
@@ -1454,7 +1441,8 @@ class StatisticsRepository(
             MitigationStep(
                 action = "Risiko '${risk.name}' addressieren",
                 priority = when (risk.severity) {
-                    RiskLevel.HIGH -> PriorityLevel.CRITICAL
+                    RiskLevel.CRITICAL -> PriorityLevel.CRITICAL
+                    RiskLevel.HIGH -> PriorityLevel.HIGH
                     RiskLevel.MEDIUM -> PriorityLevel.MEDIUM
                     RiskLevel.LOW -> PriorityLevel.LOW
                 },
@@ -1470,28 +1458,26 @@ class StatisticsRepository(
         weight: WeightAnalytics,
         nutrition: NutritionAnalytics,
         health: HealthAnalytics
-    ): List<Intervention> {
-        val interventions = mutableListOf<Intervention>()
+    ): List<PredictedHealthIssue> {
+        val interventions = mutableListOf<PredictedHealthIssue>()
         
         // Weight interventions
         if (abs(weight.bodyConditionScore - 5.0) > 1) {
             interventions.add(
-                Intervention(
-                    type = InterventionType.DIETARY,
-                    title = "Gewichtsmanagement-Programm",
-                    description = "Anpassung der Futtermenge und Bewegung",
-                    urgency = if (abs(weight.bodyConditionScore - 5.0) > 2) {
-                        UrgencyLevel.HIGH
-                    } else {
-                        UrgencyLevel.MODERATE
-                    },
-                    expectedBenefit = "Idealgewicht in 3-6 Monaten erreichen",
-                    implementationSteps = listOf(
+                PredictedHealthIssue(
+                    condition = "Gewichtsmanagement erforderlich",
+                    probability = 0.8,
+                    timeframe = "3-6 Monate",
+                    preventiveMeasures = listOf(
                         "Tägliche Futtermenge um 10% reduzieren",
                         "Tägliche Bewegung um 15 Minuten erhöhen",
                         "Wöchentlich wiegen"
                     ),
-                    monitoringRequired = true
+                    riskFactors = if (abs(weight.bodyConditionScore - 5.0) > 2) {
+                        listOf("Stark erhöhtes Gewicht", "Gesundheitsrisiko")
+                    } else {
+                        listOf("Leichtes Übergewicht")
+                    }
                 )
             )
         }
@@ -1499,52 +1485,42 @@ class StatisticsRepository(
         return interventions
     }
     
-    private suspend fun predictLifestageTransition(dogId: String): LifestageTransition? {
+    private suspend fun predictLifestageTransition(dogId: String): PredictedHealthIssue? {
         val dog = dogRepository.getDogById(dogId).getOrNull() ?: return null
         val ageInYears = ChronoUnit.YEARS.between(dog.birthDate, LocalDate.now()).toInt()
         
         val (currentStage, nextStage, transitionAge) = when {
-            ageInYears < 1 -> Triple(LifeStage.PUPPY, LifeStage.ADOLESCENT, 1)
-            ageInYears < 2 -> Triple(LifeStage.ADOLESCENT, LifeStage.ADULT, 2)
-            ageInYears < 7 -> Triple(LifeStage.ADULT, LifeStage.SENIOR, 7)
-            ageInYears < 12 -> Triple(LifeStage.SENIOR, LifeStage.GERIATRIC, 12)
+            ageInYears < 1 -> Triple("Welpe", "Heranwachsend", 1)
+            ageInYears < 2 -> Triple("Heranwachsend", "Erwachsen", 2)
+            ageInYears < 7 -> Triple("Erwachsen", "Senior", 7)
+            ageInYears < 12 -> Triple("Senior", "Hochbetagt", 12)
             else -> return null
         }
         
         val monthsToTransition = (transitionAge - ageInYears) * 12
-        val transitionDate = LocalDate.now().plusMonths(monthsToTransition.toLong())
         
-        return LifestageTransition(
-            currentStage = currentStage,
-            nextStage = nextStage,
-            estimatedTransitionDate = transitionDate,
-            preparationSteps = getLifestagePreparationSteps(nextStage),
-            dietaryChangesRequired = getDietaryChangesForLifestage(nextStage)
-        )
+        return if (monthsToTransition <= 6) {
+            PredictedHealthIssue(
+                condition = "Übergang von $currentStage zu $nextStage",
+                probability = 1.0,
+                timeframe = "$monthsToTransition Monate",
+                preventiveMeasures = getLifestagePreparationSteps(nextStage),
+                riskFactors = listOf("Altersbedingter Übergang")
+            )
+        } else null
     }
     
-    private fun getLifestagePreparationSteps(stage: LifeStage): List<String> {
+    private fun getLifestagePreparationSteps(stage: String): List<String> {
         return when (stage) {
-            LifeStage.SENIOR -> listOf(
+            "Senior" -> listOf(
                 "Tierarzt-Check-up vereinbaren",
                 "Auf Senior-Futter umstellen",
                 "Gelenkgesundheit überwachen",
                 "Aktivität anpassen"
             )
-            else -> emptyList()
-        }
-    }
-    
-    private fun getDietaryChangesForLifestage(stage: LifeStage): List<String> {
-        return when (stage) {
-            LifeStage.ADULT -> listOf(
+            "Erwachsen" -> listOf(
                 "Von Welpen- auf Erwachsenenfutter umstellen",
                 "Portionen anpassen"
-            )
-            LifeStage.SENIOR -> listOf(
-                "Reduzierter Kaloriengehalt",
-                "Erhöhte Ballaststoffe",
-                "Gelenkunterstützende Nährstoffe"
             )
             else -> emptyList()
         }
@@ -1569,14 +1545,14 @@ class StatisticsRepository(
         dogId: String,
         startDate: LocalDate,
         endDate: LocalDate
-    ): HistoricalComparison {
+    ) {
         // This would compare current period to previous period
-        return HistoricalComparison()
+        // Currently not implemented
     }
     
-    private suspend fun compareToGoals(dogId: String): GoalComparison {
+    private suspend fun compareToGoals(dogId: String) {
         // This would compare progress to set goals
-        return GoalComparison()
+        // Currently not implemented
     }
     
     private suspend fun cacheStatistics(statistics: AdvancedStatistics) {
@@ -1599,7 +1575,7 @@ class StatisticsRepository(
     private suspend fun scheduleReport(reportId: String, schedule: ReportSchedule) {
         val data = mapOf(
             "reportId" to reportId,
-            "frequency" to schedule.frequency.name,
+            "frequency" to schedule.frequency,
             "dayOfWeek" to schedule.dayOfWeek,
             "dayOfMonth" to schedule.dayOfMonth,
             "time" to schedule.time,
@@ -1617,12 +1593,13 @@ class StatisticsRepository(
     
     private fun calculateNextRunDate(schedule: ReportSchedule): LocalDateTime {
         val now = LocalDateTime.now()
-        return when (schedule.frequency) {
-            ScheduleFrequency.DAILY -> now.plusDays(1)
-            ScheduleFrequency.WEEKLY -> now.plusWeeks(1)
-            ScheduleFrequency.MONTHLY -> now.plusMonths(1)
-            ScheduleFrequency.QUARTERLY -> now.plusMonths(3)
-            ScheduleFrequency.YEARLY -> now.plusYears(1)
+        return when (schedule.frequency.uppercase()) {
+            "DAILY" -> now.plusDays(1)
+            "WEEKLY" -> now.plusWeeks(1)
+            "MONTHLY" -> now.plusMonths(1)
+            "QUARTERLY" -> now.plusMonths(3)
+            "YEARLY" -> now.plusYears(1)
+            else -> now.plusDays(1) // Default to daily
         }
     }
     
@@ -1686,35 +1663,33 @@ class StatisticsRepository(
                     dataSource = DataSource.valueOf(sectionData["dataSource"] as String),
                     visualization = VisualizationType.valueOf(sectionData["visualization"] as String),
                     metrics = (sectionData["metrics"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-                    customization = SectionCustomization(
+                    customization = ReportCustomization(
                         colors = (customizationData["colors"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-                        showLegend = customizationData["showLegend"] as Boolean,
-                        showLabels = customizationData["showLabels"] as Boolean,
-                        showTrendline = customizationData["showTrendline"] as Boolean,
-                        comparisonMode = (customizationData["comparisonMode"] as? String)?.let { ComparisonMode.valueOf(it) },
-                        aggregation = AggregationType.valueOf(customizationData["aggregation"] as String)
+                        fontSize = (customizationData["fontSize"] as? Number)?.toInt() ?: 12,
+                        showLegend = customizationData["showLegend"] as? Boolean ?: true,
+                        showDataLabels = customizationData["showDataLabels"] as? Boolean ?: false
                     )
                 )
             },
             filters = ReportFilters(
-                dateRange = DateRange.valueOf(filtersData["dateRange"] as String),
-                customStartDate = (filtersData["customStartDate"] as? String)?.let { LocalDate.parse(it) },
-                customEndDate = (filtersData["customEndDate"] as? String)?.let { LocalDate.parse(it) },
+                dateRange = filtersData["dateRange"] as String,
                 dogs = (filtersData["dogs"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-                categories = (filtersData["categories"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+                categories = (filtersData["categories"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
+                metrics = (filtersData["metrics"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
+                comparison = filtersData["comparison"] as? String
             ),
             schedule = scheduleData?.let {
                 ReportSchedule(
-                    frequency = ScheduleFrequency.valueOf(it["frequency"] as String),
+                    frequency = it["frequency"] as String,
                     dayOfWeek = (it["dayOfWeek"] as? Number)?.toInt(),
                     dayOfMonth = (it["dayOfMonth"] as? Number)?.toInt(),
                     time = it["time"] as String,
-                    nextRunDate = (it["nextRunDate"] as? String)?.let { LocalDateTime.parse(it) },
-                    isActive = it["isActive"] as Boolean
+                    nextRunDate = (it["nextRunDate"] as? String)?.let { LocalDate.parse(it) },
+                    isActive = it["isActive"] as Boolean,
+                    recipients = emptyList(),
+                    format = ReportFormat.PDF
                 )
-            },
-            recipients = (document.data["recipients"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-            format = ReportFormat.valueOf(document.data["format"] as String)
+            }
         )
     }
 }

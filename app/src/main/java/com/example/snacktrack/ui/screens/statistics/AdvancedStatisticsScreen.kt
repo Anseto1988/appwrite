@@ -20,6 +20,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.Divider
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.ui.components.CommonTopAppBar
 import com.example.snacktrack.ui.viewmodel.AdvancedStatisticsViewModel
@@ -33,7 +38,7 @@ fun AdvancedStatisticsScreen(
     viewModel: AdvancedStatisticsViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var selectedPeriod by remember { mutableStateOf(AnalyticsPeriod.MONTH) }
+    var selectedPeriod by remember { mutableStateOf(AnalyticsPeriod.MONTHLY) }
     
     LaunchedEffect(dogId, selectedPeriod) {
         viewModel.loadStatistics(dogId, selectedPeriod)
@@ -147,7 +152,7 @@ fun AdvancedStatisticsScreen(
                         icon = Icons.Default.Psychology,
                         color = Color(0xFF00BCD4)
                     ) {
-                        BehavioralAnalyticsContent(uiState.statistics?.behavioralAnalytics)
+                        BehavioralAnalyticsContent(uiState.statistics?.behaviorAnalytics)
                     }
                 }
                 
@@ -193,11 +198,11 @@ private fun PeriodSelector(
                 label = { 
                     Text(
                         when (period) {
-                            AnalyticsPeriod.WEEK -> "Woche"
-                            AnalyticsPeriod.MONTH -> "Monat"
-                            AnalyticsPeriod.QUARTER -> "Quartal"
-                            AnalyticsPeriod.YEAR -> "Jahr"
-                            AnalyticsPeriod.CUSTOM -> "Benutzerdefiniert"
+                            AnalyticsPeriod.DAILY -> "Tag"
+                            AnalyticsPeriod.WEEKLY -> "Woche"
+                            AnalyticsPeriod.MONTHLY -> "Monat"
+                            AnalyticsPeriod.QUARTERLY -> "Quartal"
+                            AnalyticsPeriod.YEARLY -> "Jahr"
                         }
                     )
                 }
@@ -391,13 +396,7 @@ private fun WeightAnalyticsContent(analytics: WeightAnalytics?) {
         // TODO: Implement BodyConditionScoreIndicator
         // BodyConditionScoreIndicator(analytics.bodyConditionScore)
         
-        // Days to ideal weight
-        analytics.daysToIdealWeight?.let { days ->
-            InfoMessage(
-                text = "Bei aktuellem Trend wird das Idealgewicht in $days Tagen erreicht",
-                type = MessageType.INFO
-            )
-        }
+        // Days to ideal weight - removed as field doesn't exist
         
         // Consistency Score
         LinearProgressIndicator(
@@ -464,13 +463,13 @@ private fun NutritionAnalyticsContent(analytics: NutritionAnalytics?) {
         NutritionalCompletenessIndicator(analytics.nutritionalCompleteness)
         
         // Top Deficiencies
-        if (analytics.topNutrientDeficiencies.isNotEmpty()) {
+        if (analytics.nutrientDeficiencies.isNotEmpty()) {
             Text(
                 "Nährstoffmängel:",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
-            analytics.topNutrientDeficiencies.forEach { deficiency ->
+            analytics.nutrientDeficiencies.forEach { deficiency ->
                 NutrientIssueItem(
                     nutrient = deficiency.nutrient,
                     level = deficiency.deficiencyPercent,
@@ -725,7 +724,8 @@ private fun BehavioralAnalyticsContent(analytics: BehavioralAnalytics?) {
         ScoreCard(
             title = "Essverhalten",
             score = analytics.eatingBehaviorScore,
-            description = "Gesamtbewertung des Essverhaltens"
+            description = "Gesamtbewertung des Essverhaltens",
+            icon = Icons.Default.Restaurant
         )
         
         // Key Behavioral Indicators
@@ -733,16 +733,30 @@ private fun BehavioralAnalyticsContent(analytics: BehavioralAnalytics?) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            BehaviorIndicator(
-                label = "Futtermotivation",
-                value = getFoodMotivationText(analytics.foodMotivationLevel),
-                color = getFoodMotivationColor(analytics.foodMotivationLevel)
-            )
-            BehaviorIndicator(
-                label = "Essgeschwindigkeit",
-                value = getEatingSpeedText(analytics.eatingSpeed),
-                color = getEatingSpeedColor(analytics.eatingSpeed)
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    getFoodMotivationText(analytics.foodMotivationLevel),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = getFoodMotivationColor(analytics.foodMotivationLevel)
+                )
+                Text(
+                    "Futtermotivation",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    getEatingSpeedText(analytics.eatingSpeed),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = getEatingSpeedColor(analytics.eatingSpeed)
+                )
+                Text(
+                    "Essgeschwindigkeit",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
         
         // Meal Time Consistency
@@ -787,12 +801,9 @@ private fun PredictiveInsightsContent(insights: PredictiveInsights?) {
         // Weight Prediction
         PredictionCard(
             title = "Gewichtsprognose",
-            predictions = listOf(
-                "30 Tage: ${String.format("%.1f", insights.weightPrediction.predictedWeight30Days)} kg",
-                "90 Tage: ${String.format("%.1f", insights.weightPrediction.predictedWeight90Days)} kg"
-            ),
+            prediction = "30 Tage: ${String.format("%.1f", insights.weightPrediction.predictedWeight30Days)} kg, 90 Tage: ${String.format("%.1f", insights.weightPrediction.predictedWeight90Days)} kg",
             confidence = insights.weightPrediction.confidenceLevel,
-            icon = Icons.Default.TrendingUp
+            timeframe = "Nächste 90 Tage"
         )
         
         // Health Predictions
@@ -837,38 +848,71 @@ private fun ComparativeAnalysisContent(analysis: ComparativeAnalysis?) {
         // Breed Comparison
         ComparisonSection(
             title = "Rassenvergleich",
-            comparison = analysis.breedComparison,
-            type = ComparisonType.BREED
-        )
+            comparison = analysis.breedComparison
+        ) {
+            analysis.breedComparison?.let { comparison ->
+                ComparisonMetricRow(
+                    "Durchschnittsgewicht",
+                    "${comparison.yourDog.weight} kg",
+                    "${comparison.breedAverage.weight} kg"
+                )
+                ComparisonMetricRow(
+                    "Aktivitätslevel",
+                    getActivityLevelText(comparison.yourDog.activityLevel),
+                    getActivityLevelText(comparison.breedAverage.activityLevel)
+                )
+            }
+        }
         
         // Age Group Comparison
         ComparisonSection(
             title = "Altersgruppen-Vergleich",
-            comparison = analysis.ageGroupComparison,
-            type = ComparisonType.AGE_GROUP
-        )
+            comparison = analysis.ageGroupComparison
+        ) {
+            analysis.ageGroupComparison?.let { comparison ->
+                ComparisonMetricRow(
+                    "Gesundheitswert",
+                    "${comparison.yourDog.healthScore}",
+                    "${comparison.ageAverage.healthScore}"
+                )
+            }
+        }
         
         // Similar Dogs Comparison
-        if (analysis.similarDogsComparison.sampleSize > 0) {
-            Text(
-                "Vergleich mit ähnlichen Hunden (n=${analysis.similarDogsComparison.sampleSize}):",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-            analysis.similarDogsComparison.metrics.forEach { (metric, comparison) ->
-                ComparisonMetricRow(metric, comparison)
+        ComparisonSection(
+            title = "Vergleich mit ähnlichen Hunden",
+            comparison = analysis.similarDogsComparison
+        ) {
+            analysis.similarDogsComparison?.let { comparison ->
+                Text(
+                    "Stichprobengröße: ${comparison.sampleSize} Hunde",
+                    style = MaterialTheme.typography.bodySmall
+                )
+                comparison.metrics.forEach { metric ->
+                    ComparisonMetricRow(
+                        metric.name,
+                        metric.yourValue,
+                        metric.averageValue,
+                        metric.unit
+                    )
+                }
             }
         }
         
         // Historical Comparison
-        if (analysis.historicalComparison.improvements.isNotEmpty() || 
-            analysis.historicalComparison.declines.isNotEmpty()) {
-            HistoricalComparisonCard(analysis.historicalComparison)
+        analysis.historicalComparison?.let { comparison ->
+            comparison.periods.forEach { period ->
+                HistoricalComparisonCard(
+                    period.name,
+                    period.improvement,
+                    period.details
+                )
+            }
         }
         
         // Goal Progress
-        if (analysis.goalComparison.goals.isNotEmpty()) {
-            GoalProgressSection(analysis.goalComparison)
+        analysis.goals?.let { goals ->
+            GoalProgressSection(goals)
         }
     }
 }
@@ -1062,4 +1106,1048 @@ enum class ComparisonType {
     HISTORICAL
 }
 
-// Additional UI components would be defined here...
+// Additional UI components
+
+@Composable
+private fun CalorieBalanceIndicator(
+    consumed: Double,
+    needed: Double,
+    modifier: Modifier = Modifier
+) {
+    Card(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val balance = consumed - needed
+            val percentage = (consumed / needed * 100).toInt()
+            
+            Text(
+                "$percentage%",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = when {
+                    percentage < 90 -> Color(0xFFFF9800)
+                    percentage > 110 -> Color(0xFFF44336)
+                    else -> Color(0xFF4CAF50)
+                }
+            )
+            
+            Text(
+                "${consumed.toInt()} / ${needed.toInt()} kcal",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            
+            if (balance != 0.0) {
+                Text(
+                    "${if (balance > 0) "+" else ""}${balance.toInt()} kcal",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (balance > 0) Color.Red else Color.Green
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MacronutrientChart(breakdown: MacronutrientBreakdown?) {
+    if (breakdown == null) return
+    
+    Card {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "Makronährstoffe",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Protein
+            MacronutrientRow("Protein", breakdown.proteinPercent, Color(0xFF4CAF50))
+            
+            // Fat
+            MacronutrientRow("Fett", breakdown.fatPercent, Color(0xFFFF9800))
+            
+            // Carbs
+            MacronutrientRow("Kohlenhydrate", breakdown.carbPercent, Color(0xFF2196F3))
+            
+            // Fiber
+            MacronutrientRow("Ballaststoffe", breakdown.fiberPercent, Color(0xFF9C27B0))
+        }
+    }
+}
+
+@Composable
+private fun MacronutrientRow(
+    name: String,
+    percentage: Double,
+    color: Color
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            name,
+            modifier = Modifier.weight(0.3f),
+            style = MaterialTheme.typography.bodyMedium
+        )
+        
+        Box(
+            modifier = Modifier
+                .weight(0.6f)
+                .height(20.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Gray.copy(alpha = 0.1f))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(percentage.toFloat() / 100f)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(color)
+            )
+        }
+        
+        Text(
+            "${percentage.toInt()}%",
+            modifier = Modifier.weight(0.1f),
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.End
+        )
+    }
+}
+
+@Composable
+private fun NutritionalCompletenessIndicator(score: Double) {
+    Card {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Nährwert-Vollständigkeit",
+                style = MaterialTheme.typography.titleMedium
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.size(100.dp)
+            ) {
+                CircularProgressIndicator(
+                    progress = score.toFloat() / 100f,
+                    modifier = Modifier.fillMaxSize(),
+                    strokeWidth = 8.dp,
+                    color = when {
+                        score >= 90 -> Color(0xFF4CAF50)
+                        score >= 70 -> Color(0xFFFF9800)
+                        else -> Color(0xFFF44336)
+                    }
+                )
+                
+                Text(
+                    "${score.toInt()}%",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NutrientIssueItem(
+    nutrient: String,
+    level: Double,
+    impact: String,
+    isDeficiency: Boolean
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDeficiency) 
+                Color(0xFFFFF3E0) else Color(0xFFFFEBEE)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                if (isDeficiency) Icons.Default.Warning else Icons.Default.Error,
+                contentDescription = null,
+                tint = if (isDeficiency) Color(0xFFFF9800) else Color(0xFFF44336),
+                modifier = Modifier.size(24.dp)
+            )
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    nutrient,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    "${if (isDeficiency) "-" else "+"}${level.toInt()}% • $impact",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HealthScoreCircle(score: Double) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(150.dp)
+                .clip(CircleShape)
+                .background(getHealthScoreColor(score).copy(alpha = 0.1f))
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    score.toInt().toString(),
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = getHealthScoreColor(score)
+                )
+                Text(
+                    "Gesundheitswert",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun VaccineStatusCard(vaccines: Map<String, VaccineInfo>) {
+    Card {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "Impfstatus",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            vaccines.forEach { (vaccine, info) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(vaccine, style = MaterialTheme.typography.bodyMedium)
+                    
+                    Chip(
+                        onClick = { },
+                        colors = ChipDefaults.chipColors(
+                            backgroundColor = when (info.status) {
+                                VaccineStatus.UP_TO_DATE -> Color(0xFF4CAF50)
+                                VaccineStatus.DUE_SOON -> Color(0xFFFF9800)
+                                VaccineStatus.OVERDUE -> Color(0xFFF44336)
+                            }
+                        )
+                    ) {
+                        Text(
+                            when (info.status) {
+                                VaccineStatus.UP_TO_DATE -> "Aktuell"
+                                VaccineStatus.DUE_SOON -> "Bald fällig"
+                                VaccineStatus.OVERDUE -> "Überfällig"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RiskFactorItem(factor: RiskFactor) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = when (factor.severity) {
+                RiskSeverity.LOW -> Color(0xFFE8F5E9)
+                RiskSeverity.MEDIUM -> Color(0xFFFFF3E0)
+                RiskSeverity.HIGH -> Color(0xFFFFEBEE)
+            }
+        )
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    factor.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                
+                Text(
+                    "${(factor.probability * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = when (factor.severity) {
+                        RiskSeverity.LOW -> Color(0xFF4CAF50)
+                        RiskSeverity.MEDIUM -> Color(0xFFFF9800)
+                        RiskSeverity.HIGH -> Color(0xFFF44336)
+                    }
+                )
+            }
+            
+            if (factor.prevention.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "Prävention: ${factor.prevention}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActivityLevelGauge(level: StatisticsActivityLevel) {
+    Card {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Aktivitätslevel",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(getActivityLevelColor(level).copy(alpha = 0.1f))
+            ) {
+                Text(
+                    getActivityLevelText(level),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = getActivityLevelColor(level),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActivityMetric(
+    label: String,
+    value: String,
+    icon: ImageVector
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            icon,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        
+        Spacer(modifier = Modifier.width(8.dp))
+        
+        Text(
+            label,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f)
+        )
+        
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun CostBreakdownChart(breakdown: CostBreakdown) {
+    Card {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "Kostenaufschlüsselung",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            val categories = listOf(
+                "Futter" to breakdown.food,
+                "Tierarzt" to breakdown.veterinary,
+                "Zubehör" to breakdown.accessories,
+                "Versicherung" to breakdown.insurance,
+                "Sonstiges" to breakdown.other
+            )
+            
+            categories.forEach { (category, amount) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(category, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "€${amount.toInt()}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    "Gesamt",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    "€${(breakdown.food + breakdown.veterinary + breakdown.accessories + breakdown.insurance + breakdown.other).toInt()}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CostOptimizationCard(suggestion: CostOptimizationSuggestion) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE8F5E9)
+        )
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    suggestion.category,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Text(
+                    "€${suggestion.potentialSaving.toInt()}/Monat",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF4CAF50)
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                suggestion.recommendation,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+@Composable
+private fun ScoreCard(
+    title: String,
+    score: Double,
+    description: String,
+    icon: ImageVector
+) {
+    Card {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                "${score.toInt()}%",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Text(
+                title,
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                description,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun BehaviorIndicator(
+    behavior: String,
+    frequency: String,
+    trend: StatisticsTrendDirection
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            behavior,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f)
+        )
+        
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                frequency,
+                style = MaterialTheme.typography.bodySmall
+            )
+            
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            Icon(
+                when (trend) {
+                    StatisticsTrendDirection.INCREASING -> Icons.Default.TrendingUp
+                    StatisticsTrendDirection.DECREASING -> Icons.Default.TrendingDown
+                    else -> Icons.Default.TrendingFlat
+                },
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = when (trend) {
+                    StatisticsTrendDirection.INCREASING -> Color(0xFFF44336)
+                    StatisticsTrendDirection.DECREASING -> Color(0xFF4CAF50)
+                    else -> Color.Gray
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FoodPreferenceItem(preference: FoodPreference) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            preference.food,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        
+        Row {
+            repeat(5) { index ->
+                Icon(
+                    if (index < preference.rating) Icons.Default.Star else Icons.Default.StarBorder,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = Color(0xFFFFB300)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PredictionCard(
+    title: String,
+    prediction: String,
+    confidence: Double,
+    timeframe: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF3E5F5)
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Text(
+                    timeframe,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                prediction,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Konfidenz:",
+                    style = MaterialTheme.typography.bodySmall
+                )
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                LinearProgressIndicator(
+                    progress = confidence.toFloat(),
+                    modifier = Modifier.weight(1f)
+                )
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                Text(
+                    "${(confidence * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HealthPredictionItem(prediction: HealthPrediction) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = when (prediction.riskLevel) {
+                StatisticsRiskLevel.LOW -> Color(0xFFE8F5E9)
+                StatisticsRiskLevel.MEDIUM -> Color(0xFFFFF3E0)
+                StatisticsRiskLevel.HIGH -> Color(0xFFFFEBEE)
+                StatisticsRiskLevel.CRITICAL -> Color(0xFFFFCDD2)
+            }
+        )
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    prediction.condition,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                
+                Text(
+                    "${(prediction.probability * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            
+            if (prediction.preventiveMeasures.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "Prävention: ${prediction.preventiveMeasures.joinToString(", ")}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RiskAssessmentCard(assessment: RiskAssessment) {
+    Card {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "Risikobewertung",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            assessment.categories.forEach { (category, risk) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        category,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    
+                    Chip(
+                        onClick = { },
+                        colors = ChipDefaults.chipColors(
+                            backgroundColor = when (risk.level) {
+                                StatisticsRiskLevel.LOW -> Color(0xFF4CAF50)
+                                StatisticsRiskLevel.MEDIUM -> Color(0xFFFF9800)
+                                StatisticsRiskLevel.HIGH -> Color(0xFFF44336)
+                                StatisticsRiskLevel.CRITICAL -> Color(0xFF9C27B0)
+                            }
+                        )
+                    ) {
+                        Text(
+                            when (risk.level) {
+                                StatisticsRiskLevel.LOW -> "Niedrig"
+                                StatisticsRiskLevel.MEDIUM -> "Mittel"
+                                StatisticsRiskLevel.HIGH -> "Hoch"
+                                StatisticsRiskLevel.CRITICAL -> "Kritisch"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InterventionCard(intervention: Intervention) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(
+            1.dp,
+            when (intervention.urgency) {
+                InterventionUrgency.LOW -> Color(0xFF4CAF50)
+                InterventionUrgency.MEDIUM -> Color(0xFFFF9800)
+                InterventionUrgency.HIGH -> Color(0xFFF44336)
+                InterventionUrgency.IMMEDIATE -> Color(0xFF9C27B0)
+            }
+        )
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    intervention.type,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Text(
+                    when (intervention.urgency) {
+                        InterventionUrgency.LOW -> "Niedrig"
+                        InterventionUrgency.MEDIUM -> "Mittel"
+                        InterventionUrgency.HIGH -> "Hoch"
+                        InterventionUrgency.IMMEDIATE -> "Sofort"
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = when (intervention.urgency) {
+                        InterventionUrgency.LOW -> Color(0xFF4CAF50)
+                        InterventionUrgency.MEDIUM -> Color(0xFFFF9800)
+                        InterventionUrgency.HIGH -> Color(0xFFF44336)
+                        InterventionUrgency.IMMEDIATE -> Color(0xFF9C27B0)
+                    }
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                intervention.recommendation,
+                style = MaterialTheme.typography.bodySmall
+            )
+            
+            Text(
+                "Erwarteter Nutzen: ${intervention.expectedBenefit}",
+                style = MaterialTheme.typography.bodySmall,
+                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+            )
+        }
+    }
+}
+
+@Composable
+private fun LifeStageTransitionCard(transition: LifeStageTransition) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE1F5FE)
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "Lebensphase: ${transition.fromStage} → ${transition.toStage}",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                "Übergang in ${transition.estimatedTimeframe}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                "Empfohlene Anpassungen:",
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold
+            )
+            
+            transition.recommendations.forEach { recommendation ->
+                Text(
+                    "• $recommendation",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 2.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ComparisonSection(
+    title: String,
+    comparison: Any?,
+    content: @Composable () -> Unit
+) {
+    if (comparison == null) return
+    
+    Card {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            content()
+        }
+    }
+}
+
+@Composable
+private fun ComparisonMetricRow(
+    metric: String,
+    yourValue: String,
+    averageValue: String,
+    unit: String = ""
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            metric,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f)
+        )
+        
+        Text(
+            "$yourValue$unit",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.width(80.dp),
+            textAlign = TextAlign.End
+        )
+        
+        Text(
+            "$averageValue$unit",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.width(80.dp),
+            textAlign = TextAlign.End
+        )
+    }
+}
+
+@Composable
+private fun HistoricalComparisonCard(
+    period: String,
+    improvement: Double,
+    details: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = if (improvement > 0) Color(0xFFE8F5E9) else Color(0xFFFFEBEE)
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    period,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    details,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            
+            Text(
+                "${if (improvement > 0) "+" else ""}${improvement.toInt()}%",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = if (improvement > 0) Color(0xFF4CAF50) else Color(0xFFF44336)
+            )
+        }
+    }
+}
+
+@Composable
+private fun GoalProgressSection(goals: List<GoalProgress>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        goals.forEach { goal ->
+            Card {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            goal.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        
+                        Text(
+                            "${goal.progress}%",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
+                    LinearProgressIndicator(
+                        progress = goal.progress / 100f,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    if (goal.estimatedCompletion != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            "Voraussichtlich: ${goal.estimatedCompletion}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InfoMessage(
+    text: String,
+    type: MessageType,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = when (type) {
+                MessageType.INFO -> Color(0xFFE3F2FD)
+                MessageType.WARNING -> Color(0xFFFFF3E0)
+                MessageType.ERROR -> Color(0xFFFFEBEE)
+            }
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                when (type) {
+                    MessageType.INFO -> Icons.Default.Info
+                    MessageType.WARNING -> Icons.Default.Warning
+                    MessageType.ERROR -> Icons.Default.Error
+                },
+                contentDescription = null,
+                tint = when (type) {
+                    MessageType.INFO -> Color(0xFF1976D2)
+                    MessageType.WARNING -> Color(0xFFF57C00)
+                    MessageType.ERROR -> Color(0xFFD32F2F)
+                },
+                modifier = Modifier.size(20.dp)
+            )
+            
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            Text(
+                text,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}

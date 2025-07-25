@@ -118,7 +118,7 @@ fun AIRecommendationsScreen(
 private fun FoodRecommendationsTab(
     recommendation: FoodRecommendation?,
     isLoading: Boolean,
-    onTypeChange: (RecommendationType) -> Unit
+    onTypeChange: (AIRecommendationType) -> Unit
 ) {
     if (isLoading) {
         Box(
@@ -448,9 +448,9 @@ private fun WeightPredictionTab(
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
-                            "${prediction.currentWeight} kg",
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold
+                            "Prognose verfügbar",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -471,33 +471,49 @@ private fun WeightPredictionTab(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        // Show next 3 predictions
-                        prediction.predictions.take(3).forEach { point ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    point.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Row {
-                                    Text(
-                                        "${String.format("%.1f", point.predictedWeight)} kg",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        "(${(point.confidenceLevel * 100).toInt()}%)",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
+                        // 30 days prediction
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                "In 30 Tagen",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                "${String.format("%.1f", prediction.predictedWeight30Days)} kg",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
+                        
+                        // 90 days prediction
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                "In 90 Tagen",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                "${String.format("%.1f", prediction.predictedWeight90Days)} kg",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        
+                        // Confidence
+                        Text(
+                            "Konfidenz: ${(prediction.confidenceLevel * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
                 }
             }
@@ -517,11 +533,10 @@ private fun WeightPredictionTab(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         
-                        val factors = prediction.factors
-                        FactorRow("Durchschn. Kalorien", "${factors.averageDailyCalories} kcal/Tag")
-                        FactorRow("Aktivitätslevel", factors.activityLevel.displayName)
-                        FactorRow("Rasse", factors.breed)
-                        FactorRow("Alter", "${factors.age.toInt()} Jahre")
+                        // Assumptions
+                        prediction.assumptions.forEach { assumption ->
+                            FactorRow("Annahme", assumption)
+                        }
                     }
                 }
             }

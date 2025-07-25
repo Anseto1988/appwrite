@@ -42,6 +42,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -80,7 +84,7 @@ fun BarcodeScannerScreen(
                         Badge(
                             modifier = Modifier.offset(x = 8.dp, y = (-8).dp)
                         ) {
-                            Text("${uiState.inventoryCount}")
+                            Text("${uiState.inventory.size}")
                         }
                         Icon(Icons.Default.Inventory, contentDescription = "Inventar")
                     }
@@ -96,8 +100,8 @@ fun BarcodeScannerScreen(
             ) {
                 // Camera Preview
                 CameraPreview(
-                    onBarcodeScanned = { barcode ->
-                        viewModel.onBarcodeScanned(barcode, dogId)
+                    onBarcodeScanned = { _ ->
+                        // Barcode scanning will be handled by processBarcodeImage
                     }
                 )
                 
@@ -116,11 +120,13 @@ fun BarcodeScannerScreen(
                 ) {
                     ProductResultCard(
                         product = uiState.scannedProduct!!,
-                        allergenAlert = uiState.allergenAlert,
+                        allergenAlert = uiState.allergenAlerts.firstOrNull(),
                         onDetailsClick = { showProductDetails = true },
-                        onAddToInventory = { viewModel.addToInventory(it) },
+                        onAddToInventory = { product -> 
+                            viewModel.addToInventory(product, 1.0, StockUnit.PIECE) 
+                        },
                         onCompare = { showComparison = true },
-                        onDismiss = { viewModel.clearScanResult() }
+                        onDismiss = { viewModel.clearScannedProduct() }
                     )
                 }
                 
@@ -151,15 +157,15 @@ fun BarcodeScannerScreen(
         ProductDetailsDialog(
             product = uiState.scannedProduct!!,
             onDismiss = { showProductDetails = false },
-            onAddToShopping = { viewModel.addToShoppingList(it) }
+            onAddToShopping = { /* TODO: Implement shopping list */ }
         )
     }
     
     // Product Comparison Sheet
     if (showComparison) {
         ProductComparisonSheet(
-            products = uiState.comparisonProducts,
-            comparison = uiState.productComparison,
+            products = uiState.comparingProducts,
+            comparison = uiState.comparisonResult,
             onAddProduct = { navController.navigate("barcode/search") },
             onCompare = { viewModel.compareProducts(it) },
             onDismiss = { showComparison = false }
@@ -171,7 +177,7 @@ fun BarcodeScannerScreen(
         InventorySheet(
             inventory = uiState.inventory,
             onUpdateStock = { productId, quantity, unit ->
-                viewModel.updateInventory(productId, quantity, unit)
+                viewModel.updateInventoryQuantity(productId, quantity)
             },
             onDismiss = { showInventory = false }
         )
