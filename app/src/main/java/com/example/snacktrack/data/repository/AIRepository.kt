@@ -3,6 +3,7 @@ package com.example.snacktrack.data.repository
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.service.AppwriteService
 import io.appwrite.Query
+import io.appwrite.ID
 import io.appwrite.models.Document
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -186,7 +187,7 @@ class AIRepository(
             .mapValues { (_, intakeList) -> intakeList.sumOf { intake -> intake.calories } }
         
         dailyCalories.forEach { (date, calories) ->
-            val deviation = abs(calories - baseline.averageDailyCalories) / baseline.averageDailyCalories.toDouble()
+            val deviation = kotlin.math.abs(calories - baseline.averageDailyCalories) / baseline.averageDailyCalories.toDouble()
             if (deviation > 0.3) { // 30% deviation
                 anomalies.add(
                     createAnomaly(
@@ -194,7 +195,7 @@ class AIRepository(
                         AnomalyType.UNUSUAL_AMOUNT,
                         if (deviation > 0.5) AnomalySeverity.HIGH else AnomalySeverity.MEDIUM,
                         "Ungewöhnliche Kalorienzufuhr: $calories kcal (Normal: ${baseline.averageDailyCalories} kcal)",
-                        recentIntakes.filter { it.timestamp.toLocalDate() == date },
+                        recentIntakes.filter { intake -> intake.timestamp.toLocalDate() == date },
                         baseline
                     )
                 )
@@ -205,7 +206,7 @@ class AIRepository(
         val expectedMealsPerDay = baseline.normalMealTimes.size
         val daysWithSkippedMeals = (0..6).map { LocalDate.now().minusDays(it.toLong()) }
             .filter { date ->
-                recentIntakes.count { it.timestamp.toLocalDate() == date } < expectedMealsPerDay - 1
+                recentIntakes.count { intake -> intake.timestamp.toLocalDate() == date } < expectedMealsPerDay - 1
             }
         
         if (daysWithSkippedMeals.size >= 2) {
@@ -526,7 +527,7 @@ class AIRepository(
         } else 0.0
         
         val targetCalories = dog.calculateDailyCalorieNeed()
-        val deviation = abs(dailyCalories - targetCalories) / targetCalories
+        val deviation = kotlin.math.abs(dailyCalories - targetCalories) / targetCalories
         
         val severity = when {
             deviation > 0.3 -> 0.7f
@@ -600,8 +601,10 @@ class AIRepository(
             )
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = RECOMMENDATIONS_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
@@ -623,8 +626,10 @@ class AIRepository(
             "modelVersion" to prediction.modelVersion
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = PREDICTIONS_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
@@ -642,8 +647,10 @@ class AIRepository(
             "requiresVetAttention" to anomaly.requiresVetAttention
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = ANOMALIES_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
@@ -676,8 +683,10 @@ class AIRepository(
             "nextAssessmentDate" to assessment.nextAssessmentDate.toString()
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = RISK_ASSESSMENTS_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
