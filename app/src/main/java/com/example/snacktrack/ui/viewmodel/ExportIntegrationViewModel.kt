@@ -610,10 +610,9 @@ class ExportIntegrationViewModel(
             
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
-                val result = exportRepository.performSync(
-                    userId = userId,
-                    direction = direction
-                )
+                // TODO: Get syncConfigId from current sync configuration
+                val syncConfigId = _uiState.value.syncConfigurations.firstOrNull()?.id ?: return@launch
+                val result = exportRepository.performSync(syncConfigId)
                 
                 result.getOrNull()?.let { record ->
                     _uiState.update {

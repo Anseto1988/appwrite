@@ -388,7 +388,8 @@ private fun WeightAnalyticsContent(analytics: WeightAnalytics?) {
         }
         
         // Body Condition Score
-        BodyConditionScoreIndicator(analytics.bodyConditionScore)
+        // TODO: Implement BodyConditionScoreIndicator
+        // BodyConditionScoreIndicator(analytics.bodyConditionScore)
         
         // Days to ideal weight
         analytics.daysToIdealWeight?.let { days ->
@@ -973,11 +974,11 @@ private fun ScoreIndicator(
 
 // Helper functions
 
-private fun getTrendText(trend: TrendDirection): String = when (trend) {
-    TrendDirection.INCREASING -> "Steigend"
-    TrendDirection.DECREASING -> "Fallend"
-    TrendDirection.STABLE -> "Stabil"
-    TrendDirection.VOLATILE -> "Schwankend"
+private fun getTrendText(trend: StatisticsTrendDirection): String = when (trend) {
+    StatisticsTrendDirection.INCREASING -> "Steigend"
+    StatisticsTrendDirection.DECREASING -> "Fallend"
+    StatisticsTrendDirection.STABLE -> "Stabil"
+    StatisticsTrendDirection.VOLATILE -> "Schwankend"
 }
 
 private fun getHealthScoreColor(score: Double): Color = when {
@@ -986,26 +987,26 @@ private fun getHealthScoreColor(score: Double): Color = when {
     else -> Color(0xFFF44336)
 }
 
-private fun getWeightTrendColor(trend: TrendDirection): Color = when (trend) {
-    TrendDirection.STABLE -> Color(0xFF4CAF50)
-    TrendDirection.VOLATILE -> Color(0xFFFF9800)
+private fun getWeightTrendColor(trend: StatisticsTrendDirection): Color = when (trend) {
+    StatisticsTrendDirection.STABLE -> Color(0xFF4CAF50)
+    StatisticsTrendDirection.VOLATILE -> Color(0xFFFF9800)
     else -> Color(0xFF2196F3)
 }
 
-private fun getActivityLevelText(level: ActivityLevel): String = when (level) {
-    ActivityLevel.SEDENTARY -> "Inaktiv"
-    ActivityLevel.LOW -> "Wenig"
-    ActivityLevel.MODERATE -> "Moderat"
-    ActivityLevel.HIGH -> "Hoch"
-    ActivityLevel.VERY_HIGH -> "Sehr hoch"
+private fun getActivityLevelText(level: StatisticsActivityLevel): String = when (level) {
+    StatisticsActivityLevel.SEDENTARY -> "Inaktiv"
+    StatisticsActivityLevel.LOW -> "Wenig"
+    StatisticsActivityLevel.MODERATE -> "Moderat"
+    StatisticsActivityLevel.HIGH -> "Hoch"
+    StatisticsActivityLevel.VERY_HIGH -> "Sehr hoch"
 }
 
-private fun getActivityLevelColor(level: ActivityLevel): Color = when (level) {
-    ActivityLevel.SEDENTARY -> Color(0xFFF44336)
-    ActivityLevel.LOW -> Color(0xFFFF9800)
-    ActivityLevel.MODERATE -> Color(0xFF4CAF50)
-    ActivityLevel.HIGH -> Color(0xFF2196F3)
-    ActivityLevel.VERY_HIGH -> Color(0xFF9C27B0)
+private fun getActivityLevelColor(level: StatisticsActivityLevel): Color = when (level) {
+    StatisticsActivityLevel.SEDENTARY -> Color(0xFFF44336)
+    StatisticsActivityLevel.LOW -> Color(0xFFFF9800)
+    StatisticsActivityLevel.MODERATE -> Color(0xFF4CAF50)
+    StatisticsActivityLevel.HIGH -> Color(0xFF2196F3)
+    StatisticsActivityLevel.VERY_HIGH -> Color(0xFF9C27B0)
 }
 
 private fun getExerciseTypeText(type: ExerciseType): String = when (type) {

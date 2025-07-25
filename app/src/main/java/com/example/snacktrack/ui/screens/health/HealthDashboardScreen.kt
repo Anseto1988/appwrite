@@ -35,12 +35,7 @@ fun HealthDashboardScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Gesundheits-Dashboard",
-                navController = navController,
-                actions = {
-                    IconButton(onClick = { navController.navigate("health/add-entry/$dogId") }) {
-                        Icon(Icons.Default.Add, contentDescription = "Neuer Eintrag")
-                    }
-                }
+                onBackClick = { navController.navigateUp() }
             )
         }
     ) { paddingValues ->
@@ -243,9 +238,9 @@ private fun AllergyCard(allergy: DogAllergy) {
             .padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = when (allergy.severity) {
-                AllergySeverity.CRITICAL -> Color(0xFFFFEBEE)
-                AllergySeverity.SEVERE -> Color(0xFFFFF3E0)
-                AllergySeverity.MODERATE -> Color(0xFFFFF8E1)
+                DogAllergySeverity.CRITICAL -> Color(0xFFFFEBEE)
+                DogAllergySeverity.SEVERE -> Color(0xFFFFF3E0)
+                DogAllergySeverity.MODERATE -> Color(0xFFFFF8E1)
                 else -> MaterialTheme.colorScheme.surfaceVariant
             }
         )

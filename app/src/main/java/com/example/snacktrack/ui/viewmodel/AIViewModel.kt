@@ -38,7 +38,7 @@ class AIViewModel(
                 // Generate food recommendations
                 val recommendationResult = aiRepository.generateFoodRecommendations(
                     dogId, 
-                    RecommendationType.DAILY
+                    AIRecommendationType.DAILY
                 )
                 val recommendation = recommendationResult.getOrNull()
                 

@@ -246,7 +246,7 @@ class HealthRepository(
             dogId = document.data["dogId"] as String,
             allergen = document.data["allergen"] as String,
             allergyType = AllergyType.valueOf(document.data["allergyType"] as String),
-            severity = AllergySeverity.valueOf(document.data["severity"] as String),
+            severity = DogAllergySeverity.valueOf(document.data["severity"] as String),
             symptoms = (document.data["symptoms"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
             diagnosedDate = (document.data["diagnosedDate"] as? String)?.let { LocalDate.parse(it) },
             diagnosedBy = document.data["diagnosedBy"] as? String,

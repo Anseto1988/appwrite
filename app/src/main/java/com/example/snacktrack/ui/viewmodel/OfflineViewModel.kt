@@ -162,7 +162,7 @@ class OfflineViewModel(
         }
     }
     
-    fun setSyncInterval(interval: SyncInterval) {
+    fun setSyncInterval(interval: OfflineSyncInterval) {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(

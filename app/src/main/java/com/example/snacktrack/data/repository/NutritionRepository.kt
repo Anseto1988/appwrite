@@ -34,7 +34,7 @@ class NutritionRepository(
         
         // Get all food intakes for the day
         val intakesFlow = foodIntakeRepository.getFoodIntakesForDog(dogId, date)
-        val intakes = kotlinx.coroutines.flow.first(intakesFlow)
+        val intakes = intakesFlow.first()
         
         // Calculate totals
         var totalCalories = 0

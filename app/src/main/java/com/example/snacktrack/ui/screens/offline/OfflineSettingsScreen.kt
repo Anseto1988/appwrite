@@ -238,11 +238,11 @@ fun OfflineSettingsScreen(
                             ) {
                                 OutlinedTextField(
                                     value = when (uiState.configuration.syncConfiguration.syncInterval) {
-                                        SyncInterval.ON_APP_OPEN -> "Bei App-Start"
-                                        SyncInterval.EVERY_HOUR -> "Stündlich"
-                                        SyncInterval.EVERY_6_HOURS -> "Alle 6 Stunden"
-                                        SyncInterval.DAILY -> "Täglich"
-                                        SyncInterval.ON_DEMAND -> "Manuell"
+                                        OfflineSyncInterval.ON_APP_OPEN -> "Bei App-Start"
+                                        OfflineSyncInterval.EVERY_HOUR -> "Stündlich"
+                                        OfflineSyncInterval.EVERY_6_HOURS -> "Alle 6 Stunden"
+                                        OfflineSyncInterval.DAILY -> "Täglich"
+                                        OfflineSyncInterval.ON_DEMAND -> "Manuell"
                                     },
                                     onValueChange = {},
                                     readOnly = true,
@@ -256,16 +256,16 @@ fun OfflineSettingsScreen(
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false }
                                 ) {
-                                    SyncInterval.values().forEach { interval ->
+                                    OfflineSyncInterval.values().forEach { interval ->
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
                                                     when (interval) {
-                                                        SyncInterval.ON_APP_OPEN -> "Bei App-Start"
-                                                        SyncInterval.EVERY_HOUR -> "Stündlich"
-                                                        SyncInterval.EVERY_6_HOURS -> "Alle 6 Stunden"
-                                                        SyncInterval.DAILY -> "Täglich"
-                                                        SyncInterval.ON_DEMAND -> "Manuell"
+                                                        OfflineSyncInterval.ON_APP_OPEN -> "Bei App-Start"
+                                                        OfflineSyncInterval.EVERY_HOUR -> "Stündlich"
+                                                        OfflineSyncInterval.EVERY_6_HOURS -> "Alle 6 Stunden"
+                                                        OfflineSyncInterval.DAILY -> "Täglich"
+                                                        OfflineSyncInterval.ON_DEMAND -> "Manuell"
                                                     }
                                                 )
                                             },

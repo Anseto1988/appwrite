@@ -18,6 +18,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
+import java.util.UUID
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -917,8 +918,8 @@ fun ExportRequest.toMap(): Map<String, Any> = mapOf(
     "exportType" to exportType.name,
     "format" to format.name,
     "dateRange" to (dateRange?.let { mapOf(
-        "startDate" to it.startDate.toString(),
-        "endDate" to it.endDate.toString()
+        "start" to it.start.toString(),
+        "end" to it.end.toString()
     ) } ?: emptyMap<String, Any>()),
     "includePhotos" to includePhotos,
     "includeAnalytics" to includeAnalytics,
@@ -1197,7 +1198,7 @@ fun SyncRecord.toMap(): Map<String, Any> = mapOf(
     "status" to status.name
 )
 
-fun DateRange.toMap(): Map<String, Any> = mapOf(
+fun ExportRepository.DateRange.toMap(): Map<String, Any> = mapOf(
     "startDate" to startDate.toString(),
     "endDate" to endDate.toString()
 )

@@ -991,10 +991,10 @@ private fun AllergenItem(allergen: KnownAllergen) {
             contentDescription = null,
             modifier = Modifier.size(20.dp),
             tint = when (allergen.severity) {
-                AllergySeverity.LIFE_THREATENING -> Color.Red
-                AllergySeverity.SEVERE -> Color.Red.copy(alpha = 0.7f)
-                AllergySeverity.MODERATE -> Orange
-                AllergySeverity.MILD -> Color.Yellow
+                PreventionAllergySeverity.LIFE_THREATENING -> Color.Red
+                PreventionAllergySeverity.SEVERE -> Color.Red.copy(alpha = 0.7f)
+                PreventionAllergySeverity.MODERATE -> Orange
+                PreventionAllergySeverity.MILD -> Color.Yellow
             }
         )
         
@@ -1011,10 +1011,10 @@ private fun AllergenItem(allergen: KnownAllergen) {
             Text(
                 text = "Schweregrad: ${
                     when (allergen.severity) {
-                        AllergySeverity.LIFE_THREATENING -> "Lebensbedrohlich"
-                        AllergySeverity.SEVERE -> "Schwer"
-                        AllergySeverity.MODERATE -> "Mittel"
-                        AllergySeverity.MILD -> "Leicht"
+                        PreventionAllergySeverity.LIFE_THREATENING -> "Lebensbedrohlich"
+                        PreventionAllergySeverity.SEVERE -> "Schwer"
+                        PreventionAllergySeverity.MODERATE -> "Mittel"
+                        PreventionAllergySeverity.MILD -> "Leicht"
                     }
                 }",
                 style = MaterialTheme.typography.bodySmall,
@@ -1024,10 +1024,10 @@ private fun AllergenItem(allergen: KnownAllergen) {
         
         Badge(
             containerColor = when (allergen.severity) {
-                AllergySeverity.LIFE_THREATENING -> Color.Red
-                AllergySeverity.SEVERE -> Color.Red.copy(alpha = 0.7f)
-                AllergySeverity.MODERATE -> Orange
-                AllergySeverity.MILD -> Color.Yellow
+                PreventionAllergySeverity.LIFE_THREATENING -> Color.Red
+                PreventionAllergySeverity.SEVERE -> Color.Red.copy(alpha = 0.7f)
+                PreventionAllergySeverity.MODERATE -> Orange
+                PreventionAllergySeverity.MILD -> Color.Yellow
             }
         ) {
             Text(

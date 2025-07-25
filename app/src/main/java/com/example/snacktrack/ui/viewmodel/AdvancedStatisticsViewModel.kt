@@ -347,11 +347,11 @@ class AdvancedStatisticsViewModel(
         }
     }
     
-    private fun getTrendEmoji(trend: TrendDirection): String = when (trend) {
-        TrendDirection.INCREASING -> "📈"
-        TrendDirection.DECREASING -> "📉"
-        TrendDirection.STABLE -> "➡️"
-        TrendDirection.VOLATILE -> "📊"
+    private fun getTrendEmoji(trend: StatisticsTrendDirection): String = when (trend) {
+        StatisticsTrendDirection.INCREASING -> "📈"
+        StatisticsTrendDirection.DECREASING -> "📉"
+        StatisticsTrendDirection.STABLE -> "➡️"
+        StatisticsTrendDirection.VOLATILE -> "📊"
     }
     
     private fun calculateGoalProgress(current: Double, goal: Double): Double {

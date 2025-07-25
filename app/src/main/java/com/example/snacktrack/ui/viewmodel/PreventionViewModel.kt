@@ -17,7 +17,7 @@ import kotlin.random.Random
 data class PreventionUiState(
     val isLoading: Boolean = false,
     val dogName: String = "",
-    val riskAssessment: RiskAssessment? = null,
+    val riskAssessment: PreventionRiskAssessment? = null,
     val weightGoals: List<WeightGoal> = emptyList(),
     val weightHistory: List<WeightEntry> = emptyList(),
     val allergyPrevention: AllergyPrevention? = null,
@@ -51,7 +51,8 @@ class PreventionViewModel(
             
             try {
                 // Load all prevention data concurrently
-                val riskAssessmentResult = preventionRepository.getRiskAssessments(dogId)
+                // TODO: Implement getRiskAssessment in PreventionRepository
+                // val riskAssessmentResult = preventionRepository.getRiskAssessments(dogId)
                 val weightGoalsResult = preventionRepository.getWeightGoals(dogId)
                 val allergyPreventionResult = preventionRepository.getAllergyPrevention(dogId)
                 val healthScreeningsResult = preventionRepository.getHealthScreenings(dogId)

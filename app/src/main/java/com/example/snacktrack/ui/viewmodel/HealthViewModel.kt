@@ -158,7 +158,7 @@ class HealthViewModel(
         val insights = mutableListOf<HealthInsight>()
         
         // Critical allergies warning
-        val criticalAllergies = allergies.filter { it.severity == AllergySeverity.CRITICAL }
+        val criticalAllergies = allergies.filter { it.severity == DogAllergySeverity.CRITICAL }
         if (criticalAllergies.isNotEmpty()) {
             insights.add(
                 HealthInsight(

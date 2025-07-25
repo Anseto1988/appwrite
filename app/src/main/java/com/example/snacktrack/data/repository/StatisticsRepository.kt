@@ -924,7 +924,7 @@ class StatisticsRepository(
     }
     
     private fun calculateOverallHealthScore(
-        entries: List<HealthEntry>,
+        entries: List<DogHealthEntry>,
         medications: List<DogMedication>,
         allergies: List<DogAllergy>
     ): Double {
@@ -939,16 +939,17 @@ class StatisticsRepository(
         // Deduct for allergies based on severity
         allergies.forEach { allergy ->
             score -= when (allergy.severity) {
-                AllergySeverity.MILD -> 2
-                AllergySeverity.MODERATE -> 5
-                AllergySeverity.SEVERE -> 10
+                DogAllergySeverity.MILD -> 2
+                DogAllergySeverity.MODERATE -> 5
+                DogAllergySeverity.SEVERE -> 10
+                DogAllergySeverity.CRITICAL -> 15
             }
         }
         
         return score.coerceIn(0.0, 100.0)
     }
     
-    private fun analyzeHealthTrend(entries: List<HealthEntry>): StatisticsTrendDirection {
+    private fun analyzeHealthTrend(entries: List<DogHealthEntry>): StatisticsTrendDirection {
         if (entries.size < 2) return StatisticsTrendDirection.STABLE
         
         val recentEntries = entries.takeLast(10)
@@ -967,7 +968,7 @@ class StatisticsRepository(
     
     private fun calculateMedicationAdherence(
         medications: List<DogMedication>,
-        entries: List<HealthEntry>
+        entries: List<DogHealthEntry>
     ): Double {
         // This would check medication logs against prescriptions
         return 95.0
@@ -983,7 +984,7 @@ class StatisticsRepository(
     }
     
     private fun calculatePreventiveCareScore(
-        entries: List<HealthEntry>,
+        entries: List<DogHealthEntry>,
         vaccineStatus: VaccineStatus
     ): Double {
         var score = 100.0
@@ -1000,7 +1001,7 @@ class StatisticsRepository(
     
     private fun identifyHealthRiskFactors(
         dogId: String,
-        entries: List<HealthEntry>,
+        entries: List<DogHealthEntry>,
         allergies: List<DogAllergy>
     ): List<HealthRiskFactor> {
         val riskFactors = mutableListOf<HealthRiskFactor>()
@@ -1011,13 +1012,14 @@ class StatisticsRepository(
                 HealthRiskFactor(
                     factor = "Allergie: ${allergy.allergen}",
                     riskLevel = when (allergy.severity) {
-                        AllergySeverity.MILD -> RiskLevel.LOW
-                        AllergySeverity.MODERATE -> RiskLevel.MODERATE
-                        AllergySeverity.SEVERE -> RiskLevel.HIGH
+                        DogAllergySeverity.MILD -> StatisticsRiskLevel.LOW
+                        DogAllergySeverity.MODERATE -> StatisticsRiskLevel.MODERATE
+                        DogAllergySeverity.SEVERE -> StatisticsRiskLevel.HIGH
+                        DogAllergySeverity.CRITICAL -> StatisticsRiskLevel.HIGH
                     },
-                    category = RiskCategory.MEDICAL,
+                    category = StatisticsRiskCategory.MEDICAL,
                     mitigationStrategies = listOf("Allergen vermeiden", "Medikamente bereithalten"),
-                    monitoringRequired = allergy.severity == AllergySeverity.SEVERE
+                    monitoringRequired = allergy.severity == DogAllergySeverity.SEVERE
                 )
             )
         }
@@ -1027,7 +1029,7 @@ class StatisticsRepository(
     
     private fun calculateAllergyManagementScore(
         allergies: List<DogAllergy>,
-        entries: List<HealthEntry>
+        entries: List<DogHealthEntry>
     ): Double {
         if (allergies.isEmpty()) return 100.0
         
@@ -1045,7 +1047,7 @@ class StatisticsRepository(
     }
     
     private fun analyzeChronicConditions(
-        entries: List<HealthEntry>,
+        entries: List<DogHealthEntry>,
         medications: List<DogMedication>
     ): Map<String, ConditionManagement> {
         // This would identify and track chronic conditions
@@ -1057,7 +1059,7 @@ class StatisticsRepository(
         return 75.0
     }
     
-    private fun createHealthEventTimeline(entries: List<HealthEntry>): List<HealthEvent> {
+    private fun createHealthEventTimeline(entries: List<DogHealthEntry>): List<HealthEvent> {
         return entries.map { entry ->
             HealthEvent(
                 date = entry.date,
