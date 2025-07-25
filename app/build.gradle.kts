@@ -50,6 +50,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "17"
@@ -82,11 +83,11 @@ dependencies {
     implementation(libs.androidx.material3)
     
     // Material Icons Core and Extended
-    implementation("androidx.compose.material:material-icons-core:1.6.2")
-    implementation("androidx.compose.material:material-icons-extended:1.6.2")
+    implementation("androidx.compose.material:material-icons-core:1.7.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.1")
     
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
     
     // OkHttp BOM - explizit hinzugefügt um Konflikte zu vermeiden
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
@@ -120,6 +121,19 @@ dependencies {
     // Coil für Bildladung
     implementation("io.coil-kt:coil-compose:2.5.0")
     
+    // Accompanist für Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    
+    // ML Kit für Barcode-Scanning (falls benötigt)
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+    
+    // Material 3 Chip support
+    implementation("androidx.compose.material3:material3:1.2.1")
+    
+    // Java 8 Time API support
+    implementation("org.threeten:threetenbp:1.6.8")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    
     // Datastore für Einstellungen
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     
@@ -152,6 +166,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     
     // Compose testing
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.1")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.1")
 }

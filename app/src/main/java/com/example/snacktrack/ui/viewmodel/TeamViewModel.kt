@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import com.example.snacktrack.data.model.Team
 import com.example.snacktrack.data.model.TeamMember
 import com.example.snacktrack.data.model.BasicTeamRole
@@ -15,10 +17,59 @@ import com.example.snacktrack.data.model.Dog
 import com.example.snacktrack.data.repository.TeamRepository
 import com.example.snacktrack.data.repository.DogRepository
 
+data class TeamUiState(
+    val isLoading: Boolean = false,
+    val statistics: TeamStatistics? = null,
+    val upcomingTasks: List<TeamTask> = emptyList(),
+    val recentActivities: List<TeamActivity> = emptyList(),
+    val shoppingItems: List<ShoppingItem> = emptyList(),
+    val consumptionPredictions: List<ConsumptionPrediction> = emptyList(),
+    val error: String? = null
+)
+
+data class TeamStatistics(
+    val totalDogs: Int = 0,
+    val totalMembers: Int = 0,
+    val tasksCompleted: Int = 0,
+    val upcomingTasks: Int = 0
+)
+
+data class TeamTask(
+    val id: String,
+    val title: String,
+    val assignedTo: String,
+    val dueDate: LocalDateTime,
+    val isCompleted: Boolean = false
+)
+
+data class TeamActivity(
+    val id: String,
+    val memberName: String,
+    val action: String,
+    val timestamp: LocalDateTime
+)
+
+data class ShoppingItem(
+    val id: String,
+    val itemName: String,
+    val quantity: Int,
+    val isPurchased: Boolean = false
+)
+
+data class ConsumptionPrediction(
+    val productName: String,
+    val daysRemaining: Int,
+    val recommendedQuantity: Int
+)
+
 class TeamViewModel(context: Context) : ViewModel() {
     
     private val teamRepository = TeamRepository(context)
     private val dogRepository = DogRepository(context)
+    
+    // UI State
+    private val _uiState = MutableStateFlow(TeamUiState())
+    val uiState: StateFlow<TeamUiState> = _uiState.asStateFlow()
     
     // Teams des Benutzers
     private val _teams = MutableStateFlow<List<Team>>(emptyList())
@@ -45,6 +96,116 @@ class TeamViewModel(context: Context) : ViewModel() {
     init {
         loadTeams()
         loadOwnDogs()
+    }
+    
+    fun loadTeamData(teamId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            
+            try {
+                // Mock data for now
+                val statistics = TeamStatistics(
+                    totalDogs = 3,
+                    totalMembers = 5,
+                    tasksCompleted = 12,
+                    upcomingTasks = 4
+                )
+                
+                val tasks = listOf(
+                    TeamTask(
+                        id = "1",
+                        title = "Futter kaufen",
+                        assignedTo = "Max",
+                        dueDate = LocalDateTime.now().plusDays(1)
+                    ),
+                    TeamTask(
+                        id = "2",
+                        title = "Tierarzttermin",
+                        assignedTo = "Lisa",
+                        dueDate = LocalDateTime.now().plusDays(3)
+                    )
+                )
+                
+                val activities = listOf(
+                    TeamActivity(
+                        id = "1",
+                        memberName = "Max",
+                        action = "Hat Buddy gefüttert",
+                        timestamp = LocalDateTime.now().minusHours(2)
+                    ),
+                    TeamActivity(
+                        id = "2",
+                        memberName = "Lisa",
+                        action = "Hat Medikament gegeben",
+                        timestamp = LocalDateTime.now().minusHours(5)
+                    )
+                )
+                
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        statistics = statistics,
+                        upcomingTasks = tasks,
+                        recentActivities = activities
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(isLoading = false, error = e.message)
+                }
+            }
+        }
+    }
+    
+    fun completeTask(taskId: String) {
+        _uiState.update { state ->
+            state.copy(
+                upcomingTasks = state.upcomingTasks.map { task ->
+                    if (task.id == taskId) task.copy(isCompleted = true) else task
+                }
+            )
+        }
+    }
+    
+    fun markItemAsPurchased(itemId: String) {
+        _uiState.update { state ->
+            state.copy(
+                shoppingItems = state.shoppingItems.map { item ->
+                    if (item.id == itemId) item.copy(isPurchased = true) else item
+                }
+            )
+        }
+    }
+    
+    fun addPredictionToShoppingList(prediction: ConsumptionPrediction) {
+        val newItem = ShoppingItem(
+            id = System.currentTimeMillis().toString(),
+            itemName = prediction.productName,
+            quantity = prediction.recommendedQuantity,
+            isPurchased = false
+        )
+        
+        _uiState.update { state ->
+            state.copy(shoppingItems = state.shoppingItems + newItem)
+        }
+    }
+    
+    fun loadMoreActivities() {
+        // Mock implementation
+        viewModelScope.launch {
+            val moreActivities = listOf(
+                TeamActivity(
+                    id = System.currentTimeMillis().toString(),
+                    memberName = "Tom",
+                    action = "Hat Spielzeit gemacht",
+                    timestamp = LocalDateTime.now().minusDays(1)
+                )
+            )
+            
+            _uiState.update { state ->
+                state.copy(recentActivities = state.recentActivities + moreActivities)
+            }
+        }
     }
     
     /**

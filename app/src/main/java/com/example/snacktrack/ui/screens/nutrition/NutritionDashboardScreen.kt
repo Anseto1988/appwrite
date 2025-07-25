@@ -108,8 +108,8 @@ fun NutritionDashboardScreen(
                 }
                 
                 // Recommendations
-                if (uiState.nutritionAnalysis != null) {
-                    val recommendations = uiState.nutritionAnalysis.getRecommendations()
+                uiState.nutritionAnalysis?.let { analysis ->
+                    val recommendations = analysis.getRecommendations()
                     if (recommendations.isNotEmpty()) {
                         item {
                             RecommendationsCard(recommendations = recommendations)
@@ -424,9 +424,9 @@ private fun TreatBudgetCard(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 // Progress bar
-                val progress = treatBudget.budgetPercentageUsed / 100f
+                val progress = (treatBudget.budgetPercentageUsed / 100.0).toFloat()
                 LinearProgressIndicator(
-                    progress = progress.coerceIn(0f, 1f),
+                    progress = { progress.coerceIn(0f, 1f) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp)

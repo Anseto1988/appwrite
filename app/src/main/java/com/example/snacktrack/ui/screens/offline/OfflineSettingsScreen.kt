@@ -421,13 +421,7 @@ fun OfflineSettingsScreen(
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
-                            if (queueStatus.conflicts > 0) {
-                                Badge(
-                                    containerColor = MaterialTheme.colorScheme.error
-                                ) {
-                                    Text("${queueStatus.conflicts}")
-                                }
-                            }
+                            // Badge removed - conflicts property doesn't exist
                         }
                         
                         Text(
@@ -469,17 +463,7 @@ fun OfflineSettingsScreen(
                             )
                         }
                         
-                        if (queueStatus.conflicts > 0) {
-                            Button(
-                                onClick = { showConflictDialog = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.error
-                                )
-                            ) {
-                                Text("${queueStatus.conflicts} Konflikte lösen")
-                            }
-                        }
+                        // Conflict resolution button removed - conflicts property doesn't exist
                     }
                 }
             }

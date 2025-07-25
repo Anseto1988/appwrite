@@ -22,9 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.Divider
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.ui.components.CommonTopAppBar
 import com.example.snacktrack.ui.viewmodel.AdvancedStatisticsViewModel
@@ -203,6 +200,7 @@ private fun PeriodSelector(
                             AnalyticsPeriod.MONTHLY -> "Monat"
                             AnalyticsPeriod.QUARTERLY -> "Quartal"
                             AnalyticsPeriod.YEARLY -> "Jahr"
+                            AnalyticsPeriod.CUSTOM -> "Benutzerdefiniert"
                         }
                     )
                 }
@@ -1022,7 +1020,6 @@ private fun getTrendText(trend: StatisticsTrendDirection): String = when (trend)
     StatisticsTrendDirection.INCREASING -> "Steigend"
     StatisticsTrendDirection.DECREASING -> "Fallend"
     StatisticsTrendDirection.STABLE -> "Stabil"
-    StatisticsTrendDirection.VOLATILE -> "Schwankend"
 }
 
 private fun getHealthScoreColor(score: Double): Color = when {
@@ -1033,8 +1030,8 @@ private fun getHealthScoreColor(score: Double): Color = when {
 
 private fun getWeightTrendColor(trend: StatisticsTrendDirection): Color = when (trend) {
     StatisticsTrendDirection.STABLE -> Color(0xFF4CAF50)
-    StatisticsTrendDirection.VOLATILE -> Color(0xFFFF9800)
-    else -> Color(0xFF2196F3)
+    StatisticsTrendDirection.INCREASING -> Color(0xFF2196F3)
+    StatisticsTrendDirection.DECREASING -> Color(0xFFFF9800)
 }
 
 private fun getActivityLevelText(level: StatisticsActivityLevel): String = when (level) {
@@ -1358,26 +1355,26 @@ private fun VaccineStatusCard(vaccines: Map<String, VaccineInfo>) {
                 ) {
                     Text(vaccine, style = MaterialTheme.typography.bodyMedium)
                     
-                    Chip(
+                    AssistChip(
                         onClick = { },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = when (info.status) {
+                        label = {
+                            Text(
+                                when (info.status) {
+                                    VaccineStatus.UP_TO_DATE -> "Aktuell"
+                                    VaccineStatus.DUE_SOON -> "Bald fällig"
+                                    VaccineStatus.OVERDUE -> "Überfällig"
+                                },
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        },
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = when (info.status) {
                                 VaccineStatus.UP_TO_DATE -> Color(0xFF4CAF50)
                                 VaccineStatus.DUE_SOON -> Color(0xFFFF9800)
                                 VaccineStatus.OVERDUE -> Color(0xFFF44336)
                             }
                         )
-                    ) {
-                        Text(
-                            when (info.status) {
-                                VaccineStatus.UP_TO_DATE -> "Aktuell"
-                                VaccineStatus.DUE_SOON -> "Bald fällig"
-                                VaccineStatus.OVERDUE -> "Überfällig"
-                            },
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White
-                        )
-                    }
+                    )
                 }
             }
         }
@@ -1839,28 +1836,28 @@ private fun RiskAssessmentCard(assessment: RiskAssessment) {
                         style = MaterialTheme.typography.bodyMedium
                     )
                     
-                    Chip(
+                    AssistChip(
                         onClick = { },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = when (risk.level) {
+                        label = {
+                            Text(
+                                when (risk.level) {
+                                    StatisticsRiskLevel.LOW -> "Niedrig"
+                                    StatisticsRiskLevel.MEDIUM -> "Mittel"
+                                    StatisticsRiskLevel.HIGH -> "Hoch"
+                                    StatisticsRiskLevel.CRITICAL -> "Kritisch"
+                                },
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        },
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = when (risk.level) {
                                 StatisticsRiskLevel.LOW -> Color(0xFF4CAF50)
                                 StatisticsRiskLevel.MEDIUM -> Color(0xFFFF9800)
                                 StatisticsRiskLevel.HIGH -> Color(0xFFF44336)
                                 StatisticsRiskLevel.CRITICAL -> Color(0xFF9C27B0)
                             }
                         )
-                    ) {
-                        Text(
-                            when (risk.level) {
-                                StatisticsRiskLevel.LOW -> "Niedrig"
-                                StatisticsRiskLevel.MEDIUM -> "Mittel"
-                                StatisticsRiskLevel.HIGH -> "Hoch"
-                                StatisticsRiskLevel.CRITICAL -> "Kritisch"
-                            },
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White
-                        )
-                    }
+                    )
                 }
             }
         }

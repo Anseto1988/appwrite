@@ -13,9 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-
-// Custom Color definitions
-private val Orange = Color(0xFFFF9800)
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -23,7 +20,12 @@ import com.example.snacktrack.data.model.*
 import com.example.snacktrack.ui.viewmodel.PreventionViewModel
 import com.example.snacktrack.ui.viewmodel.PreventionViewModelFactory
 import com.example.snacktrack.data.service.AppwriteService
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+// Custom Color definitions
+private val Orange = Color(0xFFFF9800)
+private val Purple = Color(0xFF9C27B0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +137,7 @@ fun PreventionDashboardScreen(
 
 @Composable
 private fun OverviewTab(
-    uiState: PreventionUiState,
+    uiState: com.example.snacktrack.ui.viewmodel.PreventionUiState,
     viewModel: PreventionViewModel
 ) {
     LazyColumn(
@@ -413,7 +415,7 @@ private fun TaskItem(task: PreventionTask) {
             contentDescription = null,
             modifier = Modifier.size(20.dp),
             tint = when (task.priority) {
-                RecommendationPriority.CRITICAL -> Color.Red
+                RecommendationPriority.URGENT -> Color.Red
                 RecommendationPriority.HIGH -> Orange
                 RecommendationPriority.MEDIUM -> Color.Blue
                 RecommendationPriority.LOW -> Color.Gray
@@ -439,7 +441,7 @@ private fun TaskItem(task: PreventionTask) {
         
         Badge(
             containerColor = when (task.priority) {
-                RecommendationPriority.CRITICAL -> Color.Red
+                RecommendationPriority.URGENT -> Color.Red
                 RecommendationPriority.HIGH -> Orange
                 RecommendationPriority.MEDIUM -> Color.Blue
                 RecommendationPriority.LOW -> Color.Gray
@@ -447,7 +449,7 @@ private fun TaskItem(task: PreventionTask) {
         ) {
             Text(
                 text = when (task.priority) {
-                    RecommendationPriority.CRITICAL -> "!"
+                    RecommendationPriority.URGENT -> "!"
                     RecommendationPriority.HIGH -> "H"
                     RecommendationPriority.MEDIUM -> "M"
                     RecommendationPriority.LOW -> "L"
@@ -624,7 +626,7 @@ private fun AnalyticsOverviewCard(analytics: PreventionAnalytics) {
 // Weight Management Tab
 @Composable
 private fun WeightManagementTab(
-    uiState: PreventionUiState,
+    uiState: com.example.snacktrack.ui.viewmodel.PreventionUiState,
     viewModel: PreventionViewModel
 ) {
     LazyColumn(
@@ -902,7 +904,7 @@ private fun WeightGoalItem(goal: WeightGoal, viewModel: PreventionViewModel) {
 // Allergy Prevention Tab
 @Composable
 private fun AllergyPreventionTab(
-    uiState: PreventionUiState,
+    uiState: com.example.snacktrack.ui.viewmodel.PreventionUiState,
     viewModel: PreventionViewModel
 ) {
     LazyColumn(
@@ -1282,7 +1284,7 @@ private fun EmergencyPlanCard(plan: EmergencyPlan, viewModel: PreventionViewMode
 // Health Screening Tab
 @Composable
 private fun HealthScreeningTab(
-    uiState: PreventionUiState,
+    uiState: com.example.snacktrack.ui.viewmodel.PreventionUiState,
     viewModel: PreventionViewModel
 ) {
     LazyColumn(
@@ -1509,7 +1511,7 @@ private fun ScreeningHistoryItem(screening: HealthScreening, viewModel: Preventi
 // Vaccination Tab
 @Composable
 private fun VaccinationTab(
-    uiState: PreventionUiState,
+    uiState: com.example.snacktrack.ui.viewmodel.PreventionUiState,
     viewModel: PreventionViewModel
 ) {
     LazyColumn(
@@ -1755,7 +1757,7 @@ private fun VaccineCard(vaccine: Vaccine, viewModel: PreventionViewModel) {
 // Dental Care Tab
 @Composable
 private fun DentalCareTab(
-    uiState: PreventionUiState,
+    uiState: com.example.snacktrack.ui.viewmodel.PreventionUiState,
     viewModel: PreventionViewModel
 ) {
     LazyColumn(
@@ -2091,7 +2093,7 @@ private fun HomeCareLogItem(log: HomeCareLog) {
                 HomeCareType.BRUSHING -> Icons.Default.Brush
                 HomeCareType.DENTAL_CHEW -> Icons.Default.Pets
                 HomeCareType.WATER_ADDITIVE -> Icons.Default.WaterDrop
-                HomeCareType.DENTAL_SPRAY -> Icons.Default.Spray
+                HomeCareType.DENTAL_SPRAY -> Icons.Default.LocalDrink
                 HomeCareType.DENTAL_WIPE -> Icons.Default.CleaningServices
                 HomeCareType.OTHER -> Icons.Default.MoreHoriz
             },

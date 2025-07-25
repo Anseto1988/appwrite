@@ -123,7 +123,7 @@ fun BarcodeScannerScreen(
                         allergenAlert = uiState.allergenAlerts.firstOrNull(),
                         onDetailsClick = { showProductDetails = true },
                         onAddToInventory = { product -> 
-                            viewModel.addToInventory(product, 1.0, StockUnit.PIECE) 
+                            viewModel.addToInventory(product, 1.0, StockUnit.PACKAGES) 
                         },
                         onCompare = { showComparison = true },
                         onDismiss = { viewModel.clearScannedProduct() }

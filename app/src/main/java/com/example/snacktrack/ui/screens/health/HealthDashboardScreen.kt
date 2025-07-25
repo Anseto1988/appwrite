@@ -337,7 +337,7 @@ private fun MedicationCard(
 }
 
 @Composable
-private fun ReminderItem(reminder: MedicationReminder) {
+private fun ReminderItem(reminder: com.example.snacktrack.data.repository.MedicationReminder) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -410,7 +410,7 @@ private fun HealthEntryCard(
 }
 
 @Composable
-private fun InsightItem(insight: HealthInsight) {
+private fun InsightItem(insight: com.example.snacktrack.ui.viewmodel.HealthInsight) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

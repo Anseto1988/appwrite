@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 data class AIUiState(
     val isLoading: Boolean = false,
     val foodRecommendation: FoodRecommendation? = null,
-    val weightPrediction: WeightPrediction? = null,
+    val weightPrediction: AIWeightPrediction? = null,
     val anomalies: List<EatingAnomaly> = emptyList(),
     val healthRiskAssessment: HealthRiskAssessment? = null,
     val error: String? = null
@@ -75,7 +75,7 @@ class AIViewModel(
         }
     }
     
-    fun generateRecommendations(dogId: String, type: RecommendationType) {
+    fun generateRecommendations(dogId: String, type: AIRecommendationType) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
