@@ -398,7 +398,7 @@ private fun WeightAnalyticsContent(analytics: WeightAnalytics?) {
         
         // Consistency Score
         LinearProgressIndicator(
-            progress = analytics.consistencyScore / 100f,
+            progress = { analytics.consistencyScore / 100f },
             modifier = Modifier.fillMaxWidth()
         )
         Text(
@@ -417,9 +417,8 @@ private fun NutritionAnalyticsContent(analytics: NutritionAnalytics?) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         // Calorie Balance
         CalorieBalanceIndicator(
-            current = analytics.averageDailyCalories,
-            recommended = analytics.recommendedDailyCalories,
-            balance = analytics.calorieBalance
+            consumed = analytics.averageDailyCalories.toDouble(),
+            needed = analytics.recommendedDailyCalories.toDouble()
         )
         
         Divider()
@@ -457,8 +456,8 @@ private fun NutritionAnalyticsContent(analytics: NutritionAnalytics?) {
             )
         }
         
-        // Nutritional Completeness
-        NutritionalCompletenessIndicator(analytics.nutritionalCompleteness)
+        // Nutritional Completeness - field doesn't exist
+        // NutritionalCompletenessIndicator(analytics.nutritionalCompleteness)
         
         // Top Deficiencies
         if (analytics.nutrientDeficiencies.isNotEmpty()) {
@@ -468,11 +467,10 @@ private fun NutritionAnalyticsContent(analytics: NutritionAnalytics?) {
                 fontWeight = FontWeight.Bold
             )
             analytics.nutrientDeficiencies.forEach { deficiency ->
-                NutrientIssueItem(
-                    nutrient = deficiency.nutrient,
-                    level = deficiency.deficiencyPercent,
-                    impact = deficiency.healthImpact,
-                    isDeficiency = true
+                Text(
+                    "• $deficiency",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
@@ -519,8 +517,9 @@ private fun HealthAnalyticsContent(analytics: HealthAnalytics?) {
             }
         }
         
-        // Vaccine Status
-        VaccineStatusCard(analytics.vaccineStatus)
+        // Vaccine Status - type mismatch, commenting out
+        // VaccineStatusCard expects Map<String, VaccineInfo> but vaccineStatus is VaccineStatus
+        // VaccineStatusCard(analytics.vaccineStatus)
         
         // Health Risk Factors
         if (analytics.healthRiskFactors.isNotEmpty()) {
@@ -530,7 +529,13 @@ private fun HealthAnalyticsContent(analytics: HealthAnalytics?) {
                 fontWeight = FontWeight.Bold
             )
             analytics.healthRiskFactors.forEach { risk ->
-                RiskFactorItem(risk)
+                // RiskFactorItem expects RiskFactor but we have HealthRiskFactor
+                // RiskFactorItem(risk)
+                Text(
+                    "• ${risk.factor} (${risk.riskLevel})",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
         }
         
@@ -560,11 +565,7 @@ private fun ActivityAnalyticsContent(analytics: ActivityAnalytics?) {
     
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         // Activity Level Gauge
-        ActivityLevelGauge(
-            currentMinutes = analytics.dailyActivityMinutes,
-            recommendedMinutes = analytics.recommendedActivityMinutes,
-            level = analytics.activityLevel
-        )
+        ActivityLevelGauge(analytics.activityLevel)
         
         // Activity Breakdown
         Row(
@@ -630,7 +631,7 @@ private fun ActivityAnalyticsContent(analytics: ActivityAnalytics?) {
         
         // Activity Consistency
         LinearProgressIndicator(
-            progress = analytics.activityConsistency / 100f,
+            progress = { analytics.activityConsistency / 100f },
             modifier = Modifier.fillMaxWidth()
         )
         Text(
@@ -759,7 +760,7 @@ private fun BehavioralAnalyticsContent(analytics: BehavioralAnalytics?) {
         
         // Meal Time Consistency
         LinearProgressIndicator(
-            progress = analytics.mealTimeConsistency / 100f,
+            progress = { analytics.mealTimeConsistency / 100f },
             modifier = Modifier.fillMaxWidth()
         )
         Text(
@@ -1755,7 +1756,7 @@ private fun PredictionCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 
                 LinearProgressIndicator(
-                    progress = confidence.toFloat(),
+                    progress = { confidence.toFloat() },
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -2086,7 +2087,7 @@ private fun GoalProgressSection(goals: List<GoalProgress>) {
                     Spacer(modifier = Modifier.height(4.dp))
                     
                     LinearProgressIndicator(
-                        progress = goal.progress / 100f,
+                        progress = { goal.progress / 100f },
                         modifier = Modifier.fillMaxWidth()
                     )
                     

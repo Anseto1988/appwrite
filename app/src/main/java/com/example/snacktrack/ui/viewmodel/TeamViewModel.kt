@@ -10,57 +10,39 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.LocalDate
 import com.example.snacktrack.data.model.Team
 import com.example.snacktrack.data.model.TeamMember
 import com.example.snacktrack.data.model.BasicTeamRole
 import com.example.snacktrack.data.model.Dog
+import com.example.snacktrack.data.model.FeedingTask
+import com.example.snacktrack.data.model.TeamActivity
+import com.example.snacktrack.data.model.TeamStatistics
+import com.example.snacktrack.data.model.ShoppingItem
+import com.example.snacktrack.data.model.ConsumptionPrediction
+import com.example.snacktrack.data.model.TaskType
+import com.example.snacktrack.data.model.TaskStatus
+import com.example.snacktrack.data.model.ActivityType
 import com.example.snacktrack.data.repository.TeamRepository
 import com.example.snacktrack.data.repository.DogRepository
 
 data class TeamUiState(
     val isLoading: Boolean = false,
     val statistics: TeamStatistics? = null,
-    val upcomingTasks: List<TeamTask> = emptyList(),
+    val upcomingTasks: List<FeedingTask> = emptyList(),
     val recentActivities: List<TeamActivity> = emptyList(),
     val shoppingItems: List<ShoppingItem> = emptyList(),
     val consumptionPredictions: List<ConsumptionPrediction> = emptyList(),
     val error: String? = null
 )
 
-data class TeamStatistics(
-    val totalDogs: Int = 0,
-    val totalMembers: Int = 0,
-    val tasksCompleted: Int = 0,
-    val upcomingTasks: Int = 0
-)
+// TeamStatistics is imported from TeamFeatures.kt
 
-data class TeamTask(
-    val id: String,
-    val title: String,
-    val assignedTo: String,
-    val dueDate: LocalDateTime,
-    val isCompleted: Boolean = false
-)
+// TeamTask is replaced by FeedingTask from TeamFeatures.kt
 
-data class TeamActivity(
-    val id: String,
-    val memberName: String,
-    val action: String,
-    val timestamp: LocalDateTime
-)
+// TeamActivity is imported from TeamFeatures.kt
 
-data class ShoppingItem(
-    val id: String,
-    val itemName: String,
-    val quantity: Int,
-    val isPurchased: Boolean = false
-)
-
-data class ConsumptionPrediction(
-    val productName: String,
-    val daysRemaining: Int,
-    val recommendedQuantity: Int
-)
+// ShoppingItem and ConsumptionPrediction are imported from TeamFeatures.kt
 
 class TeamViewModel(context: Context) : ViewModel() {
     
@@ -105,39 +87,50 @@ class TeamViewModel(context: Context) : ViewModel() {
             try {
                 // Mock data for now
                 val statistics = TeamStatistics(
-                    totalDogs = 3,
-                    totalMembers = 5,
-                    tasksCompleted = 12,
-                    upcomingTasks = 4
+                    teamId = teamId,
+                    taskCompletionRate = 0.75f,
+                    averageResponseTime = 30,
+                    totalActivities = 12
                 )
                 
                 val tasks = listOf(
-                    TeamTask(
+                    FeedingTask(
                         id = "1",
-                        title = "Futter kaufen",
-                        assignedTo = "Max",
-                        dueDate = LocalDateTime.now().plusDays(1)
+                        teamId = teamId,
+                        dogId = "dog1",
+                        taskType = TaskType.OTHER,
+                        assignedToUserId = "Max",
+                        scheduledDate = java.time.LocalDate.now().plusDays(1),
+                        notes = "Futter kaufen"
                     ),
-                    TeamTask(
+                    FeedingTask(
                         id = "2",
-                        title = "Tierarzttermin",
-                        assignedTo = "Lisa",
-                        dueDate = LocalDateTime.now().plusDays(3)
+                        teamId = teamId,
+                        dogId = "dog1",
+                        taskType = TaskType.VET_APPOINTMENT,
+                        assignedToUserId = "Lisa",
+                        scheduledDate = java.time.LocalDate.now().plusDays(3)
                     )
                 )
                 
                 val activities = listOf(
                     TeamActivity(
                         id = "1",
-                        memberName = "Max",
-                        action = "Hat Buddy gefüttert",
-                        timestamp = LocalDateTime.now().minusHours(2)
+                        teamId = teamId,
+                        userId = "max123",
+                        dogId = "buddy",
+                        activityType = ActivityType.FEEDING,
+                        timestamp = LocalDateTime.now().minusHours(2),
+                        description = "Hat Buddy gefüttert"
                     ),
                     TeamActivity(
                         id = "2",
-                        memberName = "Lisa",
-                        action = "Hat Medikament gegeben",
-                        timestamp = LocalDateTime.now().minusHours(5)
+                        teamId = teamId,
+                        userId = "lisa456",
+                        dogId = "buddy",
+                        activityType = ActivityType.MEDICATION_GIVEN,
+                        timestamp = LocalDateTime.now().minusHours(5),
+                        description = "Hat Medikament gegeben"
                     )
                 )
                 
@@ -157,13 +150,21 @@ class TeamViewModel(context: Context) : ViewModel() {
         }
     }
     
-    fun completeTask(taskId: String) {
-        _uiState.update { state ->
-            state.copy(
-                upcomingTasks = state.upcomingTasks.map { task ->
-                    if (task.id == taskId) task.copy(isCompleted = true) else task
-                }
-            )
+    fun completeTask(taskId: String, notes: String? = null) {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(
+                    upcomingTasks = state.upcomingTasks.map { task ->
+                        if (task.id == taskId) {
+                            task.copy(
+                                status = TaskStatus.COMPLETED,
+                                completedAt = LocalDateTime.now(),
+                                notes = notes ?: task.notes
+                            )
+                        } else task
+                    }
+                )
+            }
         }
     }
     
@@ -180,9 +181,11 @@ class TeamViewModel(context: Context) : ViewModel() {
     fun addPredictionToShoppingList(prediction: ConsumptionPrediction) {
         val newItem = ShoppingItem(
             id = System.currentTimeMillis().toString(),
-            itemName = prediction.productName,
-            quantity = prediction.recommendedQuantity,
-            isPurchased = false
+            productName = prediction.foodName,
+            brand = prediction.brand,
+            quantity = prediction.recommendedOrderQuantity,
+            isPurchased = false,
+            linkedFoodId = prediction.foodId
         )
         
         _uiState.update { state ->
@@ -196,9 +199,11 @@ class TeamViewModel(context: Context) : ViewModel() {
             val moreActivities = listOf(
                 TeamActivity(
                     id = System.currentTimeMillis().toString(),
-                    memberName = "Tom",
-                    action = "Hat Spielzeit gemacht",
-                    timestamp = LocalDateTime.now().minusDays(1)
+                    teamId = "", // Would need actual teamId
+                    userId = "tom789",
+                    activityType = ActivityType.WALK_COMPLETED,
+                    timestamp = LocalDateTime.now().minusDays(1),
+                    description = "Hat Spielzeit gemacht"
                 )
             )
             

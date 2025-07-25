@@ -173,7 +173,7 @@ private fun OverviewTab(
 }
 
 @Composable
-private fun HealthStatusCard(riskAssessment: RiskAssessment?) {
+private fun HealthStatusCard(riskAssessment: PreventionRiskAssessment?) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -1718,7 +1718,7 @@ private fun VaccineCard(vaccine: Vaccine, viewModel: PreventionViewModel) {
                         VaccineType.NON_CORE -> Orange
                         VaccineType.LIFESTYLE -> Color.Blue
                         VaccineType.REGIONAL -> Color.Green
-                        VaccineType.TRAVEL -> Color.Purple
+                        VaccineType.TRAVEL -> Purple
                     }
                 ) {
                     Text(

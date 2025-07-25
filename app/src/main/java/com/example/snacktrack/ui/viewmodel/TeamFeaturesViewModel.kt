@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-data class TeamUiState(
+data class TeamFeaturesUiState(
     val isLoading: Boolean = false,
     val teamId: String = "",
     val upcomingTasks: List<FeedingTask> = emptyList(),
@@ -33,8 +33,8 @@ class TeamFeaturesViewModel(
 ) : ViewModel() {
     private val teamFeaturesRepository = TeamFeaturesRepository(context, appwriteService)
     
-    private val _uiState = MutableStateFlow(TeamUiState())
-    val uiState: StateFlow<TeamUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(TeamFeaturesUiState())
+    val uiState: StateFlow<TeamFeaturesUiState> = _uiState.asStateFlow()
     
     private var activityOffset = 0
     private val activityLimit = 20

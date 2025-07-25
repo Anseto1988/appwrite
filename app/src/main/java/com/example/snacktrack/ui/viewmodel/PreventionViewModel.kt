@@ -112,7 +112,7 @@ class PreventionViewModel(
                     _uiState.update { 
                         it.copy(
                             isLoading = false,
-                            error = result.exceptionOrNull()?.message ?: "Fehler beim Erstellen der Risikobewertung"
+                            error = "Fehler beim Erstellen der Risikobewertung"
                         )
                     }
                 }

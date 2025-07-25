@@ -44,6 +44,17 @@ enum class StatisticsRiskLevel {
     VERY_HIGH
 }
 
+// Exercise type enum
+enum class ExerciseType {
+    WALKING,
+    RUNNING,
+    SWIMMING,
+    PLAYING,
+    TRAINING,
+    HIKING,
+    AGILITY
+}
+
 // Difficulty level for recommendations
 enum class DifficultyLevel {
     EASY,

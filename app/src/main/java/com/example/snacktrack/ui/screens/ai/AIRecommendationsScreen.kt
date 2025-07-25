@@ -396,7 +396,7 @@ private fun FoodRecommendationCard(
 
 @Composable
 private fun WeightPredictionTab(
-    prediction: WeightPrediction?,
+    prediction: AIWeightPrediction?,
     isLoading: Boolean,
     onRefresh: () -> Unit
 ) {
@@ -471,7 +471,7 @@ private fun WeightPredictionTab(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        // 30 days prediction
+                        // Current weight
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -479,37 +479,39 @@ private fun WeightPredictionTab(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                "In 30 Tagen",
+                                "Aktuelles Gewicht",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                "${String.format("%.1f", prediction.predictedWeight30Days)} kg",
+                                "${String.format("%.1f", prediction.currentWeight)} kg",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium
                             )
                         }
                         
-                        // 90 days prediction
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                "In 90 Tagen",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                "${String.format("%.1f", prediction.predictedWeight90Days)} kg",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium
-                            )
+                        // Predictions
+                        prediction.predictions.forEachIndexed { index, point ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    "In ${(index + 1) * 30} Tagen",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    "${String.format("%.1f", point.predictedWeight)} kg",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                         }
                         
-                        // Confidence
+                        // Model version
                         Text(
-                            "Konfidenz: ${(prediction.confidenceLevel * 100).toInt()}%",
+                            "Modell: ${prediction.modelVersion}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 8.dp)
@@ -533,10 +535,19 @@ private fun WeightPredictionTab(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         
-                        // Assumptions
-                        prediction.assumptions.forEach { assumption ->
-                            FactorRow("Annahme", assumption)
-                        }
+                        // Factors
+                        Text(
+                            "Aktivitätslevel: ${prediction.factors.activityLevel}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            "Tägliche Kalorien: ${prediction.factors.averageDailyCalories} kcal",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            "Rasse: ${prediction.factors.breed}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
             }
