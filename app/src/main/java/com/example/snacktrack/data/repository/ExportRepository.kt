@@ -3,6 +3,7 @@ package com.example.snacktrack.data.repository
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.service.AppwriteService
 import io.appwrite.Query
+import io.appwrite.ID
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.models.Document
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ import java.util.zip.ZipOutputStream
 class ExportRepository(
     private val appwriteService: AppwriteService
 ) {
-    private val database = appwriteService.database
+    private val databases = appwriteService.databases
     private val storage = appwriteService.storage
     private val databaseId = "snacktrack_db"
     
