@@ -1,6 +1,11 @@
 
-ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+FAILURE: Build failed with an exception.
 
-Please set the JAVA_HOME variable in your environment to match the
-location of your Java installation.
+* What went wrong:
+Value 'C:\Program Files\Java\jdk-22' given for org.gradle.java.home Gradle property is invalid (Java home supplied is invalid)
 
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.

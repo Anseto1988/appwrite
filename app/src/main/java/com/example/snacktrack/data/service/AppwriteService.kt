@@ -129,7 +129,8 @@ class AppwriteService private constructor(context: Context) {
      */
     suspend fun getCurrentUserId(): String? {
         return try {
-            account.get().$id
+            val user = account.get()
+            user.getId()
         } catch (e: Exception) {
             SecureLogger.e("AppwriteService", "Failed to get current user ID", e)
             null

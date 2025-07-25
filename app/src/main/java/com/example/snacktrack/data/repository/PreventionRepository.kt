@@ -620,7 +620,7 @@ class PreventionRepository(
             )
         }
         
-        return PreventionSeasonalCare(
+        return SeasonalCare(
             dogId = dogId,
             season = season,
             year = LocalDate.now().year,
@@ -656,9 +656,9 @@ class PreventionRepository(
         }
     }
     
-    private fun generatePreventionSeasonalReminders(season: PreventionSeason): List<PreventionSeasonalReminder> {
+    private fun generatePreventionSeasonalReminders(season: PreventionSeason): List<SeasonalReminder> {
         return listOf(
-            PreventionSeasonalReminder(
+            SeasonalReminder(
                 task = "Zeckenschutz erneuern",
                 dueDate = LocalDate.now().plusDays(30),
                 recurring = true

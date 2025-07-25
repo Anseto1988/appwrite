@@ -41,7 +41,7 @@ fun NutritionDashboardScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Ernährungsanalyse",
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
                 actions = {
                     IconButton(onClick = { navController.navigate("nutrition/history/$dogId") }) {
                         Icon(Icons.Default.History, contentDescription = "Verlauf")

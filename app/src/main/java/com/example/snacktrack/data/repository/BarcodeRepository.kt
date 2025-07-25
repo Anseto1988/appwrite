@@ -869,14 +869,15 @@ class BarcodeRepository(
     
     suspend fun getBarcodeAnalytics(
         userId: String,
-        period: AnalyticsPeriod = AnalyticsPeriod.MONTH
+        period: AnalyticsPeriod = AnalyticsPeriod.MONTHLY
     ): Result<BarcodeAnalytics> = withContext(Dispatchers.IO) {
         try {
             val startDate = when (period) {
-                AnalyticsPeriod.WEEK -> LocalDateTime.now().minusWeeks(1)
-                AnalyticsPeriod.MONTH -> LocalDateTime.now().minusMonths(1)
-                AnalyticsPeriod.QUARTER -> LocalDateTime.now().minusMonths(3)
-                AnalyticsPeriod.YEAR -> LocalDateTime.now().minusYears(1)
+                AnalyticsPeriod.DAILY -> LocalDateTime.now().minusDays(1)
+                AnalyticsPeriod.WEEKLY -> LocalDateTime.now().minusWeeks(1)
+                AnalyticsPeriod.MONTHLY -> LocalDateTime.now().minusMonths(1)
+                AnalyticsPeriod.QUARTERLY -> LocalDateTime.now().minusMonths(3)
+                AnalyticsPeriod.YEARLY -> LocalDateTime.now().minusYears(1)
                 AnalyticsPeriod.CUSTOM -> LocalDateTime.now().minusMonths(1)
             }
             

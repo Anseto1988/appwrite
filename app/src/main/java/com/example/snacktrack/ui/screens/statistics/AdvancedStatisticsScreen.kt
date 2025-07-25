@@ -43,7 +43,7 @@ fun AdvancedStatisticsScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Erweiterte Statistiken",
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
                 actions = {
                     IconButton(onClick = { navController.navigate("statistics/custom-report/$dogId") }) {
                         Icon(Icons.Default.Analytics, contentDescription = "Custom Report")

@@ -45,7 +45,7 @@ class TeamFeaturesViewModel(
                 it.copy(
                     isLoading = true, 
                     teamId = teamId,
-                    currentUserId = sessionManager.userId ?: ""
+                    currentUserId = appwriteService.getCurrentUserId() ?: ""
                 ) 
             }
             

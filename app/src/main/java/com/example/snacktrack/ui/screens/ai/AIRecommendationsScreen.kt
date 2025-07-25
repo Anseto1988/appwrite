@@ -42,7 +42,7 @@ fun AIRecommendationsScreen(
         topBar = {
             CommonTopAppBar(
                 title = "KI-Empfehlungen",
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
                 actions = {
                     IconButton(onClick = { viewModel.refreshAIAnalysis(dogId) }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Aktualisieren")
@@ -151,19 +151,19 @@ private fun FoodRecommendationsTab(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            RecommendationType.values().forEach { type ->
+                            AIRecommendationType.values().forEach { type ->
                                 FilterChip(
                                     selected = recommendation?.recommendationType == type,
                                     onClick = { onTypeChange(type) },
                                     label = { 
                                         Text(
                                             when(type) {
-                                                RecommendationType.DAILY -> "Täglich"
-                                                RecommendationType.WEEKLY -> "Wöchentlich"
-                                                RecommendationType.TRANSITION -> "Umstellung"
-                                                RecommendationType.SPECIAL_DIET -> "Spezialdiät"
-                                                RecommendationType.WEIGHT_LOSS -> "Abnehmen"
-                                                RecommendationType.WEIGHT_GAIN -> "Zunehmen"
+                                                AIRecommendationType.DAILY -> "Täglich"
+                                                AIRecommendationType.WEEKLY -> "Wöchentlich"
+                                                AIRecommendationType.TRANSITION -> "Umstellung"
+                                                AIRecommendationType.SPECIAL_DIET -> "Spezialdiät"
+                                                AIRecommendationType.WEIGHT_LOSS -> "Abnehmen"
+                                                AIRecommendationType.WEIGHT_GAIN -> "Zunehmen"
                                             }
                                         )
                                     },

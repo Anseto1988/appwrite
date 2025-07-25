@@ -25,7 +25,7 @@ fun ExportIntegrationScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Export & Integration",
-                navController = navController
+                onBackClick = { navController.navigateUp() }
             )
         }
     ) { paddingValues ->

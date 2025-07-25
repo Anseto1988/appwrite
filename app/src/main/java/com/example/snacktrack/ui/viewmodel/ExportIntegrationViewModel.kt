@@ -174,18 +174,18 @@ class ExportIntegrationViewModel(
         }
     }
     
-    fun syncWithVeterinary(integrationId: String, dogId: String) {
+    fun syncWithVeterinary(integrationId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             try {
-                val result = exportRepository.syncWithVeterinary(integrationId, dogId)
+                val result = exportRepository.syncWithVeterinary(integrationId)
                 
-                result.getOrNull()?.let { syncResult ->
+                result.getOrNull()?.let {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            successMessage = "Synchronisierung erfolgreich: ${syncResult.recordsSynced} Datensätze synchronisiert"
+                            successMessage = "Synchronisierung erfolgreich abgeschlossen"
                         )
                     }
                 } ?: run {
@@ -212,18 +212,16 @@ class ExportIntegrationViewModel(
     fun setupCalendarIntegration(
         provider: CalendarProvider,
         accountEmail: String,
-        authToken: String
+        calendarId: String
     ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             try {
-                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.setupCalendarIntegration(
-                    userId = userId,
                     provider = provider,
                     accountEmail = accountEmail,
-                    authToken = authToken
+                    calendarId = calendarId
                 )
                 
                 result.getOrNull()?.let { integration ->
@@ -256,18 +254,13 @@ class ExportIntegrationViewModel(
     fun syncCalendarEvents(integrationId: String, dogId: String) {
         viewModelScope.launch {
             try {
-                val result = exportRepository.syncCalendarEvents(integrationId, dogId)
+                // TODO: Implement syncCalendarEvents in repository
+                // val result = exportRepository.syncCalendarEvents(integrationId, dogId)
                 
-                result.getOrNull()?.let { events ->
-                    _uiState.update {
-                        it.copy(
-                            successMessage = "${events.size} Termine synchronisiert"
-                        )
-                    }
-                } ?: run {
-                    _uiState.update {
-                        it.copy(error = result.exceptionOrNull()?.message)
-                    }
+                _uiState.update {
+                    it.copy(
+                        successMessage = "Kalendersynchronisierung noch nicht implementiert"
+                    )
                 }
             } catch (e: Exception) {
                 _uiState.update {
@@ -290,15 +283,11 @@ class ExportIntegrationViewModel(
             
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
-                val result = exportRepository.setupFitnessTracker(
-                    userId = userId,
-                    dogId = dogId,
-                    deviceType = deviceType,
-                    deviceId = deviceId,
-                    authToken = authToken
-                )
+                // TODO: Implement setupFitnessTracker in repository
+                // val result = exportRepository.setupFitnessTracker(...)
                 
-                result.getOrNull()?.let { integration ->
+                val integration: FitnessIntegration? = null
+                integration?.let {
                     _uiState.update {
                         it.copy(
                             fitnessTrackers = it.fitnessTrackers + integration,
@@ -434,11 +423,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(importProgress = ImportProgress(currentStep = "Wiederherstellung wird gestartet...")) }
             
             try {
-                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.restoreFromBackup(
-                    userId = userId,
                     backupId = backupId,
-                    options = options
+                    restoreOptions = options
                 )
                 
                 result.getOrNull()?.let { request ->
@@ -580,15 +567,11 @@ class ExportIntegrationViewModel(
         viewModelScope.launch {
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
-                val result = exportRepository.configureSyncSettings(
-                    userId = userId,
-                    syncEnabled = syncEnabled,
-                    syncInterval = syncInterval,
-                    syncOnWifiOnly = syncOnWifiOnly,
-                    conflictResolution = conflictResolution
-                )
+                // TODO: Implement configureSyncSettings in repository
+                // val result = exportRepository.configureSyncSettings(...)
                 
-                result.getOrNull()?.let { config ->
+                val config: SyncConfiguration? = null
+                config?.let {
                     _uiState.update {
                         it.copy(
                             syncConfiguration = config,
@@ -615,7 +598,7 @@ class ExportIntegrationViewModel(
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
                 // TODO: Get syncConfigId from current sync configuration
-                val syncConfigId = _uiState.value.syncConfigurations.firstOrNull()?.id ?: return@launch
+                val syncConfigId = _uiState.value.syncConfiguration?.id ?: return@launch
                 val result = exportRepository.performSync(syncConfigId)
                 
                 result.getOrNull()?.let { record ->

@@ -36,7 +36,7 @@ class StatisticsRepository(
     // Generate comprehensive statistics
     suspend fun generateAdvancedStatistics(
         dogId: String,
-        period: AnalyticsPeriod = AnalyticsPeriod.MONTH
+        period: AnalyticsPeriod = AnalyticsPeriod.MONTHLY
     ): Result<AdvancedStatistics> = safeApiCall {
         val (startDate, endDate) = getDateRangeForPeriod(period)
         
@@ -53,15 +53,13 @@ class StatisticsRepository(
         val statistics = AdvancedStatistics(
             dogId = dogId,
             period = period,
-            startDate = startDate,
-            endDate = endDate,
             generatedAt = LocalDateTime.now(),
             weightAnalytics = weightAnalytics,
             nutritionAnalytics = nutritionAnalytics,
             healthAnalytics = healthAnalytics,
             activityAnalytics = activityAnalytics,
             costAnalytics = costAnalytics,
-            behavioralAnalytics = behavioralAnalytics,
+            behaviorAnalytics = behavioralAnalytics,
             predictiveInsights = predictiveInsights,
             comparativeAnalysis = comparativeAnalysis
         )
@@ -138,20 +136,15 @@ class StatisticsRepository(
             idealWeight = idealWeight,
             weightTrend = trend,
             weightChangePercent = changePercent,
-            weightChangeAmount = changeAmount,
             projectedWeight = projectedWeight,
-            daysToIdealWeight = daysToIdeal?.takeIf { it > 0 && it < 365 },
             weightVelocity = velocity,
-            bodyConditionScore = calculateBodyConditionScore(currentWeight, idealWeight),
-            muscleConditionScore = estimateMuscleCondition(dog, weights),
-            weightHistory = weights.map { 
+            bodyConditionScore = calculateBodyConditionScore(currentWeight, idealWeight).toInt(),
+            historicalData = weights.map { 
                 WeightDataPoint(
                     date = it.timestamp.toLocalDate(),
-                    weight = it.weight,
-                    bodyConditionScore = calculateBodyConditionScore(it.weight, idealWeight)
+                    weight = it.weight
                 )
             },
-            weightVariability = variability,
             consistencyScore = consistencyScore
         )
     }
@@ -184,7 +177,7 @@ class StatisticsRepository(
         // Calculate average daily calories
         val days = ChronoUnit.DAYS.between(startDate, endDate).toInt() + 1
         val totalCalories = intakes.sumOf { it.calories ?: 0 }
-        val averageDailyCalories = totalCalories / days
+        val averageDailyCalories = totalCalories.toDouble() / days
         
         // Calculate recommended calories based on dog's characteristics
         val recommendedCalories = calculateRecommendedCalories(dog)
@@ -232,11 +225,10 @@ class StatisticsRepository(
             dietDiversityScore = dietDiversity,
             mealRegularityScore = mealRegularity,
             treatPercentage = treatPercentage,
-            hydrationEstimate = hydrationEstimate,
-            nutritionalCompleteness = completeness,
-            topNutrientDeficiencies = deficiencies.take(5),
-            topNutrientExcesses = excesses.take(5),
-            feedingScheduleAdherence = scheduleAdherence,
+            hydrationScore = hydrationEstimate,
+            nutrientDeficiencies = deficiencies.take(5),
+            nutrientExcesses = excesses.take(5),
+            scheduleAdherence = scheduleAdherence,
             portionControlScore = portionControl
         )
     }
@@ -281,7 +273,7 @@ class StatisticsRepository(
         val preventiveCareScore = calculatePreventiveCareScore(healthEntries, vaccineStatus)
         
         // Count vet visits
-        val vetVisits = healthEntries.count { it.veterinarianVisit }
+        val vetVisits = healthEntries.count { it.veterinaryVisit }
         val vetVisitFrequency = (vetVisits * 365) / ChronoUnit.DAYS.between(startDate, endDate).toInt()
         
         // Identify health risk factors
@@ -300,7 +292,7 @@ class StatisticsRepository(
         val healthTimeline = createHealthEventTimeline(healthEntries)
         
         // Predict potential health issues
-        val predictedIssues = predictHealthIssues(dogId, healthEntries, riskFactors)
+        val predictedIssues = predictHealthIssues(dogId, healthTimeline, riskFactors)
         
         return HealthAnalytics(
             healthScore = healthScore,
@@ -313,8 +305,7 @@ class StatisticsRepository(
             healthRiskFactors = riskFactors,
             allergyManagementScore = allergyManagementScore,
             chronicConditionManagement = chronicConditions,
-            emergencyReadinessScore = emergencyReadiness,
-            healthEventTimeline = healthTimeline,
+            healthTimeline = healthTimeline,
             predictedHealthIssues = predictedIssues
         )
     }
@@ -361,12 +352,12 @@ class StatisticsRepository(
         // Activity consistency (mock data for now)
         val activityConsistency = 75.0 // Would be calculated from daily activity logs
         
-        // Exercise type distribution
-        val exerciseDistribution = mapOf(
-            ExerciseType.WALKING to 50.0,
-            ExerciseType.PLAYING to 30.0,
-            ExerciseType.TRAINING to 15.0,
-            ExerciseType.RUNNING to 5.0
+        // Training progress distribution
+        val trainingProgress = mapOf(
+            "Walking" to 50.0,
+            "Playing" to 30.0,
+            "Training" to 15.0,
+            "Running" to 5.0
         )
         
         // Peak activity times (typical for dogs)
@@ -378,18 +369,15 @@ class StatisticsRepository(
         return ActivityAnalytics(
             dailyActivityMinutes = estimatedActivity,
             recommendedActivityMinutes = recommendedActivity,
-            activityLevel = activityLevel,
+            activityLevel = activityLevel.toStatisticsActivityLevel(),
             activityTrend = StatisticsTrendDirection.STABLE, // Would be calculated from historical data
             walkFrequency = walkFrequency,
             averageWalkDuration = walkDuration,
             playTimeMinutes = playTime,
-            trainingSessionsPerWeek = trainingFrequency,
-            restQualityScore = calculateRestQuality(activityLevel),
-            energyExpenditureEstimate = energyExpenditure,
-            activityConsistency = activityConsistency,
-            exerciseTypeDistribution = exerciseDistribution,
-            peakActivityTimes = peakTimes,
-            weatherImpactScore = weatherImpact
+            energyExpenditure = energyExpenditure,
+            exerciseConsistency = activityConsistency,
+            trainingProgress = trainingProgress,
+            weatherImpact = weatherImpact
         )
     }
     
@@ -431,11 +419,9 @@ class StatisticsRepository(
         val costBreakdown = CostBreakdown(
             food = foodCost,
             treats = treatCost,
-            supplements = supplementCost,
-            medication = medicationCost,
-            vetCare = vetCost,
+            healthcare = supplementCost + medicationCost + vetCost,
             grooming = groomingCost,
-            accessories = accessoriesCost,
+            toys = accessoriesCost,
             other = 0.0
         )
         
@@ -463,18 +449,16 @@ class StatisticsRepository(
         )
         
         return CostAnalytics(
-            totalMonthlySpend = totalMonthly,
-            averageDailyCost = dailyCost,
-            costTrend = analyzeCostTrend(totalMonthly), // Would compare to historical data
+            monthlyAverage = totalMonthly,
+            yearlyProjection = totalMonthly * 12,
             costBreakdown = costBreakdown,
-            costPerKg = costPerKg,
-            budgetUtilization = 80.0, // Mock data - would compare to user's budget
-            projectedAnnualCost = totalMonthly * 12,
-            costOptimizationOpportunities = optimizations,
-            priceVariationAnalysis = priceVariations,
+            costTrend = analyzeCostTrend(totalMonthly), // Would compare to historical data
+            costOptimizations = optimizations,
+            priceVariations = priceVariations,
             bulkPurchaseSavings = bulkSavings,
+            loyaltyDiscounts = 0.0,
             brandLoyaltyCost = brandLoyaltyCost,
-            seasonalCostVariation = seasonalVariations
+            seasonalCostAdjustment = seasonalVariations[StatisticsSeason.SUMMER] ?: totalMonthly
         )
     }
     
@@ -483,7 +467,7 @@ class StatisticsRepository(
         dogId: String,
         startDate: LocalDate,
         endDate: LocalDate
-    ): BehavioralAnalytics {
+    ): BehaviorAnalytics {
         // Get food intakes for the date range
         val intakes = mutableListOf<FoodIntake>()
         var currentDate = startDate
@@ -520,18 +504,16 @@ class StatisticsRepository(
         // Social eating pattern
         val socialPattern = SocialEatingPattern.INDEPENDENT // Mock
         
-        return BehavioralAnalytics(
-            eatingBehaviorScore = eatingScore,
-            foodMotivationLevel = foodMotivation,
-            treatResponsePattern = treatResponse,
+        return BehaviorAnalytics(
+            behaviorScore = eatingScore,
+            eatingBehavior = eatingScore,
+            foodMotivation = foodMotivation,
+            treatResponse = treatResponse,
             mealTimeConsistency = mealTimeConsistency,
-            foodAggressionIndicators = aggressionIndicators,
-            pickeyEaterScore = pickeyScore,
+            pickiness = pickeyScore,
             foodPreferences = preferences,
             eatingSpeed = eatingSpeed,
-            beggingFrequency = beggingLevel,
-            stressEatingIndicators = stressIndicators,
-            socialEatingBehavior = socialPattern
+            stressEatingPatterns = stressIndicators
         )
     }
     
@@ -548,7 +530,7 @@ class StatisticsRepository(
         // Health predictions
         val healthPredictions = predictHealthIssues(
             dogId,
-            healthAnalytics.healthEventTimeline,
+            healthAnalytics.healthTimeline,
             healthAnalytics.healthRiskFactors
         )
         
@@ -582,12 +564,8 @@ class StatisticsRepository(
         return PredictiveInsights(
             weightPrediction = weightPrediction,
             healthPredictions = healthPredictions,
-            nutritionPredictions = nutritionPredictions,
-            costPredictions = costPrediction,
-            behaviorPredictions = behaviorPredictions,
-            riskAssessment = riskAssessment,
-            recommendedInterventions = interventions,
-            lifestageTransitionPrediction = transition
+            costPrediction = costPrediction,
+            behaviorPredictions = behaviorPredictions
         )
     }
     
@@ -620,10 +598,8 @@ class StatisticsRepository(
         return ComparativeAnalysis(
             breedComparison = breedComparison,
             ageGroupComparison = ageComparison,
-            similarDogsComparison = similarComparison,
-            historicalComparison = historicalComparison,
-            goalComparison = goalComparison,
-            regionalComparison = regionalComparison
+            localAreaComparison = LocalAreaComparison(), // Would require location data
+            similarDogsComparison = similarComparison
         )
     }
     
@@ -646,33 +622,29 @@ class StatisticsRepository(
                     "metrics" to section.metrics,
                     "customization" to mapOf(
                         "colors" to section.customization.colors,
+                        "fontSize" to section.customization.fontSize,
                         "showLegend" to section.customization.showLegend,
-                        "showLabels" to section.customization.showLabels,
-                        "showTrendline" to section.customization.showTrendline,
-                        "comparisonMode" to section.customization.comparisonMode?.name,
-                        "aggregation" to section.customization.aggregation.name
+                        "showDataLabels" to section.customization.showDataLabels
                     )
                 )
             },
             "filters" to mapOf(
-                "dateRange" to report.filters.dateRange.name,
-                "customStartDate" to report.filters.customStartDate?.toString(),
-                "customEndDate" to report.filters.customEndDate?.toString(),
+                "dateRange" to report.filters.dateRange,
+                "categories" to report.filters.categories,
+                "metrics" to report.filters.metrics,
                 "dogs" to report.filters.dogs,
-                "categories" to report.filters.categories
+                "comparison" to report.filters.comparison
             ),
             "schedule" to report.schedule?.let {
                 mapOf(
-                    "frequency" to it.frequency.name,
+                    "frequency" to it.frequency,
                     "dayOfWeek" to it.dayOfWeek,
                     "dayOfMonth" to it.dayOfMonth,
                     "time" to it.time,
                     "nextRunDate" to it.nextRunDate?.toString(),
                     "isActive" to it.isActive
                 )
-            },
-            "recipients" to report.recipients,
-            "format" to report.format.name
+            }
         )
         
         val document = appwriteService.databases.createDocument(
@@ -722,10 +694,11 @@ class StatisticsRepository(
     private fun getDateRangeForPeriod(period: AnalyticsPeriod): Pair<LocalDate, LocalDate> {
         val endDate = LocalDate.now()
         val startDate = when (period) {
-            AnalyticsPeriod.WEEK -> endDate.minusDays(7)
-            AnalyticsPeriod.MONTH -> endDate.minusMonths(1)
-            AnalyticsPeriod.QUARTER -> endDate.minusMonths(3)
-            AnalyticsPeriod.YEAR -> endDate.minusYears(1)
+            AnalyticsPeriod.DAILY -> endDate.minusDays(1)
+            AnalyticsPeriod.WEEKLY -> endDate.minusDays(7)
+            AnalyticsPeriod.MONTHLY -> endDate.minusMonths(1)
+            AnalyticsPeriod.QUARTERLY -> endDate.minusMonths(3)
+            AnalyticsPeriod.YEARLY -> endDate.minusYears(1)
             AnalyticsPeriod.CUSTOM -> endDate.minusMonths(1) // Default to month
         }
         return startDate to endDate
@@ -824,11 +797,7 @@ class StatisticsRepository(
             proteinPercent = 25.0,
             fatPercent = 15.0,
             carbPercent = 50.0,
-            fiberPercent = 5.0,
-            moisturePercent = 5.0,
-            proteinQuality = ProteinQuality.HIGH,
-            fatQuality = FatQuality.MODERATE,
-            carbQuality = CarbQuality.MODERATE
+            fiberPercent = 5.0
         )
     }
     
@@ -953,8 +922,8 @@ class StatisticsRepository(
         val firstHalf = recentEntries.take(recentEntries.size / 2)
         val secondHalf = recentEntries.drop(recentEntries.size / 2)
         
-        val firstHalfSeverity = firstHalf.count { it.veterinarianVisit }
-        val secondHalfSeverity = secondHalf.count { it.veterinarianVisit }
+        val firstHalfSeverity = firstHalf.count { it.veterinaryVisit }
+        val secondHalfSeverity = secondHalf.count { it.veterinaryVisit }
         
         return when {
             secondHalfSeverity > firstHalfSeverity * 1.5 -> StatisticsTrendDirection.DECREASING
@@ -1032,8 +1001,9 @@ class StatisticsRepository(
         
         val recentReactions = entries.count { entry ->
             entry.symptoms.any { symptom ->
-                symptom.contains("allergie", ignoreCase = true) ||
-                symptom.contains("juckreiz", ignoreCase = true)
+                symptom == HealthSymptom.ITCHING || 
+                symptom == HealthSymptom.RASH ||
+                symptom == HealthSymptom.HOT_SPOTS
             }
         }
         
@@ -1086,13 +1056,13 @@ class StatisticsRepository(
         return emptyList()
     }
     
-    private suspend fun getBreedInfo(breed: String): Breed? {
+    private suspend fun getBreedInfo(breed: String): BreedInfo? {
         // This would fetch breed information
         return null
     }
     
     private fun calculateRecommendedActivity(
-        breed: Breed?,
+        breed: BreedInfo?,
         age: Int,
         weight: Double
     ): Double {
@@ -1122,12 +1092,12 @@ class StatisticsRepository(
         return minutes
     }
     
-    private fun estimateCurrentActivity(dog: Dog, breed: Breed?): Double {
+    private fun estimateCurrentActivity(dog: Dog, breed: BreedInfo?): Double {
         // This would use activity tracking data
         return 45.0 // Mock data
     }
     
-    private fun estimateWalkFrequency(breed: Breed?, age: Int): Int {
+    private fun estimateWalkFrequency(breed: BreedInfo?, age: Int): Int {
         return when {
             age < 1 -> 21 // 3 times daily for puppies
             age > 10 -> 7 // Once daily for seniors
@@ -1135,7 +1105,7 @@ class StatisticsRepository(
         }
     }
     
-    private fun estimateWalkDuration(breed: Breed?, weight: Double): Double {
+    private fun estimateWalkDuration(breed: BreedInfo?, weight: Double): Double {
         return when {
             weight < 10 -> 20.0
             weight < 25 -> 30.0
@@ -1144,7 +1114,7 @@ class StatisticsRepository(
         }.coerceIn(15.0, 60.0)
     }
     
-    private fun estimatePlayTime(age: Int, breed: Breed?): Double {
+    private fun estimatePlayTime(age: Int, breed: BreedInfo?): Double {
         return when {
             age < 2 -> 30.0
             age < 7 -> 20.0
@@ -1429,8 +1399,8 @@ class StatisticsRepository(
             highestRisks.add(
                 Risk(
                     name = "Gewichtsproblem",
-                    category = RiskCategory.DIETARY,
-                    severity = if (weightRisk > 70) RiskLevel.HIGH else RiskLevel.MODERATE,
+                    category = RiskCategory.NUTRITION,
+                    severity = if (weightRisk > 70) RiskLevel.HIGH else RiskLevel.MEDIUM,
                     likelihood = weightRisk,
                     impact = "Gesundheitliche Komplikationen",
                     timeframe = "3-6 Monate"
@@ -1439,12 +1409,16 @@ class StatisticsRepository(
         }
         
         return RiskAssessment(
+            dogId = "", // Will be set from context
+            assessmentDate = LocalDateTime.now(),
             overallRiskScore = overallRisk,
-            healthRiskScore = healthRisk,
-            nutritionRiskScore = nutritionRisk,
-            behaviorRiskScore = 20.0, // Mock
-            highestRisks = highestRisks,
-            mitigationPlan = createMitigationPlan(highestRisks)
+            riskCategories = mapOf(
+                RiskCategory.WEIGHT to if (weightRisk > 70) StatisticsRiskLevel.HIGH else if (weightRisk > 40) StatisticsRiskLevel.MODERATE else StatisticsRiskLevel.LOW,
+                RiskCategory.NUTRITION to if (nutritionRisk > 70) StatisticsRiskLevel.HIGH else if (nutritionRisk > 40) StatisticsRiskLevel.MODERATE else StatisticsRiskLevel.LOW,
+                RiskCategory.HEALTH to if (healthRisk > 70) StatisticsRiskLevel.HIGH else if (healthRisk > 40) StatisticsRiskLevel.MODERATE else StatisticsRiskLevel.LOW
+            ),
+            recommendations = highestRisks.map { "Addressiere ${it.name}" },
+            timelinessScore = 80.0
         )
     }
     
@@ -1480,10 +1454,9 @@ class StatisticsRepository(
             MitigationStep(
                 action = "Risiko '${risk.name}' addressieren",
                 priority = when (risk.severity) {
-                    RiskLevel.VERY_HIGH -> PriorityLevel.CRITICAL
-                    RiskLevel.HIGH -> PriorityLevel.HIGH
-                    RiskLevel.MODERATE -> PriorityLevel.MEDIUM
-                    else -> PriorityLevel.LOW
+                    RiskLevel.HIGH -> PriorityLevel.CRITICAL
+                    RiskLevel.MEDIUM -> PriorityLevel.MEDIUM
+                    RiskLevel.LOW -> PriorityLevel.LOW
                 },
                 timeline = risk.timeframe,
                 resources = listOf("Tierarzt konsultieren", "Ernährung anpassen"),

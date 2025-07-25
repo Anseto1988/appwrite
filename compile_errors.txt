@@ -1,0 +1,586 @@
+Calculating task graph as configuration cache cannot be reused because file 'gradle.properties' has changed.
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/OfflineRepository.kt:398:9 Argument type mismatch: actual type is 'it(kotlin.Unit & kotlin.Result<T>)', but 'kotlin.Result<kotlin.Any?>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/PreventionRepository.kt:623:16 Return type mismatch: expected 'com.example.snacktrack.data.model.SeasonalCare', actual 'com.example.snacktrack.data.model.PreventionSeasonalCare'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:226:36 Argument type mismatch: actual type is 'kotlin.Int', but 'kotlin.Double' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:284:50 Unresolved reference 'veterinarianVisit'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:303:58 Argument type mismatch: actual type is 'kotlin.collections.List<com.example.snacktrack.data.model.DogHealthEntry>', but 'kotlin.collections.List<com.example.snacktrack.data.model.HealthEvent>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:381:29 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.ActivityLevel', but 'com.example.snacktrack.data.model.StatisticsActivityLevel' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:584:33 Argument type mismatch: actual type is 'kotlin.collections.List<com.example.snacktrack.data.model.PredictedHealthIssue>', but 'kotlin.collections.List<com.example.snacktrack.data.model.HealthPrediction>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:956:54 Unresolved reference 'veterinarianVisit'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:957:56 Unresolved reference 'veterinarianVisit'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1035:25 None of the following candidates is applicable:
+@SinceKotlin(...) @InlineOnly() fun <T : Any, R : ClosedRange<T>, Iterable<T>> R.contains(element: T?): Boolean
+@SinceKotlin(...) @WasExperimental(...) @InlineOnly() fun <T : Any, R : OpenEndRange<T>, Iterable<T>> R.contains(element: T?): Boolean
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1036:25 None of the following candidates is applicable:
+@SinceKotlin(...) @InlineOnly() fun <T : Any, R : ClosedRange<T>, Iterable<T>> R.contains(element: T?): Boolean
+@SinceKotlin(...) @WasExperimental(...) @InlineOnly() fun <T : Any, R : OpenEndRange<T>, Iterable<T>> R.contains(element: T?): Boolean
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1104:33 Unresolved reference 'energyLevel'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1256:48 Unresolved reference 'DifficultyLevel'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1330:60 Unresolved reference 'WeightPrediction'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1331:16 Unresolved reference 'WeightPrediction'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1419:8 Unresolved reference 'RiskAssessment'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1432:32 Unresolved reference 'RiskCategory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1433:32 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.RiskLevel', but 'com.example.snacktrack.data.model.StatisticsRiskLevel' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1433:83 Unresolved reference 'MODERATE'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1441:16 Unresolved reference 'RiskAssessment'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1483:31 Unresolved reference 'VERY_HIGH'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1484:21 Comparison of incompatible enums 'com.example.snacktrack.data.model.StatisticsRiskLevel' and 'com.example.snacktrack.data.model.RiskLevel' is always unsuccessful.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1485:31 Unresolved reference 'MODERATE'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1496:15 Unresolved reference 'RiskAssessment'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1713:34 Unresolved reference 'DataSource'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/TeamFeaturesRepository.kt:30:70 Too many arguments for 'public constructor(context: android/content/Context): com/example/snacktrack/data/repository/FoodIntakeRepository'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/TeamFeaturesRepository.kt:325:60 Unresolved reference 'first'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/service/AppwriteService.kt:131:16 Return type mismatch: expected 'kotlin.String?', actual 'io.appwrite.models.User<kotlin.collections.Map<kotlin.String, kotlin.Any>>?'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/service/AppwriteService.kt:132:13 Syntax error: Qualified expression without selector.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/service/AppwriteService.kt:132:27 Syntax error: Expecting an element.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:45:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:47:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:156:48 Comparison of incompatible enums 'com.example.snacktrack.data.model.AIRecommendationType?' and 'com.example.snacktrack.data.model.RecommendationType' is always unsuccessful.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:160:45 'when' expression must be exhaustive. Add the 'DIETARY', 'EXERCISE', 'MEDICAL', 'BEHAVIORAL', 'PREVENTIVE', 'EMERGENCY' branches or an 'else' branch.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:161:68 Unresolved reference 'DAILY'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:162:68 Unresolved reference 'WEEKLY'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:163:68 Unresolved reference 'TRANSITION'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:164:68 Unresolved reference 'SPECIAL_DIET'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:165:68 Unresolved reference 'WEIGHT_LOSS'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:166:68 Unresolved reference 'WEIGHT_GAIN'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:399:17 Unresolved reference 'WeightPrediction'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:451:43 Unresolved reference 'currentWeight'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:475:36 Unresolved reference 'predictions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:475:56 Overload resolution ambiguity between candidates:
+@HidesMembers() fun <T> Iterable<T>.forEach(action: (T) -> Unit): Unit
+@HidesMembers() fun <K, V> Map<out K, V>.forEach(action: (Map.Entry<K, V>) -> Unit): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:475:66 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:476:29 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:483:43 Unresolved reference 'date'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:488:72 Unresolved reference 'predictedWeight'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:494:52 Unresolved reference 'confidenceLevel'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:520:50 Unresolved reference 'factors'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:36:31 Unresolved reference 'permissions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:37:31 Unresolved reference 'permissions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:38:31 Unresolved reference 'permissions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:39:31 Unresolved reference 'permissions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:43:41 Unresolved reference 'ExperimentalPermissionsApi'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:43:41 Annotation argument must be a compile-time constant.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:51:33 Unresolved reference 'rememberPermissionState'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:80:45 Unresolved reference 'inventoryCount'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:97:35 Unresolved reference 'onBarcodeScanned'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:116:49 Unresolved reference 'allergenAlert'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:118:71 No value passed for parameter 'quantity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:118:71 No value passed for parameter 'unit'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:120:49 Unresolved reference 'clearScanResult'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:151:43 Unresolved reference 'addToShoppingList'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:158:32 Unresolved reference 'comparisonProducts'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:159:34 Unresolved reference 'productComparison'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:171:27 Unresolved reference 'updateInventory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:792:36 Argument type mismatch: actual type is 'kotlin.Comparator<T>', but 'androidx.compose.ui.Modifier' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:795:30 Unresolved reference 'clickable'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:798:46 Unresolved reference 'border'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1079:13 Unresolved reference 'LazyRow'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1082:17 None of the following candidates is applicable:
+@ComposableInferredTarget(...) fun <T> LazyListScope.items(items: Array<T>, noinline key: ((@ParameterName(...) T) -> Any)? = ..., noinline contentType: (@ParameterName(...) T) -> Any? = ..., crossinline itemContent: @Composable() ComposableFunction2<LazyItemScope, @ParameterName(...) T, Unit>): Unit
+@ComposableInferredTarget(...) fun <T> LazyListScope.items(items: List<T>, noinline key: ((@ParameterName(...) T) -> Any)? = ..., noinline contentType: (@ParameterName(...) T) -> Any? = ..., crossinline itemContent: @Composable() ComposableFunction2<LazyItemScope, @ParameterName(...) T, Unit>): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1082:35 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1083:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1086:17 Unresolved reference 'item'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1087:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1090:30 Unresolved reference 'clickable'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1091:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1092:60 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1471:56 Unresolved reference 'DateTimeFormatter'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1473:54 Unresolved reference 'LocalDateTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1516:39 Unresolved reference 'KeyboardOptions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1516:70 Unresolved reference 'KeyboardType'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1654:27 Unresolved reference 'BarcodeScanning'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1667:25 Unresolved reference 'InputImage'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1670:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1671:30 Overload resolution ambiguity between candidates:
+fun <T> Array<out T>.firstOrNull(): T?
+fun BooleanArray.firstOrNull(): Boolean?
+fun ByteArray.firstOrNull(): Byte?
+fun CharArray.firstOrNull(): Char?
+fun DoubleArray.firstOrNull(): Double?
+fun FloatArray.firstOrNull(): Float?
+fun IntArray.firstOrNull(): Int?
+fun LongArray.firstOrNull(): Long?
+fun ShortArray.firstOrNull(): Short?
+fun <T> Iterable<T>.firstOrNull(): T?
+fun <T> List<T>.firstOrNull(): T?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun UByteArray.firstOrNull(): UByte?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun UIntArray.firstOrNull(): UInt?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun ULongArray.firstOrNull(): ULong?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun UShortArray.firstOrNull(): UShort?
+@SinceKotlin(...) fun CharProgression.firstOrNull(): Char?
+@SinceKotlin(...) fun IntProgression.firstOrNull(): Int?
+@SinceKotlin(...) fun LongProgression.firstOrNull(): Long?
+@SinceKotlin(...) fun UIntProgression.firstOrNull(): UInt?
+@SinceKotlin(...) fun ULongProgression.firstOrNull(): ULong?
+fun <T> Sequence<T>.firstOrNull(): T?
+fun CharSequence.firstOrNull(): Char?
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1671:45 Unresolved reference 'rawValue'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1671:61 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/CommunityHubScreen.kt:29:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/export/ExportIntegrationScreen.kt:28:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:340:36 Unresolved reference 'MedicationReminder'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:357:26 Unresolved reference 'scheduledTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:361:9 Overload resolution ambiguity between candidates:
+@Composable() @ComposableTarget(...) fun Text(text: AnnotatedString, modifier: Modifier = ..., color: Color = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., inlineContent: Map<String, InlineTextContent> = ..., onTextLayout: (TextLayoutResult) -> Unit = ..., style: TextStyle = ...): Unit
+@Composable() @ComposableTarget(...) fun Text(text: String, modifier: Modifier = ..., color: Color = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., onTextLayout: ((TextLayoutResult) -> Unit)? = ..., style: TextStyle = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:362:22 Unresolved reference 'medication'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:413:34 Unresolved reference 'HealthInsight'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:426:13 Overload resolution ambiguity between candidates:
+@Composable() @ComposableTarget(...) fun Icon(bitmap: ImageBitmap, contentDescription: String?, modifier: Modifier = ..., tint: Color = ...): Unit
+@Composable() @ComposableTarget(...) fun Icon(painter: Painter, contentDescription: String?, modifier: Modifier = ..., tint: Color = ...): Unit
+@Composable() @ComposableTarget(...) fun Icon(imageVector: ImageVector, contentDescription: String?, modifier: Modifier = ..., tint: Color = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:427:25 Unresolved reference 'icon'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:434:17 Overload resolution ambiguity between candidates:
+@Composable() @ComposableTarget(...) fun Text(text: AnnotatedString, modifier: Modifier = ..., color: Color = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., inlineContent: Map<String, InlineTextContent> = ..., onTextLayout: (TextLayoutResult) -> Unit = ..., style: TextStyle = ...): Unit
+@Composable() @ComposableTarget(...) fun Text(text: String, modifier: Modifier = ..., color: Color = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., onTextLayout: ((TextLayoutResult) -> Unit)? = ..., style: TextStyle = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:435:29 Unresolved reference 'title'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:439:17 Overload resolution ambiguity between candidates:
+@Composable() @ComposableTarget(...) fun Text(text: AnnotatedString, modifier: Modifier = ..., color: Color = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., inlineContent: Map<String, InlineTextContent> = ..., onTextLayout: (TextLayoutResult) -> Unit = ..., style: TextStyle = ...): Unit
+@Composable() @ComposableTarget(...) fun Text(text: String, modifier: Modifier = ..., color: Color = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., onTextLayout: ((TextLayoutResult) -> Unit)? = ..., style: TextStyle = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthDashboardScreen.kt:440:29 Unresolved reference 'description'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:44:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:46:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:112:43 Smart cast to 'com.example.snacktrack.data.model.NutritionAnalysis' is impossible, because 'nutritionAnalysis' is a delegated property.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:428:17 None of the following candidates is applicable:
+@Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: () -> Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:429:50 Argument type mismatch: actual type is 'kotlin.Float', but 'kotlin.Double' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:429:54 Argument type mismatch: actual type is 'kotlin.Float', but 'kotlin.Double' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:43:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:46:25 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:53:25 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:423:45 Unresolved reference 'conflicts'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:427:57 Unresolved reference 'conflicts'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:471:41 Unresolved reference 'conflicts'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:479:53 Unresolved reference 'conflicts'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:1149:25 Unresolved reference 'LocalDateTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:1150:26 Unresolved reference 'LocalDateTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:18:39 Syntax error: imports are only allowed in the beginning of file.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:101:30 Argument type mismatch: actual type is 'com.example.snacktrack.ui.viewmodel.PreventionUiState', but 'com.example.snacktrack.data.model.PreventionUiState' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:102:38 Argument type mismatch: actual type is 'com.example.snacktrack.ui.viewmodel.PreventionUiState', but 'com.example.snacktrack.data.model.PreventionUiState' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:103:39 Argument type mismatch: actual type is 'com.example.snacktrack.ui.viewmodel.PreventionUiState', but 'com.example.snacktrack.data.model.PreventionUiState' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:104:37 Argument type mismatch: actual type is 'com.example.snacktrack.ui.viewmodel.PreventionUiState', but 'com.example.snacktrack.data.model.PreventionUiState' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:105:33 Argument type mismatch: actual type is 'com.example.snacktrack.ui.viewmodel.PreventionUiState', but 'com.example.snacktrack.data.model.PreventionUiState' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:106:32 Argument type mismatch: actual type is 'com.example.snacktrack.ui.viewmodel.PreventionUiState', but 'com.example.snacktrack.data.model.PreventionUiState' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:146:38 Unresolved reference 'riskAssessment'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:156:39 Unresolved reference 'upcomingTasks'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:161:42 Unresolved reference 'recentActivities'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:165:21 Unresolved reference 'analytics'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:167:47 Unresolved reference 'analytics'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:174:46 Unresolved reference 'RiskAssessment'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:180:32 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:181:32 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:200:33 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:200:39 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:202:36 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:203:36 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:207:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:209:40 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:210:40 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:228:49 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:231:40 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:232:40 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:240:61 Unresolved reference 'overallRiskScore'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:246:36 Unresolved reference 'recommendations'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:254:36 Unresolved reference 'recommendations'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:254:60 Overload resolution ambiguity between candidates:
+@HidesMembers() fun <T> Iterable<T>.forEach(action: (T) -> Unit): Unit
+@HidesMembers() fun <K, V> Map<out K, V>.forEach(action: (Map.Entry<K, V>) -> Unit): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:254:70 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:255:25 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:256:56 Unresolved reference 'strategy'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:257:51 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:415:20 'when' expression must be exhaustive. Add the 'URGENT' branch or an 'else' branch.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:416:40 Unresolved reference 'CRITICAL'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:441:30 'when' expression must be exhaustive. Add the 'URGENT' branch or an 'else' branch.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:442:40 Unresolved reference 'CRITICAL'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:449:24 'when' expression must be exhaustive. Add the 'URGENT' branch or an 'else' branch.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:450:44 Unresolved reference 'CRITICAL'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:634:9 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:634:17 Unresolved reference 'weightGoals'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:634:44 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:634:50 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:638:14 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:644:39 Unresolved reference 'weightHistory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:648:21 Unresolved reference 'weightGoals'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:649:27 Unresolved reference 'weightGoals'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:650:32 Argument type mismatch: actual type is '@ParameterName(...) kotlin.Int', but 'com.example.snacktrack.data.model.WeightGoal' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:913:40 Unresolved reference 'allergyPrevention'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:918:44 Unresolved reference 'allergyPrevention'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:922:17 Unresolved reference 'allergyPrevention'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:922:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:930:39 Unresolved reference 'allergyPrevention'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1297:21 Unresolved reference 'healthScreenings'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1297:44 Unresolved reference 'it'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1300:29 Unresolved reference 'healthScreenings'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1300:55 Unresolved reference 'it'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1307:23 Unresolved reference 'healthScreenings'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1307:49 Unresolved reference 'it'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1308:34 Argument type mismatch: actual type is '@ParameterName(...) kotlin.Int', but 'com.example.snacktrack.data.model.HealthScreening' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1520:43 Unresolved reference 'vaccinationSchedule'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1524:17 Unresolved reference 'vaccinationSchedule'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1524:59 Unresolved reference 'it'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1524:70 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1524:76 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1525:33 Overload resolution ambiguity between candidates:
+@InlineOnly() fun <T> Array<out T>.isNotEmpty(): Boolean
+@InlineOnly() fun BooleanArray.isNotEmpty(): Boolean
+@InlineOnly() fun ByteArray.isNotEmpty(): Boolean
+@InlineOnly() fun CharArray.isNotEmpty(): Boolean
+@InlineOnly() fun DoubleArray.isNotEmpty(): Boolean
+@InlineOnly() fun FloatArray.isNotEmpty(): Boolean
+@InlineOnly() fun IntArray.isNotEmpty(): Boolean
+@InlineOnly() fun LongArray.isNotEmpty(): Boolean
+@InlineOnly() fun ShortArray.isNotEmpty(): Boolean
+@InlineOnly() fun <T> Collection<T>.isNotEmpty(): Boolean
+@InlineOnly() fun <K, V> Map<out K, V>.isNotEmpty(): Boolean
+@InlineOnly() fun CharSequence.isNotEmpty(): Boolean
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1533:17 Unresolved reference 'vaccinationSchedule'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1533:54 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1535:29 Argument type mismatch: actual type is '@ParameterName(...) kotlin.Int', but 'com.example.snacktrack.data.model.Vaccine' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1719:53 Unresolved reference 'Purple'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1766:38 Unresolved reference 'dentalCare'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1771:35 Unresolved reference 'dentalCare'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1776:47 Unresolved reference 'dentalCare'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1781:37 Unresolved reference 'dentalCare'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:2094:60 Unresolved reference 'Spray'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:2153:15 Unresolved reference 'LocalDateTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:46:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:48:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:51:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:403:9 None of the following candidates is applicable:
+@Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: () -> Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:422:9 Unresolved reference 'CalorieBalanceIndicator'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:431:9 Unresolved reference 'MacronutrientChart'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:464:9 Unresolved reference 'NutritionalCompletenessIndicator'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:474:17 Unresolved reference 'NutrientIssueItem'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:491:9 Unresolved reference 'HealthScoreCircle'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:526:9 Unresolved reference 'VaccineStatusCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:536:17 Unresolved reference 'RiskFactorItem'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:566:9 Unresolved reference 'ActivityLevelGauge'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:577:13 Unresolved reference 'ActivityMetric'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:582:13 Unresolved reference 'ActivityMetric'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:587:13 Unresolved reference 'ActivityMetric'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:635:9 None of the following candidates is applicable:
+@Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: () -> Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:682:9 Unresolved reference 'CostBreakdownChart'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:698:17 Unresolved reference 'CostOptimizationCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:725:9 Unresolved reference 'ScoreCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:736:13 Unresolved reference 'BehaviorIndicator'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:741:13 Unresolved reference 'BehaviorIndicator'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:749:9 None of the following candidates is applicable:
+@Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: () -> Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:768:17 Unresolved reference 'FoodPreferenceItem'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:788:9 Unresolved reference 'PredictionCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:806:17 Unresolved reference 'HealthPredictionItem'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:811:9 Unresolved reference 'RiskAssessmentCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:821:17 Unresolved reference 'InterventionCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:827:13 Unresolved reference 'LifeStageTransitionCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:838:9 Unresolved reference 'ComparisonSection'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:845:9 Unresolved reference 'ComparisonSection'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:859:17 Unresolved reference 'ComparisonMetricRow'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:866:13 Unresolved reference 'HistoricalComparisonCard'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:871:13 Unresolved reference 'GoalProgressSection'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:38:20 Property delegate must have a 'getValue(Nothing?, KProperty0<ERROR CLASS: Cannot infer argument for type parameter T>)' method. None of the following functions is applicable:
+fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:38:30 Unresolved reference 'uiState'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:42:19 Unresolved reference 'loadTeamData'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:49:17 No parameter with name 'navController' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:51:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:80:38 Unresolved reference 'statistics'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:112:37 Unresolved reference 'upcomingTasks'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:113:41 Unresolved reference 'isLoading'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:115:35 Unresolved reference 'completeTask'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:122:45 Unresolved reference 'shoppingItems'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:123:43 Unresolved reference 'consumptionPredictions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:124:41 Unresolved reference 'isLoading'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:126:35 Unresolved reference 'markItemAsPurchased'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:129:35 Unresolved reference 'addPredictionToShoppingList'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:133:42 Unresolved reference 'recentActivities'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:134:41 Unresolved reference 'isLoading'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:136:35 Unresolved reference 'loadMoreActivities'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:793:43 Unresolved reference 'LocalDateTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:794:15 Unresolved reference 'LocalDateTime'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:796:34 Unresolved reference 'toLocalDate'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:800:27 Unresolved reference 'isAfter'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/AIViewModel.kt:18:27 Unresolved reference 'WeightPrediction'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/AIViewModel.kt:83:78 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.RecommendationType', but 'com.example.snacktrack.data.model.AIRecommendationType' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:47:48 Unresolved reference 'getUserInventory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:48:17 Argument type mismatch: actual type is 'R?', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:48:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:48:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:52:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:61:48 Unresolved reference 'getBarcodeHistory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:66:17 Argument type mismatch: actual type is 'R?', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:66:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:66:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:70:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:93:65 Unresolved reference 'getProductByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:94:28 One type argument expected. Use class 'Result' if you don't intend to pass type arguments.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:95:29 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:95:29 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:95:56 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:95:62 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:105:33 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:108:33 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:111:33 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:112:34 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:148:26 Unresolved reference 'DataSource'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:170:40 Unresolved reference 'checkProductAllergens'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:171:29 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:171:35 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:177:73 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.Product', but 'com.example.snacktrack.data.repository.RecommendationContext' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:185:27 Unresolved reference 'recordBarcodeHistory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:200:48 Unresolved reference 'addToInventory'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:207:17 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:207:17 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:207:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:207:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:215:22 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:224:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:260:21 No parameter with name 'products' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:262:21 No parameter with name 'dogId' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:262:21 No value passed for parameter 'productIds'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:303:48 Unresolved reference 'updateInventoryQuantity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:304:17 Argument type mismatch: actual type is 'R?', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:304:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:304:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:311:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:319:48 Unresolved reference 'setReorderSettings'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:320:17 Argument type mismatch: actual type is 'R?', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:320:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:320:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:327:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:337:48 Unresolved reference 'searchProducts'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:338:17 Argument type mismatch: actual type is 'R?', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:338:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:338:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:339:34 Overload resolution ambiguity between candidates:
+@InlineOnly() fun <T> Array<out T>.isNotEmpty(): Boolean
+@InlineOnly() fun BooleanArray.isNotEmpty(): Boolean
+@InlineOnly() fun ByteArray.isNotEmpty(): Boolean
+@InlineOnly() fun CharArray.isNotEmpty(): Boolean
+@InlineOnly() fun DoubleArray.isNotEmpty(): Boolean
+@InlineOnly() fun FloatArray.isNotEmpty(): Boolean
+@InlineOnly() fun IntArray.isNotEmpty(): Boolean
+@InlineOnly() fun LongArray.isNotEmpty(): Boolean
+@InlineOnly() fun ShortArray.isNotEmpty(): Boolean
+@InlineOnly() fun <T> Collection<T>.isNotEmpty(): Boolean
+@InlineOnly() fun <K, V> Map<out K, V>.isNotEmpty(): Boolean
+@InlineOnly() fun CharSequence.isNotEmpty(): Boolean
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:343:51 Argument type mismatch: actual type is 'kotlinx.coroutines.flow.Flow<R>', but 'kotlin.collections.List<com.example.snacktrack.data.model.ProductRecommendation>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:343:60 Not enough information to infer type argument for 'T'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:343:72 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/BarcodeViewModel.kt:364:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:143:47 Unresolved reference 'setupVeterinaryIntegration'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:150:17 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:150:17 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:150:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:150:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:153:80 Overload resolution ambiguity between candidates:
+fun <T> Collection<T>.plus(element: T): List<T>
+fun <T> Collection<T>.plus(elements: Array<out T>): List<T>
+fun <T> Collection<T>.plus(elements: Iterable<T>): List<T>
+fun <T> Collection<T>.plus(elements: Sequence<T>): List<T>
+fun <T> Iterable<T>.plus(element: T): List<T>
+fun <T> Iterable<T>.plus(elements: Array<out T>): List<T>
+fun <T> Iterable<T>.plus(elements: Iterable<T>): List<T>
+fun <T> Iterable<T>.plus(elements: Sequence<T>): List<T>
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:158:22 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:167:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:182:81 Too many arguments for 'public final suspend fun com/example/snacktrack/data/repository/ExportRepository.syncWithVeterinary(integrationId: kotlin/String): kotlin/Result<kotlin/Unit>'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:188:90 Unresolved reference 'recordsSynced'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:223:21 No parameter with name 'userId' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:226:21 No parameter with name 'authToken' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:226:21 No value passed for parameter 'calendarId'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:259:47 Unresolved reference 'syncCalendarEvents'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:261:17 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:261:17 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:261:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:261:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:264:56 Unresolved reference 'size'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:267:22 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:273:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:293:47 Unresolved reference 'setupFitnessTracker'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:301:17 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:301:17 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:301:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:301:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:304:66 Overload resolution ambiguity between candidates:
+fun <T> Collection<T>.plus(element: T): List<T>
+fun <T> Collection<T>.plus(elements: Array<out T>): List<T>
+fun <T> Collection<T>.plus(elements: Iterable<T>): List<T>
+fun <T> Collection<T>.plus(elements: Sequence<T>): List<T>
+fun <T> Iterable<T>.plus(element: T): List<T>
+fun <T> Iterable<T>.plus(elements: Array<out T>): List<T>
+fun <T> Iterable<T>.plus(elements: Iterable<T>): List<T>
+fun <T> Iterable<T>.plus(elements: Sequence<T>): List<T>
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:309:22 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:318:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:364:21 No parameter with name 'userId' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:439:21 No parameter with name 'userId' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:441:21 No parameter with name 'options' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:441:21 No value passed for parameter 'restoreOptions'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:534:21 No parameter with name 'userId' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:536:21 No parameter with name 'fileData' found.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:538:21 No value passed for parameter 'fileUrl'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:583:47 Unresolved reference 'configureSyncSettings'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:591:17 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:591:17 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:591:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:591:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:598:22 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:604:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:618:51 Unresolved reference 'syncConfigurations'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/ExportIntegrationViewModel.kt:618:85 Unresolved reference 'id'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:68:42 Unresolved reference 'riskAssessmentResult'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:99:51 Unresolved reference 'generateRiskAssessment'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:100:17 Argument type mismatch: actual type is 'R?', but 'K?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:100:17 Argument type mismatch: actual type is 'K', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:100:37 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+@InlineOnly() fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:100:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:108:22 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:117:17 Argument type mismatch: actual type is 'kotlin.Unit', but 'K' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:609:13 Cannot access 'constructor(): PreventionTask': it is private in 'com/example/snacktrack/data/model/PreventionTask'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:609:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:616:13 Cannot access 'constructor(): PreventionTask': it is private in 'com/example/snacktrack/data/model/PreventionTask'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:616:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:623:13 Cannot access 'constructor(): PreventionTask': it is private in 'com/example/snacktrack/data/model/PreventionTask'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:623:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:630:13 Cannot access 'constructor(): PreventionTask': it is private in 'com/example/snacktrack/data/model/PreventionTask'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:630:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:637:13 Cannot access 'constructor(): PreventionTask': it is private in 'com/example/snacktrack/data/model/PreventionTask'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:637:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:640:47 Unresolved reference 'GENERAL'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:649:13 Cannot access 'constructor(): PreventionActivity': it is private in 'com/example/snacktrack/data/model/PreventionActivity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:649:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:656:13 Cannot access 'constructor(): PreventionActivity': it is private in 'com/example/snacktrack/data/model/PreventionActivity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:656:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:663:13 Cannot access 'constructor(): PreventionActivity': it is private in 'com/example/snacktrack/data/model/PreventionActivity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:663:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:670:13 Cannot access 'constructor(): PreventionActivity': it is private in 'com/example/snacktrack/data/model/PreventionActivity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:670:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:677:13 Cannot access 'constructor(): PreventionActivity': it is private in 'com/example/snacktrack/data/model/PreventionActivity'.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/PreventionViewModel.kt:677:13 Enum types cannot be instantiated.
+e: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/TeamFeaturesViewModel.kt:48:52 Unresolved reference 'userId'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 12s
+15 actionable tasks: 1 executed, 14 up-to-date
+Configuration cache entry stored.

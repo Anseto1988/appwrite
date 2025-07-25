@@ -440,14 +440,15 @@ class OfflineRepository(
                 }
                 
                 val jsonData = String(data)
-                Result.success(JSONObject(jsonData))
+                cursor.close()
+                return@withContext Result.success(JSONObject(jsonData))
             } else {
-                Result.success(null)
+                cursor.close()
+                return@withContext Result.success(null)
             }
-            cursor.close()
             
         } catch (e: Exception) {
-            Result.failure(e)
+            return@withContext Result.failure(e)
         }
     }
     

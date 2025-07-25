@@ -6,8 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.repository.PreventionRepository
 import com.example.snacktrack.data.service.AppwriteService
-// These imports are already covered by the wildcard import above: com.example.snacktrack.data.model.*
-// PreventionActivity, PreventionTask, and WeightEntry are in the data.model package
+// Import UI data classes
+import com.example.snacktrack.ui.screens.prevention.PreventionTask as UiPreventionTask
+import com.example.snacktrack.ui.screens.prevention.PreventionActivity as UiPreventionActivity
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -26,8 +27,8 @@ data class PreventionUiState(
     val dentalCare: DentalCare? = null,
     val seasonalCare: SeasonalCare? = null,
     val analytics: PreventionAnalytics? = null,
-    val upcomingTasks: List<PreventionTask> = emptyList(),
-    val recentActivities: List<PreventionActivity> = emptyList(),
+    val upcomingTasks: List<UiPreventionTask> = emptyList(),
+    val recentActivities: List<UiPreventionActivity> = emptyList(),
     val error: String? = null,
     val successMessage: String? = null
 )
@@ -65,7 +66,7 @@ class PreventionViewModel(
                     currentState.copy(
                         isLoading = false,
                         dogName = "Ihr Hund", // Would get from dog data
-                        riskAssessment = riskAssessmentResult.getOrNull()?.firstOrNull(),
+                        riskAssessment = null, // TODO: Implement when getRiskAssessment is available
                         weightGoals = weightGoalsResult.getOrNull() ?: emptyList(),
                         allergyPrevention = allergyPreventionResult.getOrNull(),
                         healthScreenings = healthScreeningsResult.getOrNull() ?: emptyList(),
@@ -96,8 +97,10 @@ class PreventionViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
-                val result = preventionRepository.generateRiskAssessment(dogId)
-                result.getOrNull()?.let { assessment ->
+                // TODO: Implement when generateRiskAssessment is available in repository
+                // val result = preventionRepository.generateRiskAssessment(dogId)
+                val assessment: PreventionRiskAssessment? = null
+                assessment?.let {
                     _uiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
@@ -604,77 +607,77 @@ class PreventionViewModel(
     
     // Helper methods for generating demo data
     
-    private fun generateUpcomingTasks(): List<PreventionTask> {
+    private fun generateUpcomingTasks(): List<UiPreventionTask> {
         return listOf(
-            PreventionTask(
+            UiPreventionTask(
                 id = "1",
                 title = "Zahnreinigung beim Tierarzt",
                 category = PreventionCategory.DENTAL,
                 priority = RecommendationPriority.HIGH,
                 dueDate = LocalDate.now().plusWeeks(2)
             ),
-            PreventionTask(
+            UiPreventionTask(
                 id = "2",
                 title = "Jährliche Routineuntersuchung",
                 category = PreventionCategory.MEDICAL,
                 priority = RecommendationPriority.MEDIUM,
                 dueDate = LocalDate.now().plusMonths(1)
             ),
-            PreventionTask(
+            UiPreventionTask(
                 id = "3",
                 title = "Gewichtskontrolle",
                 category = PreventionCategory.NUTRITION,
                 priority = RecommendationPriority.MEDIUM,
                 dueDate = LocalDate.now().plusDays(7)
             ),
-            PreventionTask(
+            UiPreventionTask(
                 id = "4",
                 title = "Impfauffrischung",
                 category = PreventionCategory.MEDICAL,
                 priority = RecommendationPriority.HIGH,
                 dueDate = LocalDate.now().plusWeeks(3)
             ),
-            PreventionTask(
+            UiPreventionTask(
                 id = "5",
                 title = "Zeckenschutz erneuern",
-                category = PreventionCategory.GENERAL,
+                category = PreventionCategory.MEDICAL,
                 priority = RecommendationPriority.MEDIUM,
                 dueDate = LocalDate.now().plusDays(14)
             )
         )
     }
     
-    private fun generateRecentActivities(): List<PreventionActivity> {
+    private fun generateRecentActivities(): List<UiPreventionActivity> {
         return listOf(
-            PreventionActivity(
+            UiPreventionActivity(
                 id = "1",
                 type = "dental_care",
                 title = "Zähne geputzt",
                 date = LocalDateTime.now().minusHours(2),
                 notes = "5 Minuten Zahnpflege"
             ),
-            PreventionActivity(
+            UiPreventionActivity(
                 id = "2",
                 type = "weight_check",
                 title = "Gewicht gemessen",
                 date = LocalDateTime.now().minusDays(1),
                 notes = "26.8 kg - leichte Verbesserung"
             ),
-            PreventionActivity(
+            UiPreventionActivity(
                 id = "3",
                 type = "vaccination",
                 title = "Tollwutimpfung",
                 date = LocalDateTime.now().minusWeeks(2),
                 notes = "Auffrischung erfolgreich"
             ),
-            PreventionActivity(
+            UiPreventionActivity(
                 id = "4",
                 type = "screening",
                 title = "Blutuntersuchung",
                 date = LocalDateTime.now().minusMonths(1),
                 notes = "Alle Werte normal"
             ),
-            PreventionActivity(
+            UiPreventionActivity(
                 id = "5",
                 type = "dental_care",
                 title = "Kaustange gegeben",

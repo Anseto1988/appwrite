@@ -26,7 +26,7 @@ fun CommunityHubScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Community Hub",
-                navController = navController
+                onBackClick = { navController.navigateUp() }
             )
         }
     ) { paddingValues ->

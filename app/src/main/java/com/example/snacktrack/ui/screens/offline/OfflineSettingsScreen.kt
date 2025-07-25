@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.ui.components.CommonTopAppBar
 import com.example.snacktrack.ui.viewmodel.OfflineViewModel
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +41,7 @@ fun OfflineSettingsScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Offline-Einstellungen",
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
                 actions = {
                     if (syncState.syncInProgress) {
                         CircularProgressIndicator(

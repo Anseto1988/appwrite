@@ -7,6 +7,7 @@ import io.appwrite.Query
 import io.appwrite.models.Document
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -27,7 +28,7 @@ class TeamFeaturesRepository(
         const val CONSUMPTION_PREDICTIONS_COLLECTION_ID = "consumption_predictions"
     }
     
-    private val foodIntakeRepository = FoodIntakeRepository(context, appwriteService)
+    private val foodIntakeRepository = FoodIntakeRepository(context)
     
     // Task Management
     
@@ -322,9 +323,7 @@ class TeamFeaturesRepository(
             var currentDate = LocalDate.now().minusDays(30)
             val endDate = LocalDate.now()
             while (!currentDate.isAfter(endDate)) {
-                val dailyIntakes = kotlinx.coroutines.flow.first(
-                    foodIntakeRepository.getFoodIntakesForDog(dog.id, currentDate)
-                )
+                val dailyIntakes = foodIntakeRepository.getFoodIntakesForDog(dog.id, currentDate).first()
                 intakes.addAll(dailyIntakes)
                 currentDate = currentDate.plusDays(1)
             }
