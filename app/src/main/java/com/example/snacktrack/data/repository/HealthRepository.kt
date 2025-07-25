@@ -208,9 +208,7 @@ class HealthRepository(
         // Get food intakes for each day in the range
         var currentDate = startDate.toLocalDate()
         while (!currentDate.isAfter(endDate.toLocalDate())) {
-            val dailyIntakes = kotlinx.coroutines.flow.first(
-                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
-            )
+            val dailyIntakes = foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate).first()
             foodIntakes.addAll(dailyIntakes)
             currentDate = currentDate.plusDays(1)
         }

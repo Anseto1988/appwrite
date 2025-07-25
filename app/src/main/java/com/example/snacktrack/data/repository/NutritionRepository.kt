@@ -21,8 +21,8 @@ class NutritionRepository(
         const val TREAT_BUDGET_COLLECTION_ID = "treat_budgets"
     }
     
-    private val foodIntakeRepository = FoodIntakeRepository(context, appwriteService)
-    private val dogRepository = DogRepository(context, appwriteService)
+    private val foodIntakeRepository = FoodIntakeRepository(context)
+    private val dogRepository = DogRepository(context)
     
     /**
      * Calculate and save daily nutrition analysis

@@ -454,7 +454,7 @@ class PreventionRepository(
     
     // PreventionSeasonal Care
     
-    suspend fun getPreventionSeasonalCare(dogId: String, season: PreventionSeason): Result<PreventionSeasonalCare> = withContext(Dispatchers.IO) {
+    suspend fun getSeasonalCare(dogId: String, season: PreventionSeason): Result<SeasonalCare> = withContext(Dispatchers.IO) {
         try {
             val documents = appwriteService.databases.listDocuments(
                 databaseId = databaseId,
@@ -468,13 +468,13 @@ class PreventionRepository(
             val existing = documents.documents.firstOrNull()
             
             val seasonalCare = existing?.let { doc ->
-                PreventionSeasonalCare(
+                SeasonalCare(
                     id = doc.id,
                     dogId = doc.data["dogId"] as String,
                     season = PreventionSeason.valueOf(doc.data["season"] as String)
                     // Would need proper deserialization
                 )
-            } ?: generatePreventionSeasonalCare(dogId, season)
+            } ?: generateSeasonalCare(dogId, season)
             
             Result.success(seasonalCare)
         } catch (e: AppwriteException) {
@@ -580,10 +580,10 @@ class PreventionRepository(
         )
     }
     
-    private fun generatePreventionSeasonalCare(dogId: String, season: PreventionSeason): PreventionSeasonalCare {
+    private fun generateSeasonalCare(dogId: String, season: PreventionSeason): SeasonalCare {
         val hazards = when (season) {
             PreventionSeason.SPRING -> listOf(
-                PreventionSeasonalHazard(
+                SeasonalHazard(
                     hazard = "Pollen",
                     riskPeriod = "März-Mai",
                     severity = HazardSeverity.MODERATE,
@@ -592,7 +592,7 @@ class PreventionRepository(
                 )
             )
             PreventionSeason.SUMMER -> listOf(
-                PreventionSeasonalHazard(
+                SeasonalHazard(
                     hazard = "Hitzschlag",
                     riskPeriod = "Juni-August",
                     severity = HazardSeverity.SEVERE,
@@ -601,7 +601,7 @@ class PreventionRepository(
                 )
             )
             PreventionSeason.FALL -> listOf(
-                PreventionSeasonalHazard(
+                SeasonalHazard(
                     hazard = "Pilze",
                     riskPeriod = "September-November",
                     severity = HazardSeverity.SERIOUS,
@@ -610,7 +610,7 @@ class PreventionRepository(
                 )
             )
             PreventionSeason.WINTER -> listOf(
-                PreventionSeasonalHazard(
+                SeasonalHazard(
                     hazard = "Streusalz",
                     riskPeriod = "Dezember-Februar",
                     severity = HazardSeverity.MODERATE,

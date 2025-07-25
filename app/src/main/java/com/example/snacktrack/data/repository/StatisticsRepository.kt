@@ -26,10 +26,10 @@ class StatisticsRepository(
     }
     
     // Dependency repositories
-    private val weightRepository = WeightRepository(context, appwriteService)
+    private val weightRepository = WeightRepository(context)
     private val nutritionRepository = NutritionRepository(context, appwriteService)
     private val healthRepository = HealthRepository(context, appwriteService)
-    private val foodIntakeRepository = FoodIntakeRepository(context, appwriteService)
+    private val foodIntakeRepository = FoodIntakeRepository(context)
     
     // Generate comprehensive statistics
     suspend fun generateAdvancedStatistics(

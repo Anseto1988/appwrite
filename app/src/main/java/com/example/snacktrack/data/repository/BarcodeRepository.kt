@@ -18,10 +18,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -172,7 +173,7 @@ class BarcodeRepository(
             nutritionalInfo = parseNutritionalInfo(json),
             ingredients = parseIngredients(json),
             allergens = parseAllergens(json),
-            source = DataSource.OFFICIAL_DATABASE,
+            source = BarcodeDataSource.OFFICIAL_DATABASE,
             verificationStatus = VerificationStatus.COMMUNITY_VERIFIED
         )
     }
@@ -416,9 +417,9 @@ class BarcodeRepository(
                 collectionId = "products",
                 queries = listOf(
                     Query.equal("category", product.category.name),
-                    Query.notEqual("id", product.id)
-                ),
-                limit = 3
+                    Query.notEqual("id", product.id),
+                    Query.limit(3)
+                )
             )
             
             response.documents.mapNotNull { parseProductFromDocument(it) }
@@ -688,12 +689,15 @@ class BarcodeRepository(
                 var score = 0.0
                 
                 // Age appropriateness
-                if (product.metadata.targetAge?.contains(getAgeGroup(dog.age)) == true) {
+                val dogAge = dog.birthDate?.let { 
+                    java.time.Period.between(it, LocalDate.now()).years 
+                } ?: 0
+                if (product.metadata.targetAge?.contains(getAgeGroup(dogAge)) == true) {
                     score += 20
                     factors.add(RecommendationFactor(
                         factor = "Altersgerecht",
                         impact = 20.0,
-                        description = "Geeignet für ${getAgeGroup(dog.age)}"
+                        description = "Geeignet für ${getAgeGroup(dogAge)}"
                     ))
                 }
                 
@@ -843,9 +847,9 @@ class BarcodeRepository(
                 collectionId = "products",
                 queries = listOf(
                     Query.equal("category", product.category.name),
-                    Query.notEqual("id", product.id)
-                ),
-                limit = 5
+                    Query.notEqual("id", product.id),
+                    Query.limit(5)
+                )
             )
             
             response.documents.mapNotNull { doc ->
@@ -1086,22 +1090,23 @@ class BarcodeRepository(
         }
     }
     
-    private fun parseProductFromDocument(document: Document): Product {
+    private fun parseProductFromDocument(document: Document<Map<String, Any>>): Product {
         return Product(
             id = document.id,
             barcode = document.data["barcode"] as String,
             name = document.data["name"] as String,
             brand = document.data["brand"] as String,
             category = ProductCategory.valueOf(document.data["category"] as String),
-            description = document.data["description"] as String,
+            description = document.data["description"] as String
             // Parse other fields...
         )
     }
     
-    private fun parseInventoryFromDocument(document: Document): ProductInventory {
+    private fun parseInventoryFromDocument(document: Document<Map<String, Any>>): ProductInventory {
         // Parse inventory from document
         return ProductInventory(
-            id = document.id
+            id = document.id,
+            product = Product() // This would need proper parsing
             // Parse other fields...
         )
     }

@@ -2154,7 +2154,4 @@ data class PreventionActivity(
     val notes: String
 )
 
-data class WeightEntry(
-    val date: java.time.LocalDate,
-    val weight: Double
-)
+// WeightEntry is already defined in data.model package and imported

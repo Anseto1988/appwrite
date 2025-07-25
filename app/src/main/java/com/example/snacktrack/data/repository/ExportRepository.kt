@@ -40,7 +40,9 @@ class ExportRepository(
         dogIds: List<String>,
         exportType: ExportType,
         format: ExportFormat,
-        dateRange: DateRange? = null,
+        dateRangeType: DateRange? = null,
+        customStartDate: LocalDate? = null,
+        customEndDate: LocalDate? = null,
         includePhotos: Boolean = false
     ): Result<ExportRequest> = withContext(Dispatchers.IO) {
         try {
@@ -49,7 +51,9 @@ class ExportRepository(
                 dogIds = dogIds,
                 exportType = exportType,
                 format = format,
-                dateRange = dateRange,
+                dateRangeType = dateRangeType,
+                customStartDate = customStartDate,
+                customEndDate = customEndDate,
                 includePhotos = includePhotos,
                 includeAnalytics = true,
                 encryptionEnabled = format == ExportFormat.JSON
@@ -138,12 +142,30 @@ class ExportRepository(
         
         val tasks = listOf(
             async { data["dogs"] = getDogs(request.dogIds) },
-            async { data["health"] = getHealthRecords(request.dogIds, request.dateRange) },
-            async { data["nutrition"] = getNutritionData(request.dogIds, request.dateRange) },
-            async { data["weight"] = getWeightHistory(request.dogIds, request.dateRange) },
-            async { data["medications"] = getMedications(request.dogIds, request.dateRange) },
-            async { data["expenses"] = getExpenses(request.dogIds, request.dateRange) },
-            async { data["activities"] = getActivities(request.dogIds, request.dateRange) },
+            async { 
+                val dateRange = getDateRangeFromRequest(request)
+                data["health"] = getHealthRecords(request.dogIds, dateRange) 
+            },
+            async { 
+                val dateRange = getDateRangeFromRequest(request)
+                data["nutrition"] = getNutritionData(request.dogIds, dateRange) 
+            },
+            async { 
+                val dateRange = getDateRangeFromRequest(request)
+                data["weight"] = getWeightHistory(request.dogIds, dateRange) 
+            },
+            async { 
+                val dateRange = getDateRangeFromRequest(request)
+                data["medications"] = getMedications(request.dogIds, dateRange) 
+            },
+            async { 
+                val dateRange = getDateRangeFromRequest(request)
+                data["expenses"] = getExpenses(request.dogIds, dateRange) 
+            },
+            async { 
+                val dateRange = getDateRangeFromRequest(request)
+                data["activities"] = getActivities(request.dogIds, dateRange) 
+            },
             async { data["documents"] = getDocuments(request.dogIds) }
         )
         
@@ -904,29 +926,49 @@ class ExportRepository(
         val warnings: List<ImportWarning> = emptyList()
     )
     
-    data class DateRange(
+    data class ExportDateRange(
         val startDate: LocalDate,
         val endDate: LocalDate
     )
+    
+    private fun getDateRangeFromRequest(request: ExportRequest): ExportDateRange? {
+        return when {
+            request.customStartDate != null && request.customEndDate != null -> {
+                ExportDateRange(request.customStartDate, request.customEndDate)
+            }
+            request.dateRangeType != null -> {
+                val endDate = LocalDate.now()
+                val startDate = when (request.dateRangeType) {
+                    DateRange.LAST_7_DAYS -> endDate.minusDays(7)
+                    DateRange.LAST_30_DAYS -> endDate.minusDays(30)
+                    DateRange.LAST_90_DAYS -> endDate.minusDays(90)
+                    DateRange.LAST_YEAR -> endDate.minusYears(1)
+                    DateRange.ALL_TIME -> LocalDate.of(2000, 1, 1) // Arbitrary old date
+                    DateRange.CUSTOM -> request.customStartDate ?: endDate.minusDays(30)
+                }
+                ExportDateRange(startDate, endDate)
+            }
+            else -> null
+        }
+    }
 }
 
 // Extension functions
 
-fun ExportRequest.toMap(): Map<String, Any> = mapOf(
-    "userId" to userId,
-    "dogIds" to dogIds,
-    "exportType" to exportType.name,
-    "format" to format.name,
-    "dateRange" to (dateRange?.let { mapOf(
-        "start" to it.start.toString(),
-        "end" to it.end.toString()
-    ) } ?: emptyMap<String, Any>()),
-    "includePhotos" to includePhotos,
-    "includeAnalytics" to includeAnalytics,
-    "encryptionEnabled" to encryptionEnabled,
-    "requestedAt" to requestedAt.toString(),
-    "status" to status.name
-)
+fun ExportRequest.toMap(): Map<String, Any> = buildMap {
+    put("userId", userId)
+    put("dogIds", dogIds)
+    put("exportType", exportType.name)
+    put("format", format.name)
+    dateRangeType?.let { put("dateRangeType", it.name) }
+    customStartDate?.let { put("customStartDate", it.toString()) }
+    customEndDate?.let { put("customEndDate", it.toString()) }
+    put("includePhotos", includePhotos)
+    put("includeAnalytics", includeAnalytics)
+    put("encryptionEnabled", encryptionEnabled)
+    put("requestedAt", requestedAt.toString())
+    put("status", status.name)
+}
 
 fun VeterinaryIntegration.toMap(): Map<String, Any> = mapOf(
     "clinicName" to clinicName,
@@ -1198,7 +1240,7 @@ fun SyncRecord.toMap(): Map<String, Any> = mapOf(
     "status" to status.name
 )
 
-fun ExportRepository.DateRange.toMap(): Map<String, Any> = mapOf(
+fun ExportRepository.ExportDateRange.toMap(): Map<String, Any> = mapOf(
     "startDate" to startDate.toString(),
     "endDate" to endDate.toString()
 )
@@ -1248,12 +1290,12 @@ private suspend fun ExportRepository.gatherCustomData(request: ExportRequest): M
 // Mock implementations for missing methods
 private suspend fun ExportRepository.createExportHistoryRecord(request: ExportRequest, fileId: String, fileSize: Long) {}
 private suspend fun ExportRepository.getDogs(dogIds: List<String>): List<Any> = emptyList()
-private suspend fun ExportRepository.getHealthRecords(dogIds: List<String>, dateRange: DateRange?): List<Any> = emptyList()
-private suspend fun ExportRepository.getNutritionData(dogIds: List<String>, dateRange: DateRange?): List<Any> = emptyList()
-private suspend fun ExportRepository.getWeightHistory(dogIds: List<String>, dateRange: DateRange?): List<Any> = emptyList()
-private suspend fun ExportRepository.getMedications(dogIds: List<String>, dateRange: DateRange?): List<Any> = emptyList()
-private suspend fun ExportRepository.getExpenses(dogIds: List<String>, dateRange: DateRange?): List<Any> = emptyList()
-private suspend fun ExportRepository.getActivities(dogIds: List<String>, dateRange: DateRange?): List<Any> = emptyList()
+private suspend fun ExportRepository.getHealthRecords(dogIds: List<String>, dateRange: ExportRepository.ExportDateRange?): List<Any> = emptyList()
+private suspend fun ExportRepository.getNutritionData(dogIds: List<String>, dateRange: ExportRepository.ExportDateRange?): List<Any> = emptyList()
+private suspend fun ExportRepository.getWeightHistory(dogIds: List<String>, dateRange: ExportRepository.ExportDateRange?): List<Any> = emptyList()
+private suspend fun ExportRepository.getMedications(dogIds: List<String>, dateRange: ExportRepository.ExportDateRange?): List<Any> = emptyList()
+private suspend fun ExportRepository.getExpenses(dogIds: List<String>, dateRange: ExportRepository.ExportDateRange?): List<Any> = emptyList()
+private suspend fun ExportRepository.getActivities(dogIds: List<String>, dateRange: ExportRepository.ExportDateRange?): List<Any> = emptyList()
 private suspend fun ExportRepository.getDocuments(dogIds: List<String>): List<Any> = emptyList()
 private suspend fun ExportRepository.getPhotos(dogIds: List<String>): List<Any> = emptyList()
 private fun ExportRepository.getDefaultDataMapping(systemType: VetSystemType): DataMappingConfig = DataMappingConfig()

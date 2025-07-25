@@ -346,9 +346,11 @@ class OfflineRepository(
                 checksum = calculateChecksum(finalData)
             )
             
+            val userId = appwriteService.getCurrentUserId() ?: throw Exception("User not authenticated")
+            
             val cache = OfflineCache(
                 id = UUID.randomUUID().toString(),
-                userId = appwriteService.account.get().\$id,
+                userId = userId,
                 cacheType = cacheType,
                 entityType = entityType,
                 entityId = entityId,

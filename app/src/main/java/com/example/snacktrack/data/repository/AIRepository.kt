@@ -404,7 +404,7 @@ class AIRepository(
         // Calculate trend (kg per day)
         val trend = if (history.size >= 2) {
             (history.last().weight - history.first().weight) / 
-            java.time.temporal.ChronoUnit.DAYS.between(history.first().date, history.last().date).toInt()
+            java.time.temporal.ChronoUnit.DAYS.between(history.first().timestamp.toLocalDate(), history.last().timestamp.toLocalDate()).toInt()
         } else 0.0
         
         // Adjust trend based on calorie differential

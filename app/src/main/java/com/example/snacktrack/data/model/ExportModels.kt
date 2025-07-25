@@ -15,7 +15,9 @@ data class ExportRequest(
     val dogIds: List<String> = emptyList(), // Empty = all dogs
     val exportType: ExportType = ExportType.FULL_DATA,
     val format: ExportFormat = ExportFormat.JSON,
-    val dateRange: DateRange? = null,
+    val dateRangeType: DateRange? = null, // From StatisticsModels enum
+    val customStartDate: LocalDate? = null,
+    val customEndDate: LocalDate? = null,
     val includePhotos: Boolean = false,
     val includeAnalytics: Boolean = true,
     val encryptionEnabled: Boolean = false,
@@ -542,7 +544,8 @@ data class ValidationRules(
     val minWeight: Double = 0.1,
     val maxWeight: Double = 200.0,
     val allowFutureDates: Boolean = false,
-    val allowDuplicates: Boolean = false
+    val allowDuplicates: Boolean = false,
+    val allowPartialImport: Boolean = false
 )
 
 enum class ImportStatus {

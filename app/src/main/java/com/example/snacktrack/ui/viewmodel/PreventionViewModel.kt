@@ -189,13 +189,14 @@ class PreventionViewModel(
                     
                     // Add to weight history
                     val newEntry = WeightEntry(
-                        date = LocalDate.now(),
+                        dogId = dogId,
+                        timestamp = LocalDateTime.now(),
                         weight = newWeight
                     )
                     _uiState.update { currentState ->
                         currentState.copy(
                             weightHistory = (currentState.weightHistory + newEntry)
-                                .sortedByDescending { it.date }
+                                .sortedByDescending { it.timestamp }
                                 .take(50) // Keep last 50 entries
                         )
                     }
@@ -226,10 +227,10 @@ class PreventionViewModel(
                 // In real app, this would open a dialog to input allergen details
                 val allergen = KnownAllergen(
                     allergen = "Chicken", // Example
-                    severity = AllergySeverity.MODERATE,
+                    severity = PreventionAllergySeverity.MODERATE,
                     reactions = listOf(
                         AllergyReaction(
-                            type = ReactionType.SKIN,
+                            type = PreventionReactionType.SKIN,
                             symptoms = listOf("Itching", "Redness"),
                             onsetTime = "2-4 hours"
                         )
@@ -274,7 +275,7 @@ class PreventionViewModel(
                 // Convert suspected to known allergen
                 val knownAllergen = KnownAllergen(
                     allergen = allergenName,
-                    severity = AllergySeverity.MODERATE // Default, would be configurable
+                    severity = PreventionAllergySeverity.MODERATE // Default, would be configurable
                 )
                 
                 val result = preventionRepository.addKnownAllergen(dogId, knownAllergen)
@@ -697,23 +698,24 @@ class PreventionViewModel(
                 
                 entries.add(
                     WeightEntry(
-                        date = date,
+                        dogId = dogId,
+                        timestamp = date.atStartOfDay(),
                         weight = currentWeight
                     )
                 )
             }
         }
         
-        return entries.sortedByDescending { it.date }
+        return entries.sortedByDescending { it.timestamp }
     }
     
-    private fun getCurrentSeason(): Season {
+    private fun getCurrentSeason(): PreventionSeason {
         val month = LocalDate.now().monthValue
         return when (month) {
-            3, 4, 5 -> Season.SPRING
-            6, 7, 8 -> Season.SUMMER
-            9, 10, 11 -> Season.FALL
-            else -> Season.WINTER
+            3, 4, 5 -> PreventionSeason.SPRING
+            6, 7, 8 -> PreventionSeason.SUMMER
+            9, 10, 11 -> PreventionSeason.FALL
+            else -> PreventionSeason.WINTER
         }
     }
     

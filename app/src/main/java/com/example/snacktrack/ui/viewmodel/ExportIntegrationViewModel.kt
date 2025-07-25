@@ -77,7 +77,9 @@ class ExportIntegrationViewModel(
         dogIds: List<String>,
         exportType: ExportType,
         format: ExportFormat,
-        dateRange: DateRange? = null,
+        dateRangeType: DateRange? = null,
+        customStartDate: LocalDate? = null,
+        customEndDate: LocalDate? = null,
         includePhotos: Boolean = false
     ) {
         viewModelScope.launch {
@@ -90,7 +92,9 @@ class ExportIntegrationViewModel(
                     dogIds = dogIds,
                     exportType = exportType,
                     format = format,
-                    dateRange = dateRange,
+                    dateRangeType = dateRangeType,
+                    customStartDate = customStartDate,
+                    customEndDate = customEndDate,
                     includePhotos = includePhotos
                 )
                 
