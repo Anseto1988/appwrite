@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.repository.PreventionRepository
 import com.example.snacktrack.data.service.AppwriteService
-import com.example.snacktrack.ui.screens.prevention.PreventionActivity
-import com.example.snacktrack.ui.screens.prevention.PreventionTask
-import com.example.snacktrack.ui.screens.prevention.WeightEntry
+// These imports are already covered by the wildcard import above: com.example.snacktrack.data.model.*
+// PreventionActivity, PreventionTask, and WeightEntry are in the data.model package
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate

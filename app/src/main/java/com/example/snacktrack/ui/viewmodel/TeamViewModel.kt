@@ -7,11 +7,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.example.snacktrack.data.model.Team
 import com.example.snacktrack.data.model.TeamMember
-import com.example.snacktrack.data.model.TeamRole
+import com.example.snacktrack.data.model.BasicTeamRole
 import com.example.snacktrack.data.model.Dog
 import com.example.snacktrack.data.repository.TeamRepository
 import com.example.snacktrack.data.repository.DogRepository
@@ -147,7 +146,7 @@ class TeamViewModel(context: Context) : ViewModel() {
     /**
      * Fügt einen Benutzer zu einem Team hinzu
      */
-    fun addTeamMember(teamId: String, email: String, role: TeamRole) {
+    fun addTeamMember(teamId: String, email: String, role: BasicTeamRole) {
         viewModelScope.launch {
             _isLoading.value = true
             teamRepository.addTeamMember(teamId, email, role)
@@ -165,7 +164,7 @@ class TeamViewModel(context: Context) : ViewModel() {
     /**
      * Aktualisiert die Rolle eines Teammitglieds
      */
-    fun updateTeamMemberRole(teamId: String, membershipId: String, role: TeamRole) {
+    fun updateTeamMemberRole(teamId: String, membershipId: String, role: BasicTeamRole) {
         viewModelScope.launch {
             _isLoading.value = true
             teamRepository.updateTeamMemberRole(teamId, membershipId, role)

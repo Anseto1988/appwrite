@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import com.example.snacktrack.data.model.Dog
 import com.example.snacktrack.data.model.Team
 import com.example.snacktrack.data.model.TeamMember
-import com.example.snacktrack.data.model.TeamRole
+import com.example.snacktrack.data.model.BasicTeamRole
 import com.example.snacktrack.ui.components.CommonTopAppBar
 import com.example.snacktrack.ui.viewmodel.InvitationViewModel
 import com.example.snacktrack.ui.viewmodel.TeamViewModel
@@ -277,7 +277,7 @@ fun TeamCard(
     onShareDogClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onRemoveMemberClick: (String) -> Unit,
-    onUpdateRoleClick: (String, TeamRole) -> Unit
+    onUpdateRoleClick: (String, BasicTeamRole) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -347,7 +347,7 @@ fun TeamMemberItem(
     member: TeamMember,
     isOwner: Boolean,
     onRemoveClick: () -> Unit,
-    onRoleChange: (TeamRole) -> Unit
+    onRoleChange: (BasicTeamRole) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     
@@ -390,7 +390,7 @@ fun TeamMemberItem(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        TeamRole.entries.forEach { role ->
+                        BasicTeamRole.entries.forEach { role ->
                             DropdownMenuItem(
                                 text = { Text(role.displayName) },
                                 onClick = {
@@ -467,12 +467,12 @@ fun CreateTeamDialog(
 @Composable
 fun InviteUserDialog(
     onDismiss: () -> Unit,
-    onInviteUser: (String, TeamRole) -> Unit,
+    onInviteUser: (String, BasicTeamRole) -> Unit,
     onSearchUser: (String) -> Unit,
     searchResults: List<com.example.snacktrack.data.model.User>
 ) {
     var email by remember { mutableStateOf("") }
-    var selectedRole by remember { mutableStateOf(TeamRole.VIEWER) }
+    var selectedRole by remember { mutableStateOf(BasicTeamRole.VIEWER) }
     var showRoleDropdown by remember { mutableStateOf(false) }
     
     AlertDialog(
@@ -567,7 +567,7 @@ fun InviteUserDialog(
                         onDismissRequest = { showRoleDropdown = false },
                         modifier = Modifier.fillMaxWidth(0.7f)
                     ) {
-                        TeamRole.entries.forEach { role ->
+                        BasicTeamRole.entries.forEach { role ->
                             DropdownMenuItem(
                                 text = { Text(role.displayName) },
                                 onClick = {

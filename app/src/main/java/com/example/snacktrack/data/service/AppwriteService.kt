@@ -107,4 +107,30 @@ class AppwriteService private constructor(context: Context) {
             false
         }
     }
+    
+    /**
+     * Gets the current user ID
+     * @return The user ID or null if not logged in
+     */
+    suspend fun getCurrentUserId(): String? {
+        return try {
+            account.get().$id
+        } catch (e: Exception) {
+            SecureLogger.e("AppwriteService", "Failed to get current user ID", e)
+            null
+        }
+    }
+    
+    /**
+     * Gets the current user
+     * @return The current user or null if not logged in
+     */
+    suspend fun getCurrentUser(): io.appwrite.models.User<Map<String, Any>>? {
+        return try {
+            account.get()
+        } catch (e: Exception) {
+            SecureLogger.e("AppwriteService", "Failed to get current user", e)
+            null
+        }
+    }
 } 

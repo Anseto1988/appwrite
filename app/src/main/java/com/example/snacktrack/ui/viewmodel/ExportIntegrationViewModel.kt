@@ -84,8 +84,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(exportProgress = ExportProgress("Initialisiere Export...", 0f, "start")) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.createExportRequest(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     dogIds = dogIds,
                     exportType = exportType,
                     format = format,
@@ -213,8 +214,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.setupCalendarIntegration(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     provider = provider,
                     accountEmail = accountEmail,
                     authToken = authToken
@@ -283,8 +285,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.setupFitnessTracker(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     dogId = dogId,
                     deviceType = deviceType,
                     deviceId = deviceId,
@@ -352,8 +355,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.setupCloudBackup(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     provider = provider,
                     settings = settings
                 )
@@ -426,8 +430,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(importProgress = ImportProgress(currentStep = "Wiederherstellung wird gestartet...")) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.restoreFromBackup(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     backupId = backupId,
                     options = options
                 )
@@ -520,8 +525,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(importProgress = ImportProgress(currentStep = "Validiere Daten...")) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.importData(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     source = source,
                     fileData = fileData,
                     mappingConfig = mappingConfig,
@@ -569,8 +575,9 @@ class ExportIntegrationViewModel(
     ) {
         viewModelScope.launch {
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.configureSyncSettings(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     syncEnabled = syncEnabled,
                     syncInterval = syncInterval,
                     syncOnWifiOnly = syncOnWifiOnly,
@@ -602,8 +609,9 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.performSync(
-                    userId = appwriteService.getCurrentUserId(),
+                    userId = userId,
                     direction = direction
                 )
                 

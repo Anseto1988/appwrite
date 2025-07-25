@@ -42,7 +42,8 @@ class BarcodeViewModel(
     private fun loadInventory() {
         viewModelScope.launch {
             try {
-                val result = barcodeRepository.getUserInventory(appwriteService.currentUser?.id ?: "")
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
+                val result = barcodeRepository.getUserInventory(userId)
                 result.getOrNull()?.let { inventory ->
                     _uiState.update { it.copy(inventory = inventory) }
                 }
@@ -55,8 +56,9 @@ class BarcodeViewModel(
     private fun loadProductHistory() {
         viewModelScope.launch {
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = barcodeRepository.getBarcodeHistory(
-                    userId = appwriteService.currentUser?.id ?: "",
+                    userId = userId,
                     dogId = dogId,
                     limit = 10
                 )
@@ -178,8 +180,9 @@ class BarcodeViewModel(
     }
     
     private suspend fun recordScanHistory(barcode: String, product: Product) {
+        val userId = appwriteService.getCurrentUserId() ?: return
         barcodeRepository.recordBarcodeHistory(
-            userId = appwriteService.currentUser?.id ?: "",
+            userId = userId,
             dogId = dogId,
             barcode = barcode,
             product = product,
@@ -192,8 +195,9 @@ class BarcodeViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
+                val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = barcodeRepository.addToInventory(
-                    userId = appwriteService.currentUser?.id ?: "",
+                    userId = userId,
                     product = product,
                     quantity = quantity,
                     unit = unit
