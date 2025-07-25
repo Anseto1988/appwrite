@@ -2,12 +2,12 @@ const { Client, Databases, ID } = require('node-appwrite');
 
 // Initialize Appwrite client
 const client = new Client()
-    .setEndpoint('https://parse.nordburglarp.de/v2')
-    .setProject('672f86170022b9645901')
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint('https://parse.nordburglarp.de/v1')
+    .setProject('snackrack2')
+    .setKey('standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5');
 
 const databases = new Databases(client);
-const DATABASE_ID = 'snacktrack_db';
+const DATABASE_ID = 'snacktrack-db';
 
 async function createNutritionCollections() {
     console.log('Creating nutrition analysis collections...');
@@ -20,7 +20,10 @@ async function createNutritionCollections() {
             'nutrition_analysis',
             'Daily Nutrition Analysis',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -66,7 +69,10 @@ async function createNutritionCollections() {
             'treat_budgets',
             'Daily Treat Budgets',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         

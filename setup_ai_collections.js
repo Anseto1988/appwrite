@@ -2,12 +2,12 @@ const { Client, Databases, ID } = require('node-appwrite');
 
 // Initialize Appwrite client
 const client = new Client()
-    .setEndpoint('https://parse.nordburglarp.de/v2')
-    .setProject('672f86170022b9645901')
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint('https://parse.nordburglarp.de/v1')
+    .setProject('snackrack2')
+    .setKey('standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5');
 
 const databases = new Databases(client);
-const DATABASE_ID = 'snacktrack_db';
+const DATABASE_ID = 'snacktrack-db';
 
 async function createAICollections() {
     console.log('Creating AI/ML collections...');
@@ -20,7 +20,10 @@ async function createAICollections() {
             'ai_recommendations',
             'AI Food Recommendations',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -28,7 +31,7 @@ async function createAICollections() {
         await databases.createStringAttribute(DATABASE_ID, 'ai_recommendations', 'dogId', 36, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'ai_recommendations', 'generatedAt', true);
         await databases.createEnumAttribute(DATABASE_ID, 'ai_recommendations', 'recommendationType', 
-            ['DAILY', 'WEEKLY', 'TRANSITION', 'SPECIAL_DIET', 'WEIGHT_LOSS', 'WEIGHT_GAIN'], true);
+            ['DAILY', 'WEEKLY', 'MONTHLY', 'CUSTOM'], true);
         await databases.createStringAttribute(DATABASE_ID, 'ai_recommendations', 'recommendations', 10000, true); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'ai_recommendations', 'reasoning', 2000, true);
         await databases.createFloatAttribute(DATABASE_ID, 'ai_recommendations', 'confidenceScore', true, 0, 1);
@@ -47,7 +50,10 @@ async function createAICollections() {
             'ai_predictions',
             'Weight Predictions',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -71,7 +77,10 @@ async function createAICollections() {
             'ai_anomalies',
             'Eating Anomalies',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -79,13 +88,12 @@ async function createAICollections() {
         await databases.createStringAttribute(DATABASE_ID, 'ai_anomalies', 'dogId', 36, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'ai_anomalies', 'detectedAt', true);
         await databases.createEnumAttribute(DATABASE_ID, 'ai_anomalies', 'anomalyType', 
-            ['UNUSUAL_AMOUNT', 'SKIPPED_MEALS', 'TIME_PATTERN', 'FOOD_REJECTION', 
-             'RAPID_CONSUMPTION', 'SLOW_CONSUMPTION', 'FREQUENT_SNACKING', 'WATER_INTAKE'], true);
+            ['UNUSUAL_AMOUNT', 'SCHEDULE_DEVIATION', 'HEALTH_CONCERN', 'BEHAVIORAL_CHANGE'], true);
         await databases.createEnumAttribute(DATABASE_ID, 'ai_anomalies', 'severity', 
             ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], true);
         await databases.createStringAttribute(DATABASE_ID, 'ai_anomalies', 'description', 2000, true);
         await databases.createStringAttribute(DATABASE_ID, 'ai_anomalies', 'recommendation', 1000, true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'ai_anomalies', 'requiresVetAttention', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'ai_anomalies', 'requiresVetAttention', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'ai_anomalies', 'dogAnomalies', 'key', ['dogId']);
@@ -101,13 +109,16 @@ async function createAICollections() {
             'ai_training_data',
             'AI Training Data',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Training data attributes
         await databases.createEnumAttribute(DATABASE_ID, 'ai_training_data', 'modelType', 
-            ['FOOD_RECOMMENDATION', 'WEIGHT_PREDICTION', 'ANOMALY_DETECTION', 'HEALTH_PREDICTION'], true);
+            ['FOOD_RECOMMENDATION', 'HEALTH_MONITORING', 'BEHAVIOR_ANALYSIS', 'WEIGHT_MANAGEMENT'], true);
         await databases.createStringAttribute(DATABASE_ID, 'ai_training_data', 'inputData', 10000, true); // JSON
         await databases.createStringAttribute(DATABASE_ID, 'ai_training_data', 'actualOutcome', 10000, true); // JSON
         await databases.createStringAttribute(DATABASE_ID, 'ai_training_data', 'userFeedback', 2000, false); // JSON
@@ -126,7 +137,10 @@ async function createAICollections() {
             'ai_risk_assessments',
             'Health Risk Assessments',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         

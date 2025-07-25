@@ -2,12 +2,12 @@ const { Client, Databases, ID } = require('node-appwrite');
 
 // Initialize Appwrite client
 const client = new Client()
-    .setEndpoint('https://parse.nordburglarp.de/v2')
-    .setProject('672f86170022b9645901')
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint('https://parse.nordburglarp.de/v1')
+    .setProject('snackrack2')
+    .setKey('standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5');
 
 const databases = new Databases(client);
-const DATABASE_ID = 'snacktrack_db';
+const DATABASE_ID = 'snacktrack-db';
 
 async function createHealthCollections() {
     console.log('Creating health tracking collections...');
@@ -20,7 +20,10 @@ async function createHealthCollections() {
             'allergies',
             'Dog Allergies',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -28,14 +31,14 @@ async function createHealthCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'allergies', 'dogId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'allergies', 'allergen', 255, true);
         await databases.createEnumAttribute(DATABASE_ID, 'allergies', 'allergyType', 
-            ['FOOD', 'ENVIRONMENTAL', 'CONTACT', 'MEDICATION', 'OTHER'], true);
+            ['FOOD', 'ENVIRONMENTAL', 'MEDICATION', 'CONTACT', 'OTHER'], true);
         await databases.createEnumAttribute(DATABASE_ID, 'allergies', 'severity', 
-            ['MILD', 'MODERATE', 'SEVERE', 'CRITICAL'], true);
+            ['MILD', 'MODERATE', 'SEVERE'], true);
         await databases.createStringAttribute(DATABASE_ID, 'allergies', 'symptoms', 1000, false, undefined, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'allergies', 'diagnosedDate', false);
         await databases.createStringAttribute(DATABASE_ID, 'allergies', 'diagnosedBy', 255, false);
         await databases.createStringAttribute(DATABASE_ID, 'allergies', 'notes', 2000, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'allergies', 'isActive', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'allergies', 'isActive', true);
         
         // Allergies indexes
         await databases.createIndex(DATABASE_ID, 'allergies', 'dogId', 'key', ['dogId']);
@@ -50,7 +53,10 @@ async function createHealthCollections() {
             'medications',
             'Dog Medications',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -58,19 +64,19 @@ async function createHealthCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'dogId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'medicationName', 255, true);
         await databases.createEnumAttribute(DATABASE_ID, 'medications', 'medicationType', 
-            ['ORAL', 'TOPICAL', 'INJECTION', 'EYE_DROPS', 'EAR_DROPS', 'OTHER'], true);
+            ['ORAL', 'TOPICAL', 'INJECTION', 'INHALED', 'OTHER'], true);
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'dosage', 255, true);
         await databases.createEnumAttribute(DATABASE_ID, 'medications', 'frequency', 
-            ['ONCE', 'DAILY', 'TWICE_DAILY', 'THREE_TIMES_DAILY', 'WEEKLY', 'AS_NEEDED', 'CUSTOM'], true);
+            ['ONCE_DAILY', 'TWICE_DAILY', 'THREE_TIMES_DAILY', 'AS_NEEDED', 'WEEKLY', 'MONTHLY'], true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'medications', 'startDate', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'medications', 'endDate', false);
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'reminderTimes', 500, false, undefined, true);
         await databases.createEnumAttribute(DATABASE_ID, 'medications', 'foodInteraction', 
-            ['NONE', 'WITH_FOOD', 'EMPTY_STOMACH', 'BEFORE_FOOD', 'AFTER_FOOD'], true);
+            ['NONE', 'WITH_FOOD', 'WITHOUT_FOOD', 'AVOID_DAIRY'], true);
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'purpose', 500, true);
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'veterinarianName', 255, false);
         await databases.createStringAttribute(DATABASE_ID, 'medications', 'notes', 2000, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'medications', 'isActive', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'medications', 'isActive', true);
         
         // Medications indexes
         await databases.createIndex(DATABASE_ID, 'medications', 'dogMedications', 'key', ['dogId']);
@@ -85,7 +91,10 @@ async function createHealthCollections() {
             'health_entries',
             'Health Diary Entries',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -93,20 +102,20 @@ async function createHealthCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'dogId', 36, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'health_entries', 'entryDate', true);
         await databases.createEnumAttribute(DATABASE_ID, 'health_entries', 'entryType', 
-            ['OBSERVATION', 'SYMPTOM', 'MEDICATION_GIVEN', 'VET_VISIT', 'VACCINATION', 'ROUTINE_CHECK'], true);
+            ['OBSERVATION', 'SYMPTOM', 'BEHAVIOR', 'EMERGENCY', 'ROUTINE_CHECK'], true);
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'symptoms', 1000, false, undefined, true);
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'behaviorChanges', 500, false, undefined, true);
         await databases.createEnumAttribute(DATABASE_ID, 'health_entries', 'appetite', 
-            ['NO_APPETITE', 'DECREASED', 'NORMAL', 'INCREASED', 'EXCESSIVE'], true);
+            ['NO_APPETITE', 'REDUCED', 'NORMAL', 'INCREASED'], false);
         await databases.createEnumAttribute(DATABASE_ID, 'health_entries', 'energyLevel', 
-            ['VERY_LOW', 'LOW', 'NORMAL', 'HIGH', 'HYPERACTIVE'], true);
+            ['VERY_LOW', 'LOW', 'NORMAL', 'HIGH', 'VERY_HIGH'], false);
         await databases.createEnumAttribute(DATABASE_ID, 'health_entries', 'stoolQuality', 
             ['VERY_HARD', 'HARD', 'IDEAL', 'SOFT_FORMED', 'VERY_SOFT', 'LIQUID'], false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'health_entries', 'vomiting', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'health_entries', 'vomiting', true);
         await databases.createFloatAttribute(DATABASE_ID, 'health_entries', 'temperature', false, 30, 45);
         await databases.createFloatAttribute(DATABASE_ID, 'health_entries', 'weight', false, 0, 200);
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'possibleTriggers', 1000, false, undefined, true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'health_entries', 'veterinaryVisit', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'health_entries', 'veterinaryVisit', true);
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'treatment', 1000, false);
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'notes', 5000, true);
         await databases.createStringAttribute(DATABASE_ID, 'health_entries', 'attachedImageIds', 500, false, undefined, true);

@@ -2,12 +2,12 @@ const { Client, Databases, ID } = require('node-appwrite');
 
 // Initialize Appwrite client
 const client = new Client()
-    .setEndpoint('https://parse.nordburglarp.de/v2')
-    .setProject('672f86170022b9645901')
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint('https://parse.nordburglarp.de/v1')
+    .setProject('snackrack2')
+    .setKey('standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5');
 
 const databases = new Databases(client);
-const DATABASE_ID = 'snacktrack_db';
+const DATABASE_ID = 'snacktrack-db';
 
 async function createCommunityCollections() {
     console.log('Creating community collections...');
@@ -20,7 +20,10 @@ async function createCommunityCollections() {
             'forum_categories',
             'Forum Categories',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -29,7 +32,7 @@ async function createCommunityCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'forum_categories', 'description', 500, true);
         await databases.createStringAttribute(DATABASE_ID, 'forum_categories', 'icon', 10, true);
         await databases.createIntegerAttribute(DATABASE_ID, 'forum_categories', 'postCount', true, 0, 999999, 0);
-        await databases.createBooleanAttribute(DATABASE_ID, 'forum_categories', 'isModerated', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'forum_categories', 'isModerated', true);
         await databases.createStringAttribute(DATABASE_ID, 'forum_categories', 'allowedUserTypes', 255, false); // JSON array
         
         console.log('✓ Forum categories collection created');
@@ -41,7 +44,10 @@ async function createCommunityCollections() {
             'forum_posts',
             'Forum Posts',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -59,9 +65,9 @@ async function createCommunityCollections() {
         await databases.createIntegerAttribute(DATABASE_ID, 'forum_posts', 'viewCount', true, 0, 999999, 0);
         await databases.createIntegerAttribute(DATABASE_ID, 'forum_posts', 'likeCount', true, 0, 999999, 0);
         await databases.createIntegerAttribute(DATABASE_ID, 'forum_posts', 'replyCount', true, 0, 999999, 0);
-        await databases.createBooleanAttribute(DATABASE_ID, 'forum_posts', 'isPinned', true, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'forum_posts', 'isLocked', true, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'forum_posts', 'isExpertVerified', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'forum_posts', 'isPinned', true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'forum_posts', 'isLocked', true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'forum_posts', 'isExpertVerified', true);
         await databases.createStringAttribute(DATABASE_ID, 'forum_posts', 'breedSpecific', 1000, false); // JSON array
         
         // Indexes
@@ -78,7 +84,10 @@ async function createCommunityCollections() {
             'forum_replies',
             'Forum Replies',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -92,8 +101,8 @@ async function createCommunityCollections() {
         await databases.createDatetimeAttribute(DATABASE_ID, 'forum_replies', 'createdAt', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'forum_replies', 'updatedAt', true);
         await databases.createIntegerAttribute(DATABASE_ID, 'forum_replies', 'likeCount', true, 0, 999999, 0);
-        await databases.createBooleanAttribute(DATABASE_ID, 'forum_replies', 'isExpertAnswer', true, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'forum_replies', 'isBestAnswer', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'forum_replies', 'isExpertAnswer', true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'forum_replies', 'isBestAnswer', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'forum_replies', 'postReplies', 'key', ['postId']);
@@ -108,7 +117,10 @@ async function createCommunityCollections() {
             'community_events',
             'Community Events',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -116,7 +128,7 @@ async function createCommunityCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'organizerId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'organizerName', 255, true);
         await databases.createEnumAttribute(DATABASE_ID, 'community_events', 'eventType', 
-            ['MEETUP', 'TRAINING', 'COMPETITION', 'WORKSHOP', 'VET_CLINIC', 'ADOPTION', 'CHARITY', 'EXHIBITION'], true);
+            ['MEETUP');
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'title', 255, true);
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'description', 2000, true);
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'location', 2000, true); // JSON object
@@ -128,10 +140,10 @@ async function createCommunityCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'tags', 1000, false); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'images', 2000, false); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'community_events', 'requirements', 2000, false); // JSON object
-        await databases.createBooleanAttribute(DATABASE_ID, 'community_events', 'isFree', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'community_events', 'isFree', true);
         await databases.createFloatAttribute(DATABASE_ID, 'community_events', 'price', false, 0, 9999);
         await databases.createEnumAttribute(DATABASE_ID, 'community_events', 'status', 
-            ['UPCOMING', 'ONGOING', 'COMPLETED', 'CANCELLED', 'POSTPONED'], true);
+            ['UPCOMING');
         await databases.createDatetimeAttribute(DATABASE_ID, 'community_events', 'createdAt', true);
         
         // Indexes
@@ -147,7 +159,10 @@ async function createCommunityCollections() {
             'expert_profiles',
             'Expert Profiles',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -164,7 +179,7 @@ async function createCommunityCollections() {
         await databases.createIntegerAttribute(DATABASE_ID, 'expert_profiles', 'totalAnswers', true, 0, 99999, 0);
         await databases.createIntegerAttribute(DATABASE_ID, 'expert_profiles', 'helpfulAnswers', true, 0, 99999, 0);
         await databases.createStringAttribute(DATABASE_ID, 'expert_profiles', 'responseTime', 100, true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'expert_profiles', 'isAvailable', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'expert_profiles', 'isAvailable', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'expert_profiles', 'availableExperts', 'key', ['isAvailable']);
@@ -179,7 +194,10 @@ async function createCommunityCollections() {
             'expert_questions',
             'Expert Questions',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -192,16 +210,16 @@ async function createCommunityCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'expert_questions', 'dogBreed', 100, false);
         await databases.createIntegerAttribute(DATABASE_ID, 'expert_questions', 'dogAge', false, 0, 30);
         await databases.createEnumAttribute(DATABASE_ID, 'expert_questions', 'urgency', 
-            ['LOW', 'NORMAL', 'HIGH', 'URGENT'], true);
+            ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], true);
         await databases.createStringAttribute(DATABASE_ID, 'expert_questions', 'images', 2000, false); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'expert_questions', 'tags', 1000, false); // JSON array
         await databases.createDatetimeAttribute(DATABASE_ID, 'expert_questions', 'askedAt', true);
         await databases.createEnumAttribute(DATABASE_ID, 'expert_questions', 'status', 
-            ['OPEN', 'ASSIGNED', 'ANSWERED', 'RESOLVED', 'CLOSED'], true);
+            ['OPEN');
         await databases.createStringAttribute(DATABASE_ID, 'expert_questions', 'assignedExpertId', 36, false);
         await databases.createDatetimeAttribute(DATABASE_ID, 'expert_questions', 'answeredAt', false);
         await databases.createIntegerAttribute(DATABASE_ID, 'expert_questions', 'viewCount', true, 0, 999999, 0);
-        await databases.createBooleanAttribute(DATABASE_ID, 'expert_questions', 'isPublic', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'expert_questions', 'isPublic', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'expert_questions', 'openQuestions', 'key', ['status']);
@@ -216,7 +234,10 @@ async function createCommunityCollections() {
             'user_recipes',
             'User Recipes',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -226,12 +247,12 @@ async function createCommunityCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'user_recipes', 'title', 255, true);
         await databases.createStringAttribute(DATABASE_ID, 'user_recipes', 'description', 1000, true);
         await databases.createEnumAttribute(DATABASE_ID, 'user_recipes', 'category', 
-            ['MAIN_MEAL', 'TREAT', 'SUPPLEMENT', 'PUPPY', 'SENIOR', 'SPECIAL_DIET', 'RAW'], true);
+            ['MAIN_MEAL');
         await databases.createIntegerAttribute(DATABASE_ID, 'user_recipes', 'prepTime', true, 0, 999);
         await databases.createIntegerAttribute(DATABASE_ID, 'user_recipes', 'cookTime', true, 0, 999);
         await databases.createIntegerAttribute(DATABASE_ID, 'user_recipes', 'servings', true, 1, 99);
         await databases.createEnumAttribute(DATABASE_ID, 'user_recipes', 'difficulty', 
-            ['EASY', 'MEDIUM', 'HARD'], true);
+            ['EASY');
         await databases.createStringAttribute(DATABASE_ID, 'user_recipes', 'ingredients', 3000, true); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'user_recipes', 'instructions', 3000, true); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'user_recipes', 'nutritionInfo', 1000, false); // JSON object
@@ -242,7 +263,7 @@ async function createCommunityCollections() {
         await databases.createIntegerAttribute(DATABASE_ID, 'user_recipes', 'reviewCount', true, 0, 99999, 0);
         await databases.createIntegerAttribute(DATABASE_ID, 'user_recipes', 'favoriteCount', true, 0, 99999, 0);
         await databases.createDatetimeAttribute(DATABASE_ID, 'user_recipes', 'createdAt', true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'user_recipes', 'isApproved', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'user_recipes', 'isApproved', true);
         await databases.createStringAttribute(DATABASE_ID, 'user_recipes', 'approvedBy', 255, false);
         
         // Indexes
@@ -259,7 +280,10 @@ async function createCommunityCollections() {
             'community_tips',
             'Community Tips',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -267,7 +291,7 @@ async function createCommunityCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'community_tips', 'authorId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'community_tips', 'authorName', 255, true);
         await databases.createEnumAttribute(DATABASE_ID, 'community_tips', 'category', 
-            ['GENERAL', 'TRAINING', 'HEALTH', 'NUTRITION', 'GROOMING', 'BEHAVIOR', 'SAFETY', 'TRAVEL', 'SEASONAL'], true);
+            ['GENERAL', 'NUTRITION', 'EXERCISE', 'GROOMING', 'MEDICAL', 'BEHAVIORAL'], true);
         await databases.createStringAttribute(DATABASE_ID, 'community_tips', 'title', 255, true);
         await databases.createStringAttribute(DATABASE_ID, 'community_tips', 'content', 3000, true);
         await databases.createStringAttribute(DATABASE_ID, 'community_tips', 'breedSpecific', 1000, false); // JSON array
@@ -280,7 +304,7 @@ async function createCommunityCollections() {
         await databases.createIntegerAttribute(DATABASE_ID, 'community_tips', 'saveCount', true, 0, 999999, 0);
         await databases.createIntegerAttribute(DATABASE_ID, 'community_tips', 'shareCount', true, 0, 999999, 0);
         await databases.createDatetimeAttribute(DATABASE_ID, 'community_tips', 'createdAt', true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'community_tips', 'isVerified', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'community_tips', 'isVerified', true);
         await databases.createStringAttribute(DATABASE_ID, 'community_tips', 'verifiedBy', 255, false);
         
         // Indexes
@@ -296,17 +320,20 @@ async function createCommunityCollections() {
             'user_interactions',
             'User Interactions',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // User Interactions attributes
         await databases.createStringAttribute(DATABASE_ID, 'user_interactions', 'userId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'user_interactions', 'contentType', 
-            ['POST', 'REPLY', 'EVENT', 'RECIPE', 'TIP', 'QUESTION'], true);
+            ['POST');
         await databases.createStringAttribute(DATABASE_ID, 'user_interactions', 'contentId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'user_interactions', 'interactionType', 
-            ['LIKE', 'SAVE', 'SHARE', 'VIEW'], true);
+            ['LIKE');
         await databases.createDatetimeAttribute(DATABASE_ID, 'user_interactions', 'timestamp', true);
         
         // Indexes
@@ -322,21 +349,24 @@ async function createCommunityCollections() {
             'content_reports',
             'Content Reports',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Content Reports attributes
         await databases.createStringAttribute(DATABASE_ID, 'content_reports', 'reporterId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'content_reports', 'contentType', 
-            ['POST', 'REPLY', 'EVENT', 'RECIPE', 'TIP', 'QUESTION'], true);
+            ['POST');
         await databases.createStringAttribute(DATABASE_ID, 'content_reports', 'contentId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'content_reports', 'reason', 
-            ['INAPPROPRIATE', 'SPAM', 'HARASSMENT', 'MISINFORMATION', 'COPYRIGHT', 'OTHER'], true);
+            ['INAPPROPRIATE');
         await databases.createStringAttribute(DATABASE_ID, 'content_reports', 'description', 1000, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'content_reports', 'reportedAt', true);
         await databases.createEnumAttribute(DATABASE_ID, 'content_reports', 'status', 
-            ['PENDING', 'REVIEWING', 'RESOLVED', 'DISMISSED'], true);
+            ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED'], true);
         await databases.createStringAttribute(DATABASE_ID, 'content_reports', 'reviewedBy', 36, false);
         await databases.createDatetimeAttribute(DATABASE_ID, 'content_reports', 'reviewedAt', false);
         await databases.createEnumAttribute(DATABASE_ID, 'content_reports', 'action', 

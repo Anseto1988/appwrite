@@ -2,12 +2,12 @@ const { Client, Databases, ID } = require('node-appwrite');
 
 // Initialize Appwrite client
 const client = new Client()
-    .setEndpoint('https://parse.nordburglarp.de/v2')
-    .setProject('672f86170022b9645901')
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint('https://parse.nordburglarp.de/v1')
+    .setProject('snackrack2')
+    .setKey('standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5');
 
 const databases = new Databases(client);
-const DATABASE_ID = 'snacktrack_db';
+const DATABASE_ID = 'snacktrack-db';
 
 async function createStatisticsCollections() {
     console.log('Creating advanced statistics collections...');
@@ -20,14 +20,17 @@ async function createStatisticsCollections() {
             'advanced_statistics',
             'Advanced Analytics',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Advanced Statistics attributes
         await databases.createStringAttribute(DATABASE_ID, 'advanced_statistics', 'dogId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'advanced_statistics', 'period', 
-            ['WEEK', 'MONTH', 'QUARTER', 'YEAR', 'CUSTOM'], true);
+            ['WEEK');
         await databases.createDatetimeAttribute(DATABASE_ID, 'advanced_statistics', 'startDate', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'advanced_statistics', 'endDate', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'advanced_statistics', 'generatedAt', true);
@@ -55,7 +58,10 @@ async function createStatisticsCollections() {
             'custom_reports',
             'Custom Reports',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -65,13 +71,13 @@ async function createStatisticsCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'custom_reports', 'createdBy', 36, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'custom_reports', 'createdAt', true);
         await databases.createEnumAttribute(DATABASE_ID, 'custom_reports', 'reportType', 
-            ['STANDARD', 'DETAILED', 'SUMMARY', 'COMPARATIVE', 'PREDICTIVE'], true);
+            ['STANDARD');
         await databases.createStringAttribute(DATABASE_ID, 'custom_reports', 'sections', 5000, true); // JSON array
         await databases.createStringAttribute(DATABASE_ID, 'custom_reports', 'filters', 2000, true); // JSON object
         await databases.createStringAttribute(DATABASE_ID, 'custom_reports', 'schedule', 1000, false); // JSON object
         await databases.createStringAttribute(DATABASE_ID, 'custom_reports', 'recipients', 1000, false); // JSON array
         await databases.createEnumAttribute(DATABASE_ID, 'custom_reports', 'format', 
-            ['PDF', 'EXCEL', 'CSV', 'HTML', 'JSON'], true);
+            ['PDF');
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'custom_reports', 'userReports', 'key', ['createdBy']);
@@ -86,19 +92,22 @@ async function createStatisticsCollections() {
             'report_schedules',
             'Report Schedules',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Report Schedules attributes
         await databases.createStringAttribute(DATABASE_ID, 'report_schedules', 'reportId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'report_schedules', 'frequency', 
-            ['DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'YEARLY'], true);
+            ['DAILY');
         await databases.createIntegerAttribute(DATABASE_ID, 'report_schedules', 'dayOfWeek', false, 1, 7);
         await databases.createIntegerAttribute(DATABASE_ID, 'report_schedules', 'dayOfMonth', false, 1, 31);
         await databases.createStringAttribute(DATABASE_ID, 'report_schedules', 'time', 5, true); // HH:mm
         await databases.createDatetimeAttribute(DATABASE_ID, 'report_schedules', 'nextRunDate', true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'report_schedules', 'isActive', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'report_schedules', 'isActive', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'report_schedules', 'lastRunDate', false);
         await databases.createEnumAttribute(DATABASE_ID, 'report_schedules', 'lastRunStatus', 
             ['SUCCESS', 'FAILED', 'PENDING'], false);
@@ -116,14 +125,17 @@ async function createStatisticsCollections() {
             'analytics_cache',
             'Analytics Cache',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Analytics Cache attributes
         await databases.createStringAttribute(DATABASE_ID, 'analytics_cache', 'dogId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'analytics_cache', 'period', 
-            ['WEEK', 'MONTH', 'QUARTER', 'YEAR', 'CUSTOM'], true);
+            ['WEEK');
         await databases.createDatetimeAttribute(DATABASE_ID, 'analytics_cache', 'generatedAt', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'analytics_cache', 'expiresAt', true);
         await databases.createStringAttribute(DATABASE_ID, 'analytics_cache', 'data', 65535, true); // Large JSON
@@ -142,13 +154,16 @@ async function createStatisticsCollections() {
             'statistical_benchmarks',
             'Statistical Benchmarks',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Statistical Benchmarks attributes
         await databases.createEnumAttribute(DATABASE_ID, 'statistical_benchmarks', 'benchmarkType', 
-            ['BREED', 'AGE_GROUP', 'WEIGHT_CLASS', 'ACTIVITY_LEVEL'], true);
+            ['BREED');
         await databases.createStringAttribute(DATABASE_ID, 'statistical_benchmarks', 'category', 100, true);
         await databases.createStringAttribute(DATABASE_ID, 'statistical_benchmarks', 'metrics', 5000, true); // JSON
         await databases.createIntegerAttribute(DATABASE_ID, 'statistical_benchmarks', 'sampleSize', true, 0, 999999);
@@ -169,7 +184,10 @@ async function createStatisticsCollections() {
             'analytics_events',
             'Analytics Events',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -177,8 +195,7 @@ async function createStatisticsCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'analytics_events', 'userId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'analytics_events', 'dogId', 36, false);
         await databases.createEnumAttribute(DATABASE_ID, 'analytics_events', 'eventType', 
-            ['REPORT_GENERATED', 'REPORT_VIEWED', 'REPORT_EXPORTED', 'REPORT_SHARED', 
-             'STATISTICS_VIEWED', 'GOAL_SET', 'GOAL_ACHIEVED', 'ALERT_TRIGGERED'], true);
+            ['REPORT_GENERATED');
         await databases.createDatetimeAttribute(DATABASE_ID, 'analytics_events', 'timestamp', true);
         await databases.createStringAttribute(DATABASE_ID, 'analytics_events', 'metadata', 2000, false); // JSON
         await databases.createStringAttribute(DATABASE_ID, 'analytics_events', 'sessionId', 36, false);
@@ -198,20 +215,23 @@ async function createStatisticsCollections() {
             'data_export_history',
             'Data Export History',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Data Export History attributes
         await databases.createStringAttribute(DATABASE_ID, 'data_export_history', 'userId', 36, true);
         await databases.createEnumAttribute(DATABASE_ID, 'data_export_history', 'exportType', 
-            ['FULL_BACKUP', 'STATISTICS_REPORT', 'CUSTOM_REPORT', 'DATA_DUMP'], true);
+            ['FULL_BACKUP');
         await databases.createEnumAttribute(DATABASE_ID, 'data_export_history', 'format', 
-            ['PDF', 'EXCEL', 'CSV', 'JSON', 'ZIP'], true);
+            ['PDF');
         await databases.createDatetimeAttribute(DATABASE_ID, 'data_export_history', 'exportedAt', true);
         await databases.createIntegerAttribute(DATABASE_ID, 'data_export_history', 'fileSize', true, 0, 999999999);
         await databases.createStringAttribute(DATABASE_ID, 'data_export_history', 'fileName', 255, true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'data_export_history', 'includesPersonalData', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'data_export_history', 'includesPersonalData', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'data_export_history', 'expiresAt', false);
         await databases.createStringAttribute(DATABASE_ID, 'data_export_history', 'downloadUrl', 500, false);
         
@@ -228,13 +248,16 @@ async function createStatisticsCollections() {
             'performance_metrics',
             'Performance Metrics',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
         // Performance Metrics attributes
         await databases.createEnumAttribute(DATABASE_ID, 'performance_metrics', 'metricType', 
-            ['QUERY_TIME', 'CALCULATION_TIME', 'EXPORT_TIME', 'CACHE_HIT_RATE'], true);
+            ['QUERY_TIME');
         await databases.createStringAttribute(DATABASE_ID, 'performance_metrics', 'operation', 255, true);
         await databases.createFloatAttribute(DATABASE_ID, 'performance_metrics', 'value', true, 0, 999999);
         await databases.createStringAttribute(DATABASE_ID, 'performance_metrics', 'unit', 20, true);

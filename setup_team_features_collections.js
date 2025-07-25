@@ -2,12 +2,12 @@ const { Client, Databases, ID } = require('node-appwrite');
 
 // Initialize Appwrite client
 const client = new Client()
-    .setEndpoint('https://parse.nordburglarp.de/v2')
-    .setProject('672f86170022b9645901')
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint('https://parse.nordburglarp.de/v1')
+    .setProject('snackrack2')
+    .setKey('standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5');
 
 const databases = new Databases(client);
-const DATABASE_ID = 'snacktrack_db';
+const DATABASE_ID = 'snacktrack-db';
 
 async function createTeamFeaturesCollections() {
     console.log('Creating team features collections...');
@@ -20,7 +20,10 @@ async function createTeamFeaturesCollections() {
             'feeding_tasks',
             'Team Feeding Tasks',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -29,15 +32,15 @@ async function createTeamFeaturesCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'feeding_tasks', 'dogId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'feeding_tasks', 'assignedToUserId', 36, false);
         await databases.createEnumAttribute(DATABASE_ID, 'feeding_tasks', 'taskType', 
-            ['FEEDING', 'MEDICATION', 'WALK', 'VET_APPOINTMENT', 'GROOMING', 'TRAINING', 'WEIGHT_CHECK', 'OTHER'], true);
+            ['FEEDING');
         await databases.createDatetimeAttribute(DATABASE_ID, 'feeding_tasks', 'scheduledDate', true);
         await databases.createStringAttribute(DATABASE_ID, 'feeding_tasks', 'scheduledTime', 5, false); // HH:mm
         await databases.createEnumAttribute(DATABASE_ID, 'feeding_tasks', 'status', 
-            ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'OVERDUE', 'CANCELLED'], true);
+            ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED'], true);
         await databases.createStringAttribute(DATABASE_ID, 'feeding_tasks', 'completedByUserId', 36, false);
         await databases.createDatetimeAttribute(DATABASE_ID, 'feeding_tasks', 'completedAt', false);
         await databases.createStringAttribute(DATABASE_ID, 'feeding_tasks', 'notes', 1000, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'feeding_tasks', 'reminderEnabled', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'feeding_tasks', 'reminderEnabled', true);
         await databases.createIntegerAttribute(DATABASE_ID, 'feeding_tasks', 'reminderMinutesBefore', false, 0, 1440, 30);
         await databases.createStringAttribute(DATABASE_ID, 'feeding_tasks', 'recurrenceRule', 1000, false); // JSON
         
@@ -55,7 +58,10 @@ async function createTeamFeaturesCollections() {
             'shopping_lists',
             'Team Shopping Lists',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -64,7 +70,7 @@ async function createTeamFeaturesCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'shopping_lists', 'name', 255, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'shopping_lists', 'createdAt', true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'shopping_lists', 'lastUpdated', true);
-        await databases.createBooleanAttribute(DATABASE_ID, 'shopping_lists', 'isActive', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'shopping_lists', 'isActive', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'shopping_lists', 'teamLists', 'key', ['teamId']);
@@ -79,7 +85,10 @@ async function createTeamFeaturesCollections() {
             'shopping_items',
             'Shopping List Items',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -90,13 +99,13 @@ async function createTeamFeaturesCollections() {
         await databases.createIntegerAttribute(DATABASE_ID, 'shopping_items', 'quantity', true, 1, 999);
         await databases.createStringAttribute(DATABASE_ID, 'shopping_items', 'unit', 50, true);
         await databases.createEnumAttribute(DATABASE_ID, 'shopping_items', 'category', 
-            ['FOOD', 'TREATS', 'MEDICATION', 'SUPPLEMENTS', 'TOYS', 'GROOMING', 'ACCESSORIES', 'OTHER'], true);
+            ['FOOD', 'ENVIRONMENTAL', 'MEDICATION', 'CONTACT', 'OTHER'], true);
         await databases.createStringAttribute(DATABASE_ID, 'shopping_items', 'addedByUserId', 36, true);
         await databases.createDatetimeAttribute(DATABASE_ID, 'shopping_items', 'addedAt', true);
         await databases.createStringAttribute(DATABASE_ID, 'shopping_items', 'purchasedByUserId', 36, false);
         await databases.createDatetimeAttribute(DATABASE_ID, 'shopping_items', 'purchasedAt', false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'shopping_items', 'isPurchased', true, false);
-        await databases.createBooleanAttribute(DATABASE_ID, 'shopping_items', 'isUrgent', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'shopping_items', 'isPurchased', true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'shopping_items', 'isUrgent', true);
         await databases.createStringAttribute(DATABASE_ID, 'shopping_items', 'notes', 500, false);
         await databases.createFloatAttribute(DATABASE_ID, 'shopping_items', 'estimatedPrice', false, 0, 9999);
         await databases.createStringAttribute(DATABASE_ID, 'shopping_items', 'linkedFoodId', 36, false);
@@ -114,7 +123,10 @@ async function createTeamFeaturesCollections() {
             'team_activities',
             'Team Activity Feed',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -123,13 +135,11 @@ async function createTeamFeaturesCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'team_activities', 'userId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'team_activities', 'dogId', 36, false);
         await databases.createEnumAttribute(DATABASE_ID, 'team_activities', 'activityType', 
-            ['FEEDING', 'WEIGHT_ENTRY', 'MEDICATION_GIVEN', 'VET_VISIT', 'WALK_COMPLETED', 
-             'TASK_COMPLETED', 'TASK_ASSIGNED', 'SHOPPING_ITEM_ADDED', 'SHOPPING_ITEM_PURCHASED',
-             'DOG_ADDED', 'TEAM_MEMBER_JOINED', 'HEALTH_ISSUE_REPORTED', 'MILESTONE_REACHED'], true);
+            ['FEEDING');
         await databases.createDatetimeAttribute(DATABASE_ID, 'team_activities', 'timestamp', true);
         await databases.createStringAttribute(DATABASE_ID, 'team_activities', 'description', 500, true);
         await databases.createStringAttribute(DATABASE_ID, 'team_activities', 'details', 2000, false); // JSON
-        await databases.createBooleanAttribute(DATABASE_ID, 'team_activities', 'isImportant', true, false);
+        await databases.createBooleanAttribute(DATABASE_ID, 'team_activities', 'isImportant', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'team_activities', 'teamActivities', 'key', ['teamId']);
@@ -145,7 +155,10 @@ async function createTeamFeaturesCollections() {
             'task_templates',
             'Task Templates',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
@@ -153,12 +166,12 @@ async function createTeamFeaturesCollections() {
         await databases.createStringAttribute(DATABASE_ID, 'task_templates', 'teamId', 36, true);
         await databases.createStringAttribute(DATABASE_ID, 'task_templates', 'name', 255, true);
         await databases.createEnumAttribute(DATABASE_ID, 'task_templates', 'taskType', 
-            ['FEEDING', 'MEDICATION', 'WALK', 'VET_APPOINTMENT', 'GROOMING', 'TRAINING', 'WEIGHT_CHECK', 'OTHER'], true);
+            ['FEEDING');
         await databases.createStringAttribute(DATABASE_ID, 'task_templates', 'defaultTime', 5, false);
         await databases.createIntegerAttribute(DATABASE_ID, 'task_templates', 'defaultDuration', false, 0, 1440);
         await databases.createStringAttribute(DATABASE_ID, 'task_templates', 'defaultNotes', 1000, false);
         await databases.createStringAttribute(DATABASE_ID, 'task_templates', 'recurrenceRule', 1000, false); // JSON
-        await databases.createBooleanAttribute(DATABASE_ID, 'task_templates', 'isActive', true, true);
+        await databases.createBooleanAttribute(DATABASE_ID, 'task_templates', 'isActive', true);
         
         // Indexes
         await databases.createIndex(DATABASE_ID, 'task_templates', 'teamTemplates', 'key', ['teamId']);
@@ -173,7 +186,10 @@ async function createTeamFeaturesCollections() {
             'consumption_predictions',
             'Smart Shopping Predictions',
             [
-                { read: ["users"], write: ["users"] }
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
             ]
         );
         
