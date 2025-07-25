@@ -24,9 +24,9 @@ class AIRepository(
         const val RISK_ASSESSMENTS_COLLECTION_ID = "ai_risk_assessments"
     }
     
-    private val dogRepository = DogRepository(appwriteService)
-    private val foodIntakeRepository = FoodIntakeRepository(appwriteService)
-    private val weightRepository = WeightRepository(appwriteService)
+    private val dogRepository = DogRepository(context)
+    private val foodIntakeRepository = FoodIntakeRepository(context)
+    private val weightRepository = WeightRepository(context)
     private val healthRepository = HealthRepository(context, appwriteService)
     
     /**
@@ -37,8 +37,7 @@ class AIRepository(
         type: AIRecommendationType = AIRecommendationType.DAILY
     ): Result<FoodRecommendation> = safeApiCall {
         // Gather all necessary data
-        val dog = dogRepository.getDogById(dogId).getOrNull()
-            ?: throw Exception("Dog not found")
+        val dog = dogRepository.getDogById(dogId).getOrThrow()
         
         val allergies = healthRepository.getAllergiesForDog(dogId).getOrNull() ?: emptyList()
         val recentIntakes = mutableListOf<FoodIntake>()
@@ -48,11 +47,14 @@ class AIRepository(
             recentIntakes.addAll(intakes)
         }
         
-        val weightHistory = weightRepository.getWeightHistory(dogId).getOrNull() ?: emptyList()
+        val weightHistory = weightRepository.getWeightHistory(dogId).first()
         
         // Calculate factors
-        val age = dog.birthDate?.let { 
-            LocalDate.now().year - it.year + (LocalDate.now().dayOfYear - it.dayOfYear) / 365.0
+        val age = dog.birthDate?.let { birthDate ->
+            val now = LocalDate.now()
+            val years = now.year - birthDate.year
+            val dayDiff = now.dayOfMonth - birthDate.dayOfMonth
+            years + dayDiff / 365.0
         } ?: 2.0
         
         val factors = RecommendationFactors(
@@ -92,11 +94,10 @@ class AIRepository(
     suspend fun predictWeight(
         dogId: String,
         daysToPredict: Int = 90
-    ): Result<WeightPrediction> = safeApiCall {
-        val dog = dogRepository.getDogById(dogId).getOrNull()
-            ?: throw Exception("Dog not found")
+    ): Result<AIWeightPrediction> = safeApiCall {
+        val dog = dogRepository.getDogById(dogId).getOrThrow()
         
-        val weightHistory = weightRepository.getWeightHistory(dogId).getOrNull() ?: emptyList()
+        val weightHistory = weightRepository.getWeightHistory(dogId).first()
         
         if (weightHistory.size < 3) {
             throw Exception("Nicht genügend Gewichtsdaten für Vorhersage")
@@ -125,19 +126,22 @@ class AIRepository(
             daysToPredict
         )
         
-        val factors = WeightPredictionFactors(
+        val factors = AIWeightPredictionFactors(
             historicalWeights = weightHistory,
             averageDailyCalories = avgDailyCalories,
             activityLevel = dog.activityLevel,
             breed = dog.breed,
-            age = dog.birthDate?.let { 
-                LocalDate.now().year - it.year + (LocalDate.now().dayOfYear - it.dayOfYear) / 365.0
+            age = dog.birthDate?.let { birthDate ->
+                val now = LocalDate.now()
+                val years = now.year - birthDate.year
+                val dayDiff = now.dayOfMonth - birthDate.dayOfMonth
+                years + dayDiff / 365.0
             } ?: 2.0,
             isNeutered = false, // Would need this data
             healthConditions = emptyList()
         )
         
-        val prediction = WeightPrediction(
+        val prediction = AIWeightPrediction(
             dogId = dogId,
             currentWeight = dog.weight,
             predictions = predictions,
@@ -153,20 +157,22 @@ class AIRepository(
      * Detect anomalies in eating patterns
      */
     suspend fun detectEatingAnomalies(dogId: String): Result<List<EatingAnomaly>> = safeApiCall {
-        val recentIntakes = foodIntakeRepository.getFoodIntakesForDateRange(
-            dogId,
-            LocalDate.now().minusDays(7),
-            LocalDate.now()
-        ).getOrNull() ?: emptyList()
+        val recentIntakes = mutableListOf<FoodIntake>()
+        for (i in 0..6) {
+            val date = LocalDate.now().minusDays(i.toLong())
+            val intakes = foodIntakeRepository.getFoodIntakesForDog(dogId, date).first()
+            recentIntakes.addAll(intakes)
+        }
         
-        val historicalIntakes = foodIntakeRepository.getFoodIntakesForDateRange(
-            dogId,
-            LocalDate.now().minusDays(30),
-            LocalDate.now().minusDays(8)
-        ).getOrNull() ?: emptyList()
+        val historicalIntakes = mutableListOf<FoodIntake>()
+        for (i in 8..30) {
+            val date = LocalDate.now().minusDays(i.toLong())
+            val intakes = foodIntakeRepository.getFoodIntakesForDog(dogId, date).first()
+            historicalIntakes.addAll(intakes)
+        }
         
         if (historicalIntakes.isEmpty()) {
-            return@safeApiCall emptyList()
+            return@safeApiCall emptyList<EatingAnomaly>()
         }
         
         // Establish baseline
@@ -177,7 +183,7 @@ class AIRepository(
         
         // Check for unusual amounts
         val dailyCalories = recentIntakes.groupBy { it.timestamp.toLocalDate() }
-            .mapValues { it.value.sumOf { intake -> intake.calories } }
+            .mapValues { (_, intakeList) -> intakeList.sumOf { intake -> intake.calories } }
         
         dailyCalories.forEach { (date, calories) ->
             val deviation = abs(calories - baseline.averageDailyCalories) / baseline.averageDailyCalories.toDouble()
@@ -225,10 +231,9 @@ class AIRepository(
      * Perform health risk assessment
      */
     suspend fun assessHealthRisk(dogId: String): Result<HealthRiskAssessment> = safeApiCall {
-        val dog = dogRepository.getDogById(dogId).getOrNull()
-            ?: throw Exception("Dog not found")
+        val dog = dogRepository.getDogById(dogId).getOrThrow()
         
-        val weightHistory = weightRepository.getWeightHistory(dogId).getOrNull() ?: emptyList()
+        val weightHistory = weightRepository.getWeightHistory(dogId).first()
         val recentIntakes = mutableListOf<FoodIntake>()
         for (i in 0..30) {
             val date = LocalDate.now().minusDays(i.toLong())
@@ -259,7 +264,7 @@ class AIRepository(
         // Assess activity risk
         val activityRisk = RiskFactor(
             factor = "Aktivitätslevel",
-            category = RiskCategory.ACTIVITY,
+            category = AIRiskCategory.ACTIVITY,
             severity = when (dog.activityLevel) {
                 ActivityLevel.VERY_LOW -> 0.7f
                 ActivityLevel.LOW -> 0.5f
@@ -390,7 +395,7 @@ class AIRepository(
         currentCalories: Int,
         targetCalories: Int,
         days: Int
-    ): List<WeightPredictionPoint> {
+    ): List<AIWeightPredictionPoint> {
         // Simple linear regression
         val weights = history.map { it.weight }
         val avgWeight = weights.average()
@@ -406,7 +411,7 @@ class AIRepository(
         val adjustedTrend = trend + (calorieDiff / 3500.0) // 3500 kcal ≈ 0.45 kg
         
         return (1..days).map { day ->
-            WeightPredictionPoint(
+            AIWeightPredictionPoint(
                 date = LocalDate.now().plusDays(day.toLong()),
                 predictedWeight = history.last().weight + (adjustedTrend * day),
                 confidenceLevel = maxOf(0.9f - (day / 365f), 0.3f) // Confidence decreases over time
@@ -415,7 +420,7 @@ class AIRepository(
     }
     
     private fun calculateConfidenceInterval(
-        predictions: List<WeightPredictionPoint>
+        predictions: List<AIWeightPredictionPoint>
     ): ConfidenceInterval {
         val margin = predictions.map { it.predictedWeight * (1 - it.confidenceLevel) * 0.1 }
         return ConfidenceInterval(
@@ -426,7 +431,7 @@ class AIRepository(
     
     private fun establishBaseline(intakes: List<FoodIntake>): BaselineEatingPattern {
         val dailyCalories = intakes.groupBy { it.timestamp.toLocalDate() }
-            .mapValues { it.value.sumOf { intake -> intake.calories } }
+            .mapValues { (_, intakeList) -> intakeList.sumOf { intake -> intake.calories } }
         
         val mealTimes = intakes.map { it.timestamp.hour }
             .groupingBy { it }
@@ -502,7 +507,7 @@ class AIRepository(
         
         return RiskFactor(
             factor = "Gewicht",
-            category = RiskCategory.WEIGHT,
+            category = AIRiskCategory.WEIGHT,
             severity = minOf(severity, 1f),
             description = "Aktuelles Gewicht: ${dog.weight}kg (Ideal: ${idealWeight}kg)",
             improvementPlan = when {
@@ -516,7 +521,7 @@ class AIRepository(
     private fun assessNutritionRisk(intakes: List<FoodIntake>, dog: Dog): RiskFactor {
         val dailyCalories = if (intakes.isNotEmpty()) {
             intakes.groupBy { it.timestamp.toLocalDate() }
-                .mapValues { it.value.sumOf { intake -> intake.calories } }
+                .mapValues { (_, intakeList) -> intakeList.sumOf { intake -> intake.calories } }
                 .values.average()
         } else 0.0
         
@@ -532,7 +537,7 @@ class AIRepository(
         
         return RiskFactor(
             factor = "Ernährung",
-            category = RiskCategory.NUTRITION,
+            category = AIRiskCategory.NUTRITION,
             severity = severity,
             description = "Durchschnittliche Kalorienzufuhr: ${dailyCalories.toInt()} kcal/Tag",
             improvementPlan = when {
@@ -603,7 +608,7 @@ class AIRepository(
         return recommendation.copy(id = document.id)
     }
     
-    private suspend fun savePrediction(prediction: WeightPrediction): WeightPrediction {
+    private suspend fun savePrediction(prediction: AIWeightPrediction): AIWeightPrediction {
         val data = mapOf(
             "dogId" to prediction.dogId,
             "predictionDate" to prediction.predictionDate.toString(),

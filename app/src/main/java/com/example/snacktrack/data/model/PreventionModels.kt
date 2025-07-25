@@ -49,7 +49,7 @@ enum class PreventionActivityLevel {
     VERY_HIGH
 }
 
-enum class ActivityType {
+enum class PreventionActivityType {
     WALK,
     RUN,
     SWIM,
@@ -89,7 +89,7 @@ data class ExercisePlan(
 )
 
 data class PlannedActivity(
-    val type: ActivityType = ActivityType.WALK,
+    val type: PreventionActivityType = PreventionActivityType.WALK,
     val duration: Int = 0, // minutes
     val intensity: PreventionActivityLevel = PreventionActivityLevel.MODERATE,
     val frequency: String = "", // e.g., "daily", "3x per week"

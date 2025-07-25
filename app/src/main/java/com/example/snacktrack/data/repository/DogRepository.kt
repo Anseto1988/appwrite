@@ -346,6 +346,23 @@ class DogRepository(private val context: Context) : BaseRepository() {
     }
     
     /**
+     * Holt einen spezifischen Hund anhand seiner ID
+     */
+    suspend fun getDogById(dogId: String): Result<Dog> = withContext(Dispatchers.IO) {
+        try {
+            val document = databases.getDocument(
+                databaseId = AppwriteService.DATABASE_ID,
+                collectionId = AppwriteService.COLLECTION_DOGS,
+                documentId = dogId
+            )
+            val dog = convertDocumentToDog(document)
+            Result.success(dog)
+        } catch (e: AppwriteException) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
      * Löscht einen Hund
      */
     suspend fun deleteDog(dogId: String): Result<Unit> = withContext(Dispatchers.IO) {

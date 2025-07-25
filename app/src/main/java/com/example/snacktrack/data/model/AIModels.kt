@@ -10,7 +10,7 @@ data class FoodRecommendation(
     val id: String = "",
     val dogId: String = "",
     val generatedAt: LocalDateTime = LocalDateTime.now(),
-    val recommendationType: RecommendationType = RecommendationType.DAILY,
+    val recommendationType: AIRecommendationType = AIRecommendationType.DAILY,
     val recommendations: List<FoodRecommendationItem> = emptyList(),
     val reasoning: String = "",
     val confidenceScore: Float = 0f,
