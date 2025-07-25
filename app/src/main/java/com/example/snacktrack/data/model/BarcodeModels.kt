@@ -83,7 +83,7 @@ data class Product(
     val certifications: List<Certification> = emptyList(),
     val variants: List<ProductVariant> = emptyList(),
     val metadata: ProductMetadata = ProductMetadata(),
-    val source: DataSource = DataSource.USER_CONTRIBUTED,
+    val source: BarcodeDataSource = BarcodeDataSource.USER_CONTRIBUTED,
     val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
     val lastUpdated: LocalDateTime = LocalDateTime.now()
 )
@@ -283,7 +283,7 @@ data class ProductMetadata(
     val sustainabilityScore: Int? = null
 )
 
-enum class DataSource {
+enum class BarcodeDataSource {
     OFFICIAL_DATABASE,
     MANUFACTURER,
     RETAILER,
@@ -385,7 +385,7 @@ data class ComparisonRecommendation(
 
 // Shopping Assistant
 
-data class ShoppingList(
+data class BarcodeShoppingList(
     val id: String = "",
     val userId: String = "",
     val name: String = "",

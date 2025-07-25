@@ -2,14 +2,17 @@ package com.example.snacktrack.data.repository
 
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.service.AppwriteService
+import io.appwrite.ID
 import io.appwrite.Query
 import io.appwrite.models.Document
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 class NutritionRepository(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : BaseRepository() {
     
@@ -18,8 +21,8 @@ class NutritionRepository(
         const val TREAT_BUDGET_COLLECTION_ID = "treat_budgets"
     }
     
-    private val foodIntakeRepository = FoodIntakeRepository(appwriteService)
-    private val dogRepository = DogRepository(appwriteService)
+    private val foodIntakeRepository = FoodIntakeRepository(context)
+    private val dogRepository = DogRepository(context)
     
     /**
      * Calculate and save daily nutrition analysis
@@ -30,8 +33,8 @@ class NutritionRepository(
         val dog = dogResult.getOrNull() ?: throw Exception("Dog not found")
         
         // Get all food intakes for the day
-        val intakesResult = foodIntakeRepository.getFoodIntakesForDate(dogId, date)
-        val intakes = intakesResult.getOrNull() ?: emptyList()
+        val intakesFlow = foodIntakeRepository.getFoodIntakesForDog(dogId, date)
+        val intakes = kotlinx.coroutines.flow.first(intakesFlow)
         
         // Calculate totals
         var totalCalories = 0
@@ -145,15 +148,18 @@ class NutritionRepository(
         
         val document = if (existing.isSuccess && existing.getOrNull() != null) {
             // Update existing
-            appwriteService.updateDocument(
+            appwriteService.databases.updateDocument(
+                databaseId = AppwriteService.DATABASE_ID,
                 collectionId = NUTRITION_ANALYSIS_COLLECTION_ID,
                 documentId = existing.getOrNull()!!.id,
                 data = data
             )
         } else {
             // Create new
-            appwriteService.createDocument(
+            appwriteService.databases.createDocument(
+                databaseId = AppwriteService.DATABASE_ID,
                 collectionId = NUTRITION_ANALYSIS_COLLECTION_ID,
+                documentId = ID.unique(),
                 data = data
             )
         }
@@ -165,7 +171,8 @@ class NutritionRepository(
      * Get nutrition analysis for a specific date
      */
     suspend fun getNutritionAnalysis(dogId: String, date: LocalDate): Result<NutritionAnalysis?> = safeApiCall {
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = NUTRITION_ANALYSIS_COLLECTION_ID,
             queries = listOf(
                 Query.equal("dogId", dogId),
@@ -184,7 +191,8 @@ class NutritionRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): Result<List<NutritionAnalysis>> = safeApiCall {
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = NUTRITION_ANALYSIS_COLLECTION_ID,
             queries = listOf(
                 Query.equal("dogId", dogId),
@@ -229,7 +237,8 @@ class NutritionRepository(
         val treatLimit = (dailyCalories * 0.1).toInt() // 10% for treats
         
         // Get existing budget or create new
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = TREAT_BUDGET_COLLECTION_ID,
             queries = listOf(
                 Query.equal("dogId", dogId),
@@ -289,8 +298,10 @@ class NutritionRepository(
             "treats" to treatData
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = TREAT_BUDGET_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         

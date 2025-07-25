@@ -26,8 +26,8 @@ class OfflineRepository(
     private val context: Context,
     private val appwriteService: AppwriteService
 ) {
-    private val database = appwriteService.database
-    private val databaseId = "snacktrack_db"
+    private val databases = appwriteService.databases
+    private val databaseId = AppwriteService.DATABASE_ID
     
     // Local storage for offline data
     private val sharedPrefs = context.getSharedPreferences("offline_data", Context.MODE_PRIVATE)
@@ -348,7 +348,7 @@ class OfflineRepository(
             
             val cache = OfflineCache(
                 id = UUID.randomUUID().toString(),
-                userId = appwriteService.getCurrentUserId(),
+                userId = appwriteService.account.get().\$id,
                 cacheType = cacheType,
                 entityType = entityType,
                 entityId = entityId,
@@ -724,7 +724,7 @@ class OfflineRepository(
         return count > 0
     }
     
-    private fun shouldSyncNow(): Boolean {
+    private suspend fun shouldSyncNow(): Boolean {
         val config = getOfflineConfiguration()
         val network = _networkState.value
         

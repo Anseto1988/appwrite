@@ -2,17 +2,20 @@ package com.example.snacktrack.data.repository
 
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.service.AppwriteService
+import io.appwrite.ID
 import io.appwrite.Query
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.models.Document
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 class HealthRepository(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : BaseRepository() {
     
@@ -36,8 +39,10 @@ class HealthRepository(
             "isActive" to allergy.isActive
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = ALLERGIES_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
@@ -45,7 +50,8 @@ class HealthRepository(
     }
     
     suspend fun getAllergiesForDog(dogId: String): Result<List<DogAllergy>> = safeApiCall {
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = ALLERGIES_COLLECTION_ID,
             queries = listOf(
                 Query.equal("dogId", dogId),
@@ -85,8 +91,10 @@ class HealthRepository(
             "isActive" to medication.isActive
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = MEDICATIONS_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
@@ -94,7 +102,8 @@ class HealthRepository(
     }
     
     suspend fun getActiveMedications(dogId: String): Result<List<DogMedication>> = safeApiCall {
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = MEDICATIONS_COLLECTION_ID,
             queries = listOf(
                 Query.equal("dogId", dogId),
@@ -147,8 +156,10 @@ class HealthRepository(
             "attachedImageIds" to entry.attachedImageIds
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = HEALTH_ENTRIES_COLLECTION_ID,
+            documentId = ID.unique(),
             data = data
         )
         
@@ -170,7 +181,8 @@ class HealthRepository(
             queries.add(Query.lessThanEqual("entryDate", it.toString()))
         }
         
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = HEALTH_ENTRIES_COLLECTION_ID,
             queries = queries
         )
@@ -190,12 +202,18 @@ class HealthRepository(
         val symptomEntries = healthEntries.filter { it.symptoms.contains(symptom) }
         
         // Get food intake data for the same period
-        val foodIntakeRepository = FoodIntakeRepository(appwriteService)
-        val foodIntakes = foodIntakeRepository.getFoodIntakesForDateRange(
-            dogId,
-            startDate.toLocalDate(),
-            endDate.toLocalDate()
-        ).getOrNull() ?: emptyList()
+        val foodIntakeRepository = FoodIntakeRepository(context)
+        val foodIntakes = mutableListOf<FoodIntake>()
+        
+        // Get food intakes for each day in the range
+        var currentDate = startDate.toLocalDate()
+        while (!currentDate.isAfter(endDate.toLocalDate())) {
+            val dailyIntakes = kotlinx.coroutines.flow.first(
+                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
+            )
+            foodIntakes.addAll(dailyIntakes)
+            currentDate = currentDate.plusDays(1)
+        }
         
         // Analyze correlation
         val foodFrequency = mutableMapOf<String, Int>()
