@@ -24,9 +24,10 @@ data class NutritionUiState(
 )
 
 class NutritionViewModel(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModel() {
-    private val nutritionRepository = NutritionRepository(appwriteService)
+    private val nutritionRepository = NutritionRepository(context, appwriteService)
     
     private val _uiState = MutableStateFlow(NutritionUiState())
     val uiState: StateFlow<NutritionUiState> = _uiState.asStateFlow()
@@ -173,12 +174,13 @@ data class CalorieDistribution(
 )
 
 class NutritionViewModelFactory(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NutritionViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NutritionViewModel(appwriteService) as T
+            return NutritionViewModel(context, appwriteService) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

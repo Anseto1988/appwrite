@@ -25,9 +25,10 @@ data class AdvancedStatisticsUiState(
 )
 
 class AdvancedStatisticsViewModel(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModel() {
-    private val statisticsRepository = StatisticsRepository(appwriteService)
+    private val statisticsRepository = StatisticsRepository(context, appwriteService)
     
     private val _uiState = MutableStateFlow(AdvancedStatisticsUiState())
     val uiState: StateFlow<AdvancedStatisticsUiState> = _uiState.asStateFlow()
@@ -379,12 +380,13 @@ class AdvancedStatisticsViewModel(
 }
 
 class AdvancedStatisticsViewModelFactory(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AdvancedStatisticsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return AdvancedStatisticsViewModel(appwriteService) as T
+            return AdvancedStatisticsViewModel(context, appwriteService) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

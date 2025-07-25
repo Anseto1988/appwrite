@@ -22,9 +22,10 @@ data class AIUiState(
 )
 
 class AIViewModel(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModel() {
-    private val aiRepository = AIRepository(appwriteService)
+    private val aiRepository = AIRepository(context, appwriteService)
     
     private val _uiState = MutableStateFlow(AIUiState())
     val uiState: StateFlow<AIUiState> = _uiState.asStateFlow()
@@ -141,12 +142,13 @@ class AIViewModel(
 }
 
 class AIViewModelFactory(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AIViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return AIViewModel(appwriteService) as T
+            return AIViewModel(context, appwriteService) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

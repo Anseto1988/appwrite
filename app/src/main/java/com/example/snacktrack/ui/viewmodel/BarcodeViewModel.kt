@@ -26,10 +26,11 @@ data class BarcodeUiState(
 )
 
 class BarcodeViewModel(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService,
     private val dogId: String
 ) : ViewModel() {
-    private val barcodeRepository = BarcodeRepository(appwriteService)
+    private val barcodeRepository = BarcodeRepository(context, appwriteService)
     
     private val _uiState = MutableStateFlow(BarcodeUiState())
     val uiState: StateFlow<BarcodeUiState> = _uiState.asStateFlow()
@@ -390,13 +391,14 @@ class BarcodeViewModel(
 }
 
 class BarcodeViewModelFactory(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService,
     private val dogId: String
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(BarcodeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return BarcodeViewModel(appwriteService, dogId) as T
+            return BarcodeViewModel(context, appwriteService, dogId) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

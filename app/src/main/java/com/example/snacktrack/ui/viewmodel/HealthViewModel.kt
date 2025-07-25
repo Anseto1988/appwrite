@@ -39,9 +39,10 @@ enum class InsightPriority {
 }
 
 class HealthViewModel(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModel() {
-    private val healthRepository = HealthRepository(appwriteService)
+    private val healthRepository = HealthRepository(context, appwriteService)
     
     private val _uiState = MutableStateFlow(HealthUiState())
     val uiState: StateFlow<HealthUiState> = _uiState.asStateFlow()
@@ -226,12 +227,13 @@ class HealthViewModel(
 }
 
 class HealthViewModelFactory(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HealthViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HealthViewModel(appwriteService) as T
+            return HealthViewModel(context, appwriteService) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+
+// Custom Color definitions
+private val Orange = Color(0xFFFF9800)
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -411,7 +414,7 @@ private fun TaskItem(task: PreventionTask) {
             modifier = Modifier.size(20.dp),
             tint = when (task.priority) {
                 RecommendationPriority.CRITICAL -> Color.Red
-                RecommendationPriority.HIGH -> Color.Orange
+                RecommendationPriority.HIGH -> Orange
                 RecommendationPriority.MEDIUM -> Color.Blue
                 RecommendationPriority.LOW -> Color.Gray
             }
@@ -437,7 +440,7 @@ private fun TaskItem(task: PreventionTask) {
         Badge(
             containerColor = when (task.priority) {
                 RecommendationPriority.CRITICAL -> Color.Red
-                RecommendationPriority.HIGH -> Color.Orange
+                RecommendationPriority.HIGH -> Orange
                 RecommendationPriority.MEDIUM -> Color.Blue
                 RecommendationPriority.LOW -> Color.Gray
             }
@@ -564,7 +567,7 @@ private fun AnalyticsOverviewCard(analytics: PreventionAnalytics) {
                     fontWeight = FontWeight.Bold,
                     color = when {
                         analytics.complianceMetrics.overallCompliance >= 80 -> Color.Green
-                        analytics.complianceMetrics.overallCompliance >= 60 -> Color.Orange
+                        analytics.complianceMetrics.overallCompliance >= 60 -> Orange
                         else -> Color.Red
                     }
                 )
@@ -575,7 +578,7 @@ private fun AnalyticsOverviewCard(analytics: PreventionAnalytics) {
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 color = when {
                     analytics.complianceMetrics.overallCompliance >= 80 -> Color.Green
-                    analytics.complianceMetrics.overallCompliance >= 60 -> Color.Orange
+                    analytics.complianceMetrics.overallCompliance >= 60 -> Orange
                     else -> Color.Red
                 }
             )
@@ -707,7 +710,7 @@ private fun WeightGoalCard(goal: WeightGoal, viewModel: PreventionViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 color = when {
                     goal.progress.percentComplete >= 80 -> Color.Green
-                    goal.progress.percentComplete >= 50 -> Color.Orange
+                    goal.progress.percentComplete >= 50 -> Orange
                     else -> Color.Blue
                 }
             )
@@ -990,7 +993,7 @@ private fun AllergenItem(allergen: KnownAllergen) {
             tint = when (allergen.severity) {
                 AllergySeverity.LIFE_THREATENING -> Color.Red
                 AllergySeverity.SEVERE -> Color.Red.copy(alpha = 0.7f)
-                AllergySeverity.MODERATE -> Color.Orange
+                AllergySeverity.MODERATE -> Orange
                 AllergySeverity.MILD -> Color.Yellow
             }
         )
@@ -1023,7 +1026,7 @@ private fun AllergenItem(allergen: KnownAllergen) {
             containerColor = when (allergen.severity) {
                 AllergySeverity.LIFE_THREATENING -> Color.Red
                 AllergySeverity.SEVERE -> Color.Red.copy(alpha = 0.7f)
-                AllergySeverity.MODERATE -> Color.Orange
+                AllergySeverity.MODERATE -> Orange
                 AllergySeverity.MILD -> Color.Yellow
             }
         ) {
@@ -1096,7 +1099,7 @@ private fun SuspectedAllergenItem(allergen: SuspectedAllergen, viewModel: Preven
             modifier = Modifier.size(20.dp),
             tint = when (allergen.suspicionLevel) {
                 SuspicionLevel.VERY_LIKELY -> Color.Red
-                SuspicionLevel.PROBABLE -> Color.Orange
+                SuspicionLevel.PROBABLE -> Orange
                 SuspicionLevel.POSSIBLE -> Color.Yellow
                 SuspicionLevel.UNLIKELY -> Color.Gray
             }
@@ -1472,7 +1475,7 @@ private fun ScreeningHistoryItem(screening: HealthScreening, viewModel: Preventi
                     containerColor = when (results.overallStatus) {
                         HealthStatus.EXCELLENT, HealthStatus.NORMAL -> Color.Green
                         HealthStatus.MINOR_CONCERNS -> Color.Yellow
-                        HealthStatus.MODERATE_CONCERNS -> Color.Orange
+                        HealthStatus.MODERATE_CONCERNS -> Orange
                         HealthStatus.SERIOUS_CONCERNS, HealthStatus.CRITICAL -> Color.Red
                     }
                 ) {
@@ -1617,7 +1620,7 @@ private fun DueVaccinationsCard(reminders: List<VaccineReminder>, viewModel: Pre
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Orange.copy(alpha = 0.1f)
+            containerColor = Orange.copy(alpha = 0.1f)
         )
     ) {
         Column(
@@ -1630,7 +1633,7 @@ private fun DueVaccinationsCard(reminders: List<VaccineReminder>, viewModel: Pre
                     imageVector = Icons.Default.Vaccines,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
-                    tint = Color.Orange
+                    tint = Orange
                 )
                 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -1676,7 +1679,7 @@ private fun DueVaccinationItem(reminder: VaccineReminder, viewModel: PreventionV
             Text(
                 text = "Fällig: ${reminder.reminderDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Orange
+                color = Orange
             )
         }
         
@@ -1710,7 +1713,7 @@ private fun VaccineCard(vaccine: Vaccine, viewModel: PreventionViewModel) {
                 Badge(
                     containerColor = when (vaccine.type) {
                         VaccineType.CORE -> Color.Red
-                        VaccineType.NON_CORE -> Color.Orange
+                        VaccineType.NON_CORE -> Orange
                         VaccineType.LIFESTYLE -> Color.Blue
                         VaccineType.REGIONAL -> Color.Green
                         VaccineType.TRAVEL -> Color.Purple
@@ -1860,7 +1863,7 @@ private fun DentalStatusCard(status: DentalStatus) {
                         Text(
                             text = "${status.missingTeeth.size} fehlende Zähne",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.Orange
+                            color = Orange
                         )
                     }
                     if (status.problematicTeeth.isNotEmpty()) {

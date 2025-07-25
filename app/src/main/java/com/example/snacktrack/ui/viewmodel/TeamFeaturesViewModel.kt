@@ -27,10 +27,11 @@ data class TeamUiState(
 )
 
 class TeamFeaturesViewModel(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService,
     private val sessionManager: SessionManager
 ) : ViewModel() {
-    private val teamFeaturesRepository = TeamFeaturesRepository(appwriteService)
+    private val teamFeaturesRepository = TeamFeaturesRepository(context, appwriteService)
     
     private val _uiState = MutableStateFlow(TeamUiState())
     val uiState: StateFlow<TeamUiState> = _uiState.asStateFlow()
@@ -241,13 +242,14 @@ class TeamFeaturesViewModel(
 }
 
 class TeamFeaturesViewModelFactory(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService,
     private val sessionManager: SessionManager
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TeamFeaturesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TeamFeaturesViewModel(appwriteService, sessionManager) as T
+            return TeamFeaturesViewModel(context, appwriteService, sessionManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
