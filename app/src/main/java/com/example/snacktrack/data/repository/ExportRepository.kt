@@ -54,7 +54,7 @@ class ExportRepository(
                 encryptionEnabled = format == ExportFormat.JSON
             )
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "export_requests",
                 documentId = ID.unique(),
@@ -175,7 +175,7 @@ class ExportRepository(
             // Test connection
             testVeterinaryConnection(integration)
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "veterinary_integrations",
                 documentId = ID.unique(),
@@ -242,7 +242,7 @@ class ExportRepository(
                 }
             }
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "calendar_integrations",
                 documentId = ID.unique(),
@@ -331,7 +331,7 @@ class ExportRepository(
                 syncSettings = getDefaultSyncSettings(deviceType)
             )
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "fitness_tracker_integrations",
                 documentId = ID.unique(),
@@ -360,7 +360,7 @@ class ExportRepository(
             }
             
             // Save fitness data
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "fitness_data",
                 documentId = ID.unique(),
@@ -403,7 +403,7 @@ class ExportRepository(
                 backupSettings = settings
             )
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "cloud_backups",
                 documentId = ID.unique(),
@@ -493,7 +493,7 @@ class ExportRepository(
                 restoreOptions = restoreOptions
             )
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "restore_requests",
                 documentId = ID.unique(),
@@ -528,7 +528,7 @@ class ExportRepository(
                 permissions = permissions
             )
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "api_integrations",
                 documentId = ID.unique(),
@@ -611,7 +611,7 @@ class ExportRepository(
                 return@withContext Result.failure(Exception("Import validation failed"))
             }
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "import_requests",
                 documentId = ID.unique(),
@@ -673,7 +673,7 @@ class ExportRepository(
                 conflictResolution = conflictResolution
             )
             
-            val document = databases.createDocument(
+            val document = appwriteService.databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "sync_configurations",
                 documentId = ID.unique(),
@@ -901,6 +901,11 @@ class ExportRepository(
     data class ValidationResults(
         val errors: List<ImportError> = emptyList(),
         val warnings: List<ImportWarning> = emptyList()
+    )
+    
+    data class DateRange(
+        val startDate: LocalDate,
+        val endDate: LocalDate
     )
 }
 

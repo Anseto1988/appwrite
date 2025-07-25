@@ -1403,6 +1403,6 @@ class BarcodeRepository(
 }
 
 // Placeholder classes
-data class Dog(val id: String, val name: String, val age: Int, val weight: Double)
+// Removed duplicate Dog class - using the one from com.example.snacktrack.data.model
 data class DogPreferences(val preferredFlavors: List<String> = emptyList())
 enum class RecommendationContext { GENERAL, HEALTH_FOCUSED, BUDGET, PREMIUM }

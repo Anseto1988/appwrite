@@ -14,6 +14,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class StatisticsRepository(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : BaseRepository() {
     
@@ -25,10 +26,10 @@ class StatisticsRepository(
     }
     
     // Dependency repositories
-    private val weightRepository = WeightRepository(appwriteService)
-    private val nutritionRepository = NutritionRepository(appwriteService)
-    private val healthRepository = HealthRepository(appwriteService)
-    private val foodIntakeRepository = FoodIntakeRepository(appwriteService)
+    private val weightRepository = WeightRepository(context)
+    private val nutritionRepository = NutritionRepository(context, appwriteService)
+    private val healthRepository = HealthRepository(context, appwriteService)
+    private val foodIntakeRepository = FoodIntakeRepository(context)
     
     // Generate comprehensive statistics
     suspend fun generateAdvancedStatistics(

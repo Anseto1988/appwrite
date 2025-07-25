@@ -390,10 +390,10 @@ class PreventionRepository(
     
     // Risk Assessment
     
-    suspend fun generateRiskAssessment(dogId: String): Result<RiskAssessment> = withContext(Dispatchers.IO) {
+    suspend fun generatePreventionRiskAssessment(dogId: String): Result<PreventionRiskAssessment> = withContext(Dispatchers.IO) {
         try {
             // This would use AI/ML to generate comprehensive risk assessment
-            val assessment = RiskAssessment(
+            val assessment = PreventionRiskAssessment(
                 dogId = dogId,
                 assessmentDate = LocalDate.now(),
                 breedRisks = generateBreedSpecificRisks(), // Would use breed data
@@ -426,7 +426,7 @@ class PreventionRepository(
         }
     }
     
-    suspend fun getRiskAssessments(dogId: String): Result<List<RiskAssessment>> = withContext(Dispatchers.IO) {
+    suspend fun getPreventionRiskAssessments(dogId: String): Result<List<PreventionRiskAssessment>> = withContext(Dispatchers.IO) {
         try {
             val documents = appwriteService.databases.listDocuments(
                 databaseId = databaseId,
@@ -438,7 +438,7 @@ class PreventionRepository(
             )
             
             val assessments = documents.documents.map { doc ->
-                RiskAssessment(
+                PreventionRiskAssessment(
                     id = doc.id,
                     dogId = doc.data["dogId"] as String,
                     overallRiskScore = (doc.data["overallRiskScore"] as Number).toDouble()
@@ -452,9 +452,9 @@ class PreventionRepository(
         }
     }
     
-    // Seasonal Care
+    // PreventionSeasonal Care
     
-    suspend fun getSeasonalCare(dogId: String, season: Season): Result<SeasonalCare> = withContext(Dispatchers.IO) {
+    suspend fun getPreventionSeasonalCare(dogId: String, season: PreventionSeason): Result<PreventionSeasonalCare> = withContext(Dispatchers.IO) {
         try {
             val documents = appwriteService.databases.listDocuments(
                 databaseId = databaseId,
@@ -468,13 +468,13 @@ class PreventionRepository(
             val existing = documents.documents.firstOrNull()
             
             val seasonalCare = existing?.let { doc ->
-                SeasonalCare(
+                PreventionSeasonalCare(
                     id = doc.id,
                     dogId = doc.data["dogId"] as String,
-                    season = Season.valueOf(doc.data["season"] as String)
+                    season = PreventionSeason.valueOf(doc.data["season"] as String)
                     // Would need proper deserialization
                 )
-            } ?: generateSeasonalCare(dogId, season)
+            } ?: generatePreventionSeasonalCare(dogId, season)
             
             Result.success(seasonalCare)
         } catch (e: AppwriteException) {
@@ -531,14 +531,14 @@ class PreventionRepository(
                 condition = "Arthritis",
                 currentAge = 5,
                 riskAge = 7,
-                riskLevel = RiskLevel.MODERATE,
+                riskLevel = PreventionRiskLevel.MODERATE,
                 monitoringRequired = listOf("Beweglichkeit prüfen", "Schmerzanzeichen beobachten")
             ),
             AgeRelatedRisk(
                 condition = "Herzkrankheit",
                 currentAge = 5,
                 riskAge = 10,
-                riskLevel = RiskLevel.LOW,
+                riskLevel = PreventionRiskLevel.LOW,
                 monitoringRequired = listOf("Jährliche Herzuntersuchung", "Belastungstoleranz beobachten")
             )
         )
@@ -549,7 +549,7 @@ class PreventionRepository(
             LifestyleRisk(
                 factor = "Übergewicht",
                 currentStatus = "Normalgewicht",
-                riskLevel = RiskLevel.LOW,
+                riskLevel = PreventionRiskLevel.LOW,
                 modifiable = true,
                 recommendations = listOf("Regelmäßige Gewichtskontrolle", "Ausgewogene Ernährung")
             )
@@ -580,10 +580,10 @@ class PreventionRepository(
         )
     }
     
-    private fun generateSeasonalCare(dogId: String, season: Season): SeasonalCare {
+    private fun generatePreventionSeasonalCare(dogId: String, season: PreventionSeason): PreventionSeasonalCare {
         val hazards = when (season) {
-            Season.SPRING -> listOf(
-                SeasonalHazard(
+            PreventionSeason.SPRING -> listOf(
+                PreventionSeasonalHazard(
                     hazard = "Pollen",
                     riskPeriod = "März-Mai",
                     severity = HazardSeverity.MODERATE,
@@ -591,8 +591,8 @@ class PreventionRepository(
                     prevention = listOf("Pfoten nach Spaziergängen waschen", "Antihistaminika bei Bedarf")
                 )
             )
-            Season.SUMMER -> listOf(
-                SeasonalHazard(
+            PreventionSeason.SUMMER -> listOf(
+                PreventionSeasonalHazard(
                     hazard = "Hitzschlag",
                     riskPeriod = "Juni-August",
                     severity = HazardSeverity.SEVERE,
@@ -600,8 +600,8 @@ class PreventionRepository(
                     prevention = listOf("Schatten bereitstellen", "Viel Wasser", "Heiße Zeiten meiden")
                 )
             )
-            Season.FALL -> listOf(
-                SeasonalHazard(
+            PreventionSeason.FALL -> listOf(
+                PreventionSeasonalHazard(
                     hazard = "Pilze",
                     riskPeriod = "September-November",
                     severity = HazardSeverity.SERIOUS,
@@ -609,8 +609,8 @@ class PreventionRepository(
                     prevention = listOf("Spazierwege kontrollieren", "Maulkorb wenn nötig")
                 )
             )
-            Season.WINTER -> listOf(
-                SeasonalHazard(
+            PreventionSeason.WINTER -> listOf(
+                PreventionSeasonalHazard(
                     hazard = "Streusalz",
                     riskPeriod = "Dezember-Februar",
                     severity = HazardSeverity.MODERATE,
@@ -620,20 +620,20 @@ class PreventionRepository(
             )
         }
         
-        return SeasonalCare(
+        return PreventionSeasonalCare(
             dogId = dogId,
             season = season,
             year = LocalDate.now().year,
             hazards = hazards,
             preventiveMeasures = generatePreventiveMeasures(season),
             careAdjustments = generateCareAdjustments(season),
-            reminders = generateSeasonalReminders(season)
+            reminders = generatePreventionSeasonalReminders(season)
         )
     }
     
-    private fun generatePreventiveMeasures(season: Season): List<PreventiveMeasure> {
+    private fun generatePreventiveMeasures(season: PreventionSeason): List<PreventiveMeasure> {
         return when (season) {
-            Season.SPRING -> listOf(
+            PreventionSeason.SPRING -> listOf(
                 PreventiveMeasure(
                     measure = "Fellpflege intensivieren",
                     frequency = "Täglich",
@@ -644,9 +644,9 @@ class PreventionRepository(
         }
     }
     
-    private fun generateCareAdjustments(season: Season): CareAdjustments {
+    private fun generateCareAdjustments(season: PreventionSeason): CareAdjustments {
         return when (season) {
-            Season.SUMMER -> CareAdjustments(
+            PreventionSeason.SUMMER -> CareAdjustments(
                 groomingChanges = listOf("Häufigeres Baden", "Fell kürzen"),
                 exerciseModifications = listOf("Frühe Morgenstunden", "Späte Abendstunden"),
                 dietaryAdjustments = listOf("Mehr Wasser", "Leichtere Kost"),
@@ -656,9 +656,9 @@ class PreventionRepository(
         }
     }
     
-    private fun generateSeasonalReminders(season: Season): List<SeasonalReminder> {
+    private fun generatePreventionSeasonalReminders(season: PreventionSeason): List<PreventionSeasonalReminder> {
         return listOf(
-            SeasonalReminder(
+            PreventionSeasonalReminder(
                 task = "Zeckenschutz erneuern",
                 dueDate = LocalDate.now().plusDays(30),
                 recurring = true
@@ -704,7 +704,7 @@ class PreventionRepository(
         return listOf(
             PreventionTrend(
                 metric = "Dental Health",
-                direction = TrendDirection.IMPROVING,
+                direction = PreventionTrendDirection.IMPROVING,
                 magnitude = 15.0,
                 confidence = 0.85,
                 projection = "Continued improvement expected"
@@ -745,4 +745,14 @@ class PreventionRepository(
     private fun serializeLifestyleRisks(risks: List<LifestyleRisk>): String = "[]"
     private fun serializeEnvironmentalRisks(risks: List<EnvironmentalRisk>): String = "[]"
     private fun serializeRiskMitigations(mitigations: List<RiskMitigation>): String = "[]"
+    
+    private fun monthToSeasonName(monthName: String): String {
+        return when (monthName) {
+            "MARCH", "APRIL", "MAY" -> "SPRING"
+            "JUNE", "JULY", "AUGUST" -> "SUMMER"
+            "SEPTEMBER", "OCTOBER", "NOVEMBER" -> "AUTUMN"
+            "DECEMBER", "JANUARY", "FEBRUARY" -> "WINTER"
+            else -> "SPRING"
+        }
+    }
 }

@@ -183,7 +183,7 @@ class OfflineRepository(
                 entityId = entityId,
                 data = JSONObject.wrap(data).toString(),
                 timestamp = LocalDateTime.now(),
-                syncStatus = SyncStatus.PENDING
+                syncStatus = OfflineSyncStatus.PENDING
             )
             
             // Insert into offline queue
@@ -220,7 +220,7 @@ class OfflineRepository(
     private suspend fun syncSingleItem(item: OfflineSyncItem): Boolean {
         return try {
             // Update status to in progress
-            updateSyncItemStatus(item.id, SyncStatus.IN_PROGRESS)
+            updateSyncItemStatus(item.id, OfflineSyncStatus.IN_PROGRESS)
             
             // Perform the sync operation
             val success = when (item.operation) {
@@ -243,7 +243,7 @@ class OfflineRepository(
                 val newRetryCount = item.retryCount + 1
                 updateSyncItemStatus(
                     item.id,
-                    if (newRetryCount >= 3) SyncStatus.FAILED else SyncStatus.PENDING,
+                    if (newRetryCount >= 3) OfflineSyncStatus.FAILED else OfflineSyncStatus.PENDING,
                     newRetryCount
                 )
                 false
@@ -253,7 +253,7 @@ class OfflineRepository(
             if (e is AppwriteException && e.code == 409) {
                 handleConflict(item)
             } else {
-                updateSyncItemStatus(item.id, SyncStatus.FAILED, item.retryCount + 1, e.message)
+                updateSyncItemStatus(item.id, OfflineSyncStatus.FAILED, item.retryCount + 1, e.message)
             }
             false
         }
@@ -281,7 +281,7 @@ class OfflineRepository(
         val collection = getCollectionForEntityType(item.entityType)
         
         return try {
-            database.updateDocument(
+            appwriteService.databases.updateDocument(
                 databaseId = databaseId,
                 collectionId = collection,
                 documentId = item.entityId,
@@ -348,7 +348,7 @@ class OfflineRepository(
             
             val cache = OfflineCache(
                 id = UUID.randomUUID().toString(),
-                userId = appwriteService.account.get().\$id,
+                userId = appwriteService.account.get().id,
                 cacheType = cacheType,
                 entityType = entityType,
                 entityId = entityId,
@@ -716,7 +716,7 @@ class OfflineRepository(
     private fun hasOfflineChanges(): Boolean {
         val cursor = offlineDb.rawQuery(
             "SELECT COUNT(*) FROM offline_sync_queue WHERE sync_status = ?",
-            arrayOf(SyncStatus.PENDING.name)
+            arrayOf(OfflineSyncStatus.PENDING.name)
         )
         cursor.moveToFirst()
         val count = cursor.getInt(0)
@@ -746,8 +746,8 @@ class OfflineRepository(
             LIMIT ?
             """,
             arrayOf(
-                SyncStatus.PENDING.name,
-                SyncStatus.FAILED.name,
+                OfflineSyncStatus.PENDING.name,
+                OfflineSyncStatus.FAILED.name,
                 "50" // Batch size
             )
         )
@@ -774,13 +774,13 @@ class OfflineRepository(
             ),
             retryCount = cursor.getInt(cursor.getColumnIndex("retry_count")),
             lastError = cursor.getString(cursor.getColumnIndex("last_error")),
-            syncStatus = SyncStatus.valueOf(cursor.getString(cursor.getColumnIndex("sync_status")))
+            syncStatus = OfflineSyncStatus.valueOf(cursor.getString(cursor.getColumnIndex("sync_status")))
         )
     }
     
     private fun updateSyncItemStatus(
         id: String,
-        status: SyncStatus,
+        status: OfflineSyncStatus,
         retryCount: Int? = null,
         error: String? = null
     ) {
@@ -813,7 +813,7 @@ class OfflineRepository(
                 MIN(timestamp) as oldest
             FROM offline_sync_queue
             """,
-            arrayOf(SyncStatus.PENDING.name, SyncStatus.FAILED.name)
+            arrayOf(OfflineSyncStatus.PENDING.name, OfflineSyncStatus.FAILED.name)
         )
         
         if (cursor.moveToFirst()) {
