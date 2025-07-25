@@ -64,12 +64,12 @@ class BarcodeRepository(
                 barcode = "4005500027638", // Mock barcode
                 format = BarcodeFormat.EAN_13,
                 scanTimestamp = LocalDateTime.now(),
-                scanQuality = determineScanQuality(barcode),
-                rawData = barcode.rawValue,
+                scanQuality = determineScanQuality("4005500027638"),
+                rawData = "4005500027638",
                 metadata = BarcodeMetadata(
                     scanDuration = scanDuration,
                     confidenceScore = 0.95f, // ML Kit doesn't provide confidence
-                    multipleScans = barcodes.size
+                    multipleScans = 1
                 )
             )
             
@@ -116,7 +116,7 @@ class BarcodeRepository(
     
     private suspend fun getProductFromDatabase(barcode: String): Product? {
         return try {
-            val response = database.listDocuments(
+            val response = databases.listDocuments(
                 databaseId = databaseId,
                 collectionId = "products",
                 queries = listOf(Query.equal("barcode", barcode))
@@ -181,7 +181,7 @@ class BarcodeRepository(
     
     suspend fun saveProduct(product: Product): Result<Product> = withContext(Dispatchers.IO) {
         try {
-            val document = database.createDocument(
+            val document = databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "products",
                 documentId = product.id.ifEmpty { ID.unique() },
@@ -199,7 +199,7 @@ class BarcodeRepository(
     
     suspend fun updateProduct(product: Product): Result<Product> = withContext(Dispatchers.IO) {
         try {
-            database.updateDocument(
+            databases.updateDocument(
                 databaseId = databaseId,
                 collectionId = "products",
                 documentId = product.id,
@@ -372,7 +372,7 @@ class BarcodeRepository(
     suspend fun createShoppingList(
         name: String,
         productIds: List<String>
-    ): Result<ShoppingList> = withContext(Dispatchers.IO) {
+    ): Result<BarcodeShoppingList> = withContext(Dispatchers.IO) {
         try {
             val products = productIds.mapNotNull { getProductById(it) }
             
@@ -384,7 +384,7 @@ class BarcodeRepository(
                 )
             }
             
-            val shoppingList = ShoppingList(
+            val shoppingList = BarcodeShoppingList(
                 id = UUID.randomUUID().toString(),
                 userId = appwriteService.account.get().id,
                 name = name,
@@ -395,7 +395,7 @@ class BarcodeRepository(
             )
             
             // Save shopping list
-            val document = database.createDocument(
+            val document = databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "shopping_lists",
                 documentId = shoppingList.id,
@@ -411,7 +411,7 @@ class BarcodeRepository(
     private suspend fun findAlternatives(product: Product): List<Product> {
         // Find similar products based on category and price range
         return try {
-            val response = database.listDocuments(
+            val response = databases.listDocuments(
                 databaseId = databaseId,
                 collectionId = "products",
                 queries = listOf(
@@ -502,14 +502,14 @@ class BarcodeRepository(
             
             // Save inventory
             val document = if (inventory.id.isEmpty()) {
-                database.createDocument(
+                databases.createDocument(
                     databaseId = databaseId,
                     collectionId = "product_inventory",
                     documentId = ID.unique(),
                     data = inventory.toMap()
                 )
             } else {
-                database.updateDocument(
+                databases.updateDocument(
                     databaseId = databaseId,
                     collectionId = "product_inventory",
                     documentId = inventory.id,
@@ -525,7 +525,7 @@ class BarcodeRepository(
     
     private suspend fun getInventoryForProduct(productId: String): ProductInventory? {
         return try {
-            val response = database.listDocuments(
+            val response = databases.listDocuments(
                 databaseId = databaseId,
                 collectionId = "product_inventory",
                 queries = listOf(
@@ -838,7 +838,7 @@ class BarcodeRepository(
         allergens: List<Allergen>
     ): List<Product> {
         return try {
-            val response = database.listDocuments(
+            val response = databases.listDocuments(
                 databaseId = databaseId,
                 collectionId = "products",
                 queries = listOf(
@@ -1036,7 +1036,7 @@ class BarcodeRepository(
                 action = ScanAction.VIEW
             )
             
-            database.createDocument(
+            databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "barcode_history",
                 documentId = history.id,
@@ -1049,7 +1049,7 @@ class BarcodeRepository(
     
     private suspend fun saveProductToDatabase(product: Product) {
         try {
-            database.createDocument(
+            databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "products",
                 documentId = product.id,
@@ -1062,7 +1062,7 @@ class BarcodeRepository(
     
     private suspend fun saveComparison(comparison: ProductComparison) {
         try {
-            database.createDocument(
+            databases.createDocument(
                 databaseId = databaseId,
                 collectionId = "product_comparisons",
                 documentId = comparison.id,
@@ -1075,7 +1075,7 @@ class BarcodeRepository(
     
     private suspend fun getProductById(id: String): Product? {
         return try {
-            val document = database.getDocument(
+            val document = databases.getDocument(
                 databaseId = databaseId,
                 collectionId = "products",
                 documentId = id
@@ -1289,7 +1289,7 @@ class BarcodeRepository(
         "locationName" to (locationName ?: "")
     )
     
-    private fun ShoppingList.toMap(): Map<String, Any> = mapOf(
+    private fun BarcodeShoppingList.toMap(): Map<String, Any> = mapOf(
         "userId" to userId,
         "name" to name,
         "items" to items.map { it.toMap() },

@@ -26,10 +26,10 @@ class StatisticsRepository(
     }
     
     // Dependency repositories
-    private val weightRepository = WeightRepository(context)
+    private val weightRepository = WeightRepository(context, appwriteService)
     private val nutritionRepository = NutritionRepository(context, appwriteService)
     private val healthRepository = HealthRepository(context, appwriteService)
-    private val foodIntakeRepository = FoodIntakeRepository(context)
+    private val foodIntakeRepository = FoodIntakeRepository(context, appwriteService)
     
     // Generate comprehensive statistics
     suspend fun generateAdvancedStatistics(
@@ -76,15 +76,22 @@ class StatisticsRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): WeightAnalytics {
-        val weights = weightRepository.getWeightEntriesForDateRange(dogId, startDate, endDate)
-            .getOrNull() ?: emptyList()
+        // Get weight entries for the date range
+        val weightEntries = mutableListOf<WeightEntry>()
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            val dailyWeights = weightRepository.getWeightEntries(dogId, currentDate).getOrNull() ?: emptyList()
+            weightEntries.addAll(dailyWeights)
+            currentDate = currentDate.plusDays(1)
+        }
+        val weights = weightEntries
         
         if (weights.isEmpty()) {
             return WeightAnalytics()
         }
         
         val currentWeight = weights.maxByOrNull { it.date }?.weight ?: 0.0
-        val dog = getDogById(dogId)
+        val dog = dogRepository.getDogById(dogId).getOrNull()
         val idealWeight = dog?.targetWeight ?: calculateIdealWeight(dog)
         
         // Calculate trend
@@ -100,7 +107,7 @@ class StatisticsRepository(
         val projectedWeight = projectWeight(weights, 30)
         
         // Calculate days to ideal weight
-        val daysToIdeal = if (trend != TrendDirection.STABLE && idealWeight > 0) {
+        val daysToIdeal = if (trend != StatisticsTrendDirection.STABLE && idealWeight > 0) {
             val dailyChange = changeAmount / ChronoUnit.DAYS.between(startDate, endDate)
             if (dailyChange != 0.0) {
                 ((idealWeight - currentWeight) / dailyChange).toInt()
@@ -151,17 +158,30 @@ class StatisticsRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): NutritionAnalytics {
-        val intakes = foodIntakeRepository.getFoodIntakesForDateRange(dogId, startDate, endDate)
+        // Get food intakes for the date range
+        val intakes = mutableListOf<FoodIntake>()
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            val dailyIntakes = kotlinx.coroutines.flow.first(
+                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
+            )
+            intakes.addAll(dailyIntakes)
+            currentDate = currentDate.plusDays(1)
+        }
+        
+        // Get nutrition analysis for the period
+        val nutritionAnalyses = nutritionRepository.getNutritionAnalysisRange(dogId, startDate, endDate)
             .getOrNull() ?: emptyList()
         
-        val nutritionData = nutritionRepository.getNutritionAnalysisForPeriod(dogId, startDate, endDate)
-            .getOrNull() ?: return NutritionAnalytics()
+        if (nutritionAnalyses.isEmpty()) {
+            return NutritionAnalytics()
+        }
         
-        val dog = getDogById(dogId) ?: return NutritionAnalytics()
+        val dog = dogRepository.getDogById(dogId).getOrNull() ?: return NutritionAnalytics()
         
         // Calculate average daily calories
         val days = ChronoUnit.DAYS.between(startDate, endDate).toInt() + 1
-        val totalCalories = intakes.sumOf { it.calories ?: 0.0 }
+        val totalCalories = intakes.sumOf { it.calories ?: 0 }
         val averageDailyCalories = totalCalories / days
         
         // Calculate recommended calories based on dog's characteristics
@@ -225,10 +245,13 @@ class StatisticsRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): HealthAnalytics {
-        val healthEntries = healthRepository.getHealthEntriesForDateRange(dogId, startDate, endDate)
-            .getOrNull() ?: emptyList()
+        val healthEntries = healthRepository.getHealthEntries(
+            dogId, 
+            startDate.atStartOfDay(), 
+            endDate.plusDays(1).atStartOfDay()
+        ).getOrNull() ?: emptyList()
         
-        val medications = healthRepository.getMedicationsForDog(dogId)
+        val medications = healthRepository.getActiveMedications(dogId)
             .getOrNull() ?: emptyList()
         
         val allergies = healthRepository.getAllergiesForDog(dogId)
@@ -303,7 +326,7 @@ class StatisticsRepository(
         // In a real implementation, this would fetch activity data from a fitness tracker or manual logs
         // For now, we'll use estimated values based on dog characteristics
         
-        val dog = getDogById(dogId) ?: return ActivityAnalytics()
+        val dog = dogRepository.getDogById(dogId).getOrNull() ?: return ActivityAnalytics()
         
         // Estimate activity based on breed, age, and health
         val breed = getBreedInfo(dog.breed)
@@ -354,7 +377,7 @@ class StatisticsRepository(
             dailyActivityMinutes = estimatedActivity,
             recommendedActivityMinutes = recommendedActivity,
             activityLevel = activityLevel,
-            activityTrend = TrendDirection.STABLE, // Would be calculated from historical data
+            activityTrend = StatisticsTrendDirection.STABLE, // Would be calculated from historical data
             walkFrequency = walkFrequency,
             averageWalkDuration = walkDuration,
             playTimeMinutes = playTime,
@@ -377,10 +400,18 @@ class StatisticsRepository(
         // This would integrate with purchase records and expense tracking
         // For now, we'll estimate based on food consumption and typical costs
         
-        val intakes = foodIntakeRepository.getFoodIntakesForDateRange(dogId, startDate, endDate)
-            .getOrNull() ?: emptyList()
+        // Get food intakes for the date range
+        val intakes = mutableListOf<FoodIntake>()
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            val dailyIntakes = kotlinx.coroutines.flow.first(
+                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
+            )
+            intakes.addAll(dailyIntakes)
+            currentDate = currentDate.plusDays(1)
+        }
         
-        val dog = getDogById(dogId) ?: return CostAnalytics()
+        val dog = dogRepository.getDogById(dogId).getOrNull() ?: return CostAnalytics()
         
         // Estimate costs based on food consumption
         val foodCost = estimateFoodCost(intakes)
@@ -453,8 +484,16 @@ class StatisticsRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): BehavioralAnalytics {
-        val intakes = foodIntakeRepository.getFoodIntakesForDateRange(dogId, startDate, endDate)
-            .getOrNull() ?: emptyList()
+        // Get food intakes for the date range
+        val intakes = mutableListOf<FoodIntake>()
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            val dailyIntakes = kotlinx.coroutines.flow.first(
+                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
+            )
+            intakes.addAll(dailyIntakes)
+            currentDate = currentDate.plusDays(1)
+        }
         
         // Analyze eating patterns
         val eatingScore = analyzeEatingBehavior(intakes)
@@ -560,7 +599,7 @@ class StatisticsRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): ComparativeAnalysis {
-        val dog = getDogById(dogId) ?: return ComparativeAnalysis()
+        val dog = dogRepository.getDogById(dogId).getOrNull() ?: return ComparativeAnalysis()
         
         // Compare to breed averages
         val breedComparison = compareToBreedAverages(dog)
@@ -638,8 +677,10 @@ class StatisticsRepository(
             "format" to report.format.name
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = CUSTOM_REPORTS_COLLECTION_ID,
+            documentId = io.appwrite.ID.unique(),
             data = data
         )
         
@@ -652,7 +693,8 @@ class StatisticsRepository(
     }
     
     suspend fun getCustomReports(userId: String): Result<List<CustomReport>> = safeApiCall {
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = CUSTOM_REPORTS_COLLECTION_ID,
             queries = listOf(Query.equal("createdBy", userId))
         )
@@ -691,8 +733,8 @@ class StatisticsRepository(
         return startDate to endDate
     }
     
-    private fun calculateWeightTrend(weights: List<WeightEntry>): TrendDirection {
-        if (weights.size < 2) return TrendDirection.STABLE
+    private fun calculateWeightTrend(weights: List<WeightEntry>): StatisticsTrendDirection {
+        if (weights.size < 2) return StatisticsTrendDirection.STABLE
         
         val recentWeights = weights.takeLast(5)
         val slope = calculateLinearRegression(
@@ -701,9 +743,9 @@ class StatisticsRepository(
         )
         
         return when {
-            slope > 0.01 -> TrendDirection.INCREASING
-            slope < -0.01 -> TrendDirection.DECREASING
-            else -> TrendDirection.STABLE
+            slope > 0.01 -> StatisticsTrendDirection.INCREASING
+            slope < -0.01 -> StatisticsTrendDirection.DECREASING
+            else -> StatisticsTrendDirection.STABLE
         }
     }
     
@@ -741,8 +783,7 @@ class StatisticsRepository(
     }
     
     private suspend fun getDogById(dogId: String): Dog? {
-        // This would fetch from DogRepository
-        return null // Placeholder
+        return dogRepository.getDogById(dogId).getOrNull()
     }
     
     private fun calculateIdealWeight(dog: Dog?): Double {
@@ -822,7 +863,7 @@ class StatisticsRepository(
             .filter { it.mealType == MealType.SNACK }
             .sumOf { it.calories ?: 0.0 }
         
-        val totalCalories = intakes.sumOf { it.calories ?: 0.0 }
+        val totalCalories = intakes.sumOf { it.calories ?: 0 }
         
         return if (totalCalories > 0) {
             (treatCalories / totalCalories * 100)
@@ -871,7 +912,7 @@ class StatisticsRepository(
     ): Double {
         val dailyCalories = intakes
             .groupBy { it.timestamp.toLocalDate() }
-            .mapValues { entry -> entry.value.sumOf { it.calories ?: 0.0 } }
+            .mapValues { entry -> entry.value.sumOf { it.calories ?: 0 } }
         
         val deviations = dailyCalories.values.map { 
             abs(it - recommendedCalories) / recommendedCalories 
@@ -907,8 +948,8 @@ class StatisticsRepository(
         return score.coerceIn(0.0, 100.0)
     }
     
-    private fun analyzeHealthTrend(entries: List<HealthEntry>): TrendDirection {
-        if (entries.size < 2) return TrendDirection.STABLE
+    private fun analyzeHealthTrend(entries: List<HealthEntry>): StatisticsTrendDirection {
+        if (entries.size < 2) return StatisticsTrendDirection.STABLE
         
         val recentEntries = entries.takeLast(10)
         val firstHalf = recentEntries.take(recentEntries.size / 2)
@@ -918,9 +959,9 @@ class StatisticsRepository(
         val secondHalfSeverity = secondHalf.count { it.veterinarianVisit }
         
         return when {
-            secondHalfSeverity > firstHalfSeverity * 1.5 -> TrendDirection.DECREASING
-            secondHalfSeverity < firstHalfSeverity * 0.7 -> TrendDirection.INCREASING
-            else -> TrendDirection.STABLE
+            secondHalfSeverity > firstHalfSeverity * 1.5 -> StatisticsTrendDirection.DECREASING
+            secondHalfSeverity < firstHalfSeverity * 0.7 -> StatisticsTrendDirection.INCREASING
+            else -> StatisticsTrendDirection.STABLE
         }
     }
     
@@ -1191,9 +1232,9 @@ class StatisticsRepository(
         return 15.0
     }
     
-    private fun analyzeCostTrend(currentCost: Double): TrendDirection {
+    private fun analyzeCostTrend(currentCost: Double): StatisticsTrendDirection {
         // This would compare to historical costs
-        return TrendDirection.STABLE
+        return StatisticsTrendDirection.STABLE
     }
     
     private fun identifyCostOptimizations(
@@ -1416,8 +1457,8 @@ class StatisticsRepository(
         }
         
         val trendRisk = when (analytics.weightTrend) {
-            TrendDirection.INCREASING, TrendDirection.DECREASING -> 25.0
-            TrendDirection.VOLATILE -> 50.0
+            StatisticsTrendDirection.INCREASING, StatisticsTrendDirection.DECREASING -> 25.0
+            StatisticsTrendDirection.VOLATILE -> 50.0
             else -> 0.0
         }
         
@@ -1487,7 +1528,7 @@ class StatisticsRepository(
     }
     
     private suspend fun predictLifestageTransition(dogId: String): LifestageTransition? {
-        val dog = getDogById(dogId) ?: return null
+        val dog = dogRepository.getDogById(dogId).getOrNull() ?: return null
         val ageInYears = ChronoUnit.YEARS.between(dog.birthDate, LocalDate.now()).toInt()
         
         val (currentStage, nextStage, transitionAge) = when {
@@ -1575,8 +1616,10 @@ class StatisticsRepository(
             "data" to statistics // Would serialize to JSON
         )
         
-        appwriteService.createDocument(
+        appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = ANALYTICS_CACHE_COLLECTION_ID,
+            documentId = io.appwrite.ID.unique(),
             data = data
         )
     }
@@ -1592,8 +1635,10 @@ class StatisticsRepository(
             "isActive" to schedule.isActive
         )
         
-        appwriteService.createDocument(
+        appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = REPORT_SCHEDULES_COLLECTION_ID,
+            documentId = io.appwrite.ID.unique(),
             data = data
         )
     }
@@ -1610,7 +1655,11 @@ class StatisticsRepository(
     }
     
     private suspend fun getCustomReportById(reportId: String): Result<CustomReport> = safeApiCall {
-        val document = appwriteService.getDocument(CUSTOM_REPORTS_COLLECTION_ID, reportId)
+        val document = appwriteService.databases.getDocument(
+            databaseId = AppwriteService.DATABASE_ID,
+            collectionId = CUSTOM_REPORTS_COLLECTION_ID,
+            documentId = reportId
+        )
         documentToCustomReport(document)
     }
     

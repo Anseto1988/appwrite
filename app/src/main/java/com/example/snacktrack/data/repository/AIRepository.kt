@@ -127,7 +127,7 @@ class AIRepository(
             daysToPredict
         )
         
-        val factors = AIWeightPredictionFactors(
+        val factors = WeightPredictionFactors(
             historicalWeights = weightHistory,
             averageDailyCalories = avgDailyCalories,
             activityLevel = dog.activityLevel,
@@ -396,7 +396,7 @@ class AIRepository(
         currentCalories: Int,
         targetCalories: Int,
         days: Int
-    ): List<AIWeightPredictionPoint> {
+    ): List<WeightPredictionPoint> {
         // Simple linear regression
         val weights = history.map { it.weight }
         val avgWeight = weights.average()
@@ -404,15 +404,15 @@ class AIRepository(
         // Calculate trend (kg per day)
         val trend = if (history.size >= 2) {
             (history.last().weight - history.first().weight) / 
-            history.first().date.until(history.last().date).days
+            java.time.temporal.ChronoUnit.DAYS.between(history.first().date, history.last().date).toInt()
         } else 0.0
         
         // Adjust trend based on calorie differential
         val calorieDiff = currentCalories - targetCalories
-        val adjustedTrend = trend + (calorieDiff / 3500.0) // 3500 kcal ≈ 0.45 kg
+        val adjustedTrend = trend + (calorieDiff.toDouble() / 3500.0) // 3500 kcal ≈ 0.45 kg
         
         return (1..days).map { day ->
-            AIWeightPredictionPoint(
+            WeightPredictionPoint(
                 date = LocalDate.now().plusDays(day.toLong()),
                 predictedWeight = history.last().weight + (adjustedTrend * day),
                 confidenceLevel = maxOf(0.9f - (day / 365f), 0.3f) // Confidence decreases over time
@@ -421,7 +421,7 @@ class AIRepository(
     }
     
     private fun calculateConfidenceInterval(
-        predictions: List<AIWeightPredictionPoint>
+        predictions: List<WeightPredictionPoint>
     ): ConfidenceInterval {
         val margin = predictions.map { it.predictedWeight * (1 - it.confidenceLevel) * 0.1 }
         return ConfidenceInterval(

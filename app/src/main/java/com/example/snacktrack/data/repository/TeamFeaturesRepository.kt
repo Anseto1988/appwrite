@@ -2,6 +2,7 @@ package com.example.snacktrack.data.repository
 
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.data.service.AppwriteService
+import io.appwrite.ID
 import io.appwrite.Query
 import io.appwrite.models.Document
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 class TeamFeaturesRepository(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : BaseRepository() {
     
@@ -25,7 +27,7 @@ class TeamFeaturesRepository(
         const val CONSUMPTION_PREDICTIONS_COLLECTION_ID = "consumption_predictions"
     }
     
-    private val foodIntakeRepository = FoodIntakeRepository(appwriteService)
+    private val foodIntakeRepository = FoodIntakeRepository(context, appwriteService)
     
     // Task Management
     
@@ -52,8 +54,10 @@ class TeamFeaturesRepository(
             }
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = FEEDING_TASKS_COLLECTION_ID,
+            documentId = io.appwrite.ID.unique(),
             data = data
         )
         
@@ -87,7 +91,8 @@ class TeamFeaturesRepository(
             queries.add(Query.equal("status", it.name))
         }
         
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = FEEDING_TASKS_COLLECTION_ID,
             queries = queries
         )
@@ -107,7 +112,8 @@ class TeamFeaturesRepository(
             "notes" to notes
         )
         
-        val document = appwriteService.updateDocument(
+        val document = appwriteService.databases.updateDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = FEEDING_TASKS_COLLECTION_ID,
             documentId = taskId,
             data = data
@@ -136,7 +142,8 @@ class TeamFeaturesRepository(
     ): Result<List<FeedingTask>> = safeApiCall {
         val endDate = LocalDate.now().plusDays(days.toLong())
         
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = FEEDING_TASKS_COLLECTION_ID,
             queries = listOf(
                 Query.equal("teamId", teamId),
@@ -152,8 +159,9 @@ class TeamFeaturesRepository(
     
     // Shopping List Management
     
-    suspend fun getOrCreateShoppingList(teamId: String): Result<ShoppingList> = safeApiCall {
-        val response = appwriteService.listDocuments(
+    suspend fun getOrCreateShoppingList(teamId: String): Result<TeamShoppingList> = safeApiCall {
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = SHOPPING_LISTS_COLLECTION_ID,
             queries = listOf(
                 Query.equal("teamId", teamId),
@@ -168,7 +176,7 @@ class TeamFeaturesRepository(
         }
     }
     
-    private suspend fun createShoppingList(teamId: String): ShoppingList {
+    private suspend fun createShoppingList(teamId: String): TeamShoppingList {
         val data = mapOf(
             "teamId" to teamId,
             "name" to "Team Einkaufsliste",
@@ -177,15 +185,14 @@ class TeamFeaturesRepository(
             "isActive" to true
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = SHOPPING_LISTS_COLLECTION_ID,
+            documentId = io.appwrite.ID.unique(),
             data = data
         )
         
-        return ShoppingList(
-            id = document.id,
-            teamId = teamId
-        )
+        return documentToShoppingList(document)
     }
     
     suspend fun addItemToShoppingList(
@@ -212,13 +219,16 @@ class TeamFeaturesRepository(
             "linkedFoodId" to item.linkedFoodId
         )
         
-        val document = appwriteService.createDocument(
+        val document = appwriteService.databases.createDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = SHOPPING_ITEMS_COLLECTION_ID,
+            documentId = io.appwrite.ID.unique(),
             data = data
         )
         
         // Update shopping list timestamp
-        appwriteService.updateDocument(
+        appwriteService.databases.updateDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = SHOPPING_LISTS_COLLECTION_ID,
             documentId = shoppingList.id,
             data = mapOf("lastUpdated" to LocalDateTime.now().toString())
@@ -257,7 +267,8 @@ class TeamFeaturesRepository(
             queries.add(Query.equal("isPurchased", false))
         }
         
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = SHOPPING_ITEMS_COLLECTION_ID,
             queries = queries
         )
@@ -276,7 +287,8 @@ class TeamFeaturesRepository(
             "purchasedAt" to LocalDateTime.now().toString()
         )
         
-        val document = appwriteService.updateDocument(
+        val document = appwriteService.databases.updateDocument(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = SHOPPING_ITEMS_COLLECTION_ID,
             documentId = itemId,
             data = data
@@ -305,17 +317,23 @@ class TeamFeaturesRepository(
         val predictions = mutableListOf<ConsumptionPrediction>()
         
         dogs.forEach { dog ->
-            val intakes = foodIntakeRepository.getFoodIntakesForDateRange(
-                dog.id,
-                LocalDate.now().minusDays(30),
-                LocalDate.now()
-            ).getOrNull() ?: emptyList()
+            // Get food intakes for the last 30 days
+            val intakes = mutableListOf<FoodIntake>()
+            var currentDate = LocalDate.now().minusDays(30)
+            val endDate = LocalDate.now()
+            while (!currentDate.isAfter(endDate)) {
+                val dailyIntakes = kotlinx.coroutines.flow.first(
+                    foodIntakeRepository.getFoodIntakesForDog(dog.id, currentDate)
+                )
+                intakes.addAll(dailyIntakes)
+                currentDate = currentDate.plusDays(1)
+            }
             
             // Group by food and calculate average daily consumption
             val consumptionByFood = intakes.groupBy { it.foodId }
                 .filter { it.key != null }
                 .mapValues { entry ->
-                    val totalGrams = entry.value.sumOf { it.amountGram }
+                    val totalGrams = entry.value.sumOf { it.amountGram.toDouble() }
                     val days = 30
                     totalGrams / days
                 }
@@ -353,7 +371,7 @@ class TeamFeaturesRepository(
         val lastPurchaseDate = LocalDate.now().minusDays(14) // Assume bi-weekly shopping
         val consumedSinceLastPurchase = recentIntakes
             .filter { it.foodId == foodId && it.timestamp.toLocalDate().isAfter(lastPurchaseDate) }
-            .sumOf { it.amountGram }
+            .sumOf { it.amountGram.toDouble() }
         
         val typicalPackageSize = 5000.0 // 5kg bag
         return maxOf(0.0, typicalPackageSize - consumedSinceLastPurchase)
@@ -376,7 +394,8 @@ class TeamFeaturesRepository(
         limit: Int = 50,
         offset: Int = 0
     ): Result<List<TeamActivity>> = safeApiCall {
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = TEAM_ACTIVITIES_COLLECTION_ID,
             queries = listOf(
                 Query.equal("teamId", teamId),
@@ -409,7 +428,8 @@ class TeamFeaturesRepository(
             queries.add(Query.equal("activityType", it.map { type -> type.name }))
         }
         
-        val response = appwriteService.listDocuments(
+        val response = appwriteService.databases.listDocuments(
+            databaseId = AppwriteService.DATABASE_ID,
             collectionId = TEAM_ACTIVITIES_COLLECTION_ID,
             queries = queries
         )
@@ -431,8 +451,10 @@ class TeamFeaturesRepository(
                 "isImportant" to activity.isImportant
             )
             
-            appwriteService.createDocument(
+            appwriteService.databases.createDocument(
+                databaseId = AppwriteService.DATABASE_ID,
                 collectionId = TEAM_ACTIVITIES_COLLECTION_ID,
+                documentId = io.appwrite.ID.unique(),
                 data = data
             )
         } catch (e: Exception) {
@@ -582,8 +604,8 @@ class TeamFeaturesRepository(
         )
     }
     
-    private fun documentToShoppingList(document: Document<Map<String, Any>>): ShoppingList {
-        return ShoppingList(
+    private fun documentToShoppingList(document: Document<Map<String, Any>>): TeamShoppingList {
+        return TeamShoppingList(
             id = document.id,
             teamId = document.data["teamId"] as String,
             name = document.data["name"] as String,

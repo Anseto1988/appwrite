@@ -8,7 +8,7 @@ import android.util.Log
 import com.example.snacktrack.data.model.Team
 import com.example.snacktrack.data.model.TeamInvitation
 import com.example.snacktrack.data.model.TeamMember
-import com.example.snacktrack.data.model.TeamRole
+import com.example.snacktrack.data.model.BasicTeamRole
 import com.example.snacktrack.data.service.AppwriteService
 
 // Appwrite SDK Imports
@@ -125,7 +125,7 @@ class TeamRepository(private val context: Context) {
             val memberData = HashMap<String, Any>()
             memberData["teamId"] = teamDoc.id
             memberData["userId"] = userId
-            memberData["role"] = TeamRole.OWNER.name
+            memberData["role"] = BasicTeamRole.OWNER.name
             // Use ISO 8601 format for datetime that Appwrite expects
             memberData["joinedAt"] = java.time.OffsetDateTime.now().toString()
             
@@ -141,7 +141,7 @@ class TeamRepository(private val context: Context) {
                 userId = userId,
                 email = currentUser.email,
                 name = currentUser.name,
-                role = TeamRole.OWNER
+                role = BasicTeamRole.OWNER
             )
             
             val newTeam = com.example.snacktrack.data.model.Team(
@@ -236,7 +236,7 @@ class TeamRepository(private val context: Context) {
             
             for (memberDoc in teamMembers.documents) {
                 val memberId = memberDoc.data["userId"] as? String ?: continue
-                val role = memberDoc.data["role"] as? String ?: TeamRole.VIEWER.name
+                val role = memberDoc.data["role"] as? String ?: BasicTeamRole.VIEWER.name
                 
                 try {
                     // Direktes Laden des Benutzers geht in Appwrite nur für den aktuellen Benutzer
@@ -250,7 +250,7 @@ class TeamRepository(private val context: Context) {
                             userId = memberId,
                             email = email,
                             name = name,
-                            role = TeamRole.valueOf(role)
+                            role = BasicTeamRole.valueOf(role)
                         )
                     )
                 } catch (e: Exception) {
@@ -365,7 +365,7 @@ class TeamRepository(private val context: Context) {
     }    /**
      * Fügt einen Benutzer zu einem Team hinzu (Sendet eine Einladung)
      */
-    suspend fun addTeamMember(teamId: String, email: String, role: TeamRole): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun addTeamMember(teamId: String, email: String, role: BasicTeamRole): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             // Aktuellen Benutzer abrufen (Einladender)
             val currentUser = account.get()
@@ -460,7 +460,7 @@ class TeamRepository(private val context: Context) {
                 }
                 
                 // Rolle aus der Einladung extrahieren
-                val role = invitationDoc.data["role"] as? String ?: TeamRole.VIEWER.name
+                val role = invitationDoc.data["role"] as? String ?: BasicTeamRole.VIEWER.name
                 
                 // Neues Teammitglied erstellen
                 val memberData = hashMapOf(
@@ -554,7 +554,7 @@ class TeamRepository(private val context: Context) {
     suspend fun updateTeamMemberRole(
         teamId: String,
         membershipId: String,
-        role: TeamRole
+        role: BasicTeamRole
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             // Mitgliedschaftsdokument aktualisieren

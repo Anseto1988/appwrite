@@ -264,7 +264,7 @@ class OfflineRepository(
         val collection = getCollectionForEntityType(item.entityType)
         
         return try {
-            database.createDocument(
+            databases.createDocument(
                 databaseId = databaseId,
                 collectionId = collection,
                 documentId = item.entityId,
@@ -297,7 +297,7 @@ class OfflineRepository(
         val collection = getCollectionForEntityType(item.entityType)
         
         return try {
-            database.deleteDocument(
+            databases.deleteDocument(
                 databaseId = databaseId,
                 collectionId = collection,
                 documentId = item.entityId
@@ -348,7 +348,7 @@ class OfflineRepository(
             
             val cache = OfflineCache(
                 id = UUID.randomUUID().toString(),
-                userId = appwriteService.account.get().id,
+                userId = appwriteService.account.get().\$id,
                 cacheType = cacheType,
                 entityType = entityType,
                 entityId = entityId,
