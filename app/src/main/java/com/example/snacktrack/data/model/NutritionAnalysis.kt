@@ -92,14 +92,14 @@ data class NutritionAnalysis(
         when {
             caloriePercentage < 80 -> recommendations.add(
                 NutritionRecommendation(
-                    type = RecommendationType.INCREASE_CALORIES,
+                    type = NutritionRecommendationType.INCREASE_CALORIES,
                     message = "Ihr Hund erhält zu wenig Kalorien. Erhöhen Sie die Futtermenge.",
                     severity = RecommendationSeverity.HIGH
                 )
             )
             caloriePercentage > 120 -> recommendations.add(
                 NutritionRecommendation(
-                    type = RecommendationType.DECREASE_CALORIES,
+                    type = NutritionRecommendationType.DECREASE_CALORIES,
                     message = "Ihr Hund erhält zu viele Kalorien. Reduzieren Sie die Futtermenge.",
                     severity = RecommendationSeverity.HIGH
                 )
@@ -110,14 +110,14 @@ data class NutritionAnalysis(
         when {
             proteinPercentage < 80 -> recommendations.add(
                 NutritionRecommendation(
-                    type = RecommendationType.INCREASE_PROTEIN,
+                    type = NutritionRecommendationType.INCREASE_PROTEIN,
                     message = "Proteinzufuhr ist zu niedrig. Wählen Sie proteinreicheres Futter.",
                     severity = RecommendationSeverity.MEDIUM
                 )
             )
             proteinPercentage > 150 -> recommendations.add(
                 NutritionRecommendation(
-                    type = RecommendationType.DECREASE_PROTEIN,
+                    type = NutritionRecommendationType.DECREASE_PROTEIN,
                     message = "Sehr hohe Proteinzufuhr. Bei Nierenproblemen reduzieren.",
                     severity = RecommendationSeverity.LOW
                 )
@@ -128,7 +128,7 @@ data class NutritionAnalysis(
         if (treatBudgetUsed > 20) {
             recommendations.add(
                 NutritionRecommendation(
-                    type = RecommendationType.REDUCE_TREATS,
+                    type = NutritionRecommendationType.REDUCE_TREATS,
                     message = "Zu viele Leckerlis! Maximal 10% der Tageskalorien sollten aus Leckerlis stammen.",
                     severity = RecommendationSeverity.MEDIUM
                 )
@@ -218,12 +218,12 @@ enum class SpecialNeed {
 }
 
 data class NutritionRecommendation(
-    val type: RecommendationType,
+    val type: NutritionRecommendationType,
     val message: String,
     val severity: RecommendationSeverity
 )
 
-enum class RecommendationType {
+enum class NutritionRecommendationType {
     INCREASE_CALORIES,
     DECREASE_CALORIES,
     INCREASE_PROTEIN,

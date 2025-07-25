@@ -591,14 +591,14 @@ data class SyncConfiguration(
     val id: String = "",
     val userId: String = "",
     val syncEnabled: Boolean = true,
-    val syncInterval: SyncInterval = SyncInterval.ON_CHANGE,
+    val syncInterval: ExportSyncInterval = ExportSyncInterval.ON_CHANGE,
     val syncOnWifiOnly: Boolean = true,
     val conflictResolution: ConflictResolution = ConflictResolution.LATEST_WINS,
     val lastSync: LocalDateTime? = null,
     val syncHistory: List<SyncRecord> = emptyList()
 )
 
-enum class SyncInterval {
+enum class ExportSyncInterval {
     ON_CHANGE,
     EVERY_HOUR,
     EVERY_DAY,
@@ -618,7 +618,7 @@ data class SyncRecord(
     val itemsSynced: Int = 0,
     val conflicts: Int = 0,
     val duration: Long = 0, // milliseconds
-    val status: SyncStatus = SyncStatus.SUCCESS
+    val status: ExportSyncStatus = ExportSyncStatus.SUCCESS
 )
 
 enum class SyncDirection {
@@ -627,7 +627,7 @@ enum class SyncDirection {
     BIDIRECTIONAL
 }
 
-enum class SyncStatus {
+enum class ExportSyncStatus {
     SUCCESS,
     PARTIAL,
     FAILED,

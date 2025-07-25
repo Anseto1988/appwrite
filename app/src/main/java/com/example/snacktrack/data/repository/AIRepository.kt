@@ -6,11 +6,13 @@ import io.appwrite.Query
 import io.appwrite.models.Document
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.*
 
 class AIRepository(
+    private val context: android.content.Context,
     private val appwriteService: AppwriteService
 ) : BaseRepository() {
     
@@ -25,25 +27,26 @@ class AIRepository(
     private val dogRepository = DogRepository(appwriteService)
     private val foodIntakeRepository = FoodIntakeRepository(appwriteService)
     private val weightRepository = WeightRepository(appwriteService)
-    private val healthRepository = HealthRepository(appwriteService)
+    private val healthRepository = HealthRepository(context, appwriteService)
     
     /**
      * Generate AI-based food recommendations
      */
     suspend fun generateFoodRecommendations(
         dogId: String,
-        type: RecommendationType = RecommendationType.DAILY
+        type: AIRecommendationType = AIRecommendationType.DAILY
     ): Result<FoodRecommendation> = safeApiCall {
         // Gather all necessary data
         val dog = dogRepository.getDogById(dogId).getOrNull()
             ?: throw Exception("Dog not found")
         
         val allergies = healthRepository.getAllergiesForDog(dogId).getOrNull() ?: emptyList()
-        val recentIntakes = foodIntakeRepository.getFoodIntakesForDateRange(
-            dogId,
-            LocalDate.now().minusDays(30),
-            LocalDate.now()
-        ).getOrNull() ?: emptyList()
+        val recentIntakes = mutableListOf<FoodIntake>()
+        for (i in 0..30) {
+            val date = LocalDate.now().minusDays(i.toLong())
+            val intakes = foodIntakeRepository.getFoodIntakesForDog(dogId, date).first()
+            recentIntakes.addAll(intakes)
+        }
         
         val weightHistory = weightRepository.getWeightHistory(dogId).getOrNull() ?: emptyList()
         
@@ -64,9 +67,9 @@ class AIRepository(
         
         // Generate recommendations based on type
         val recommendations = when (type) {
-            RecommendationType.DAILY -> generateDailyRecommendations(dog, factors)
-            RecommendationType.WEIGHT_LOSS -> generateWeightLossRecommendations(dog, factors, weightHistory)
-            RecommendationType.WEIGHT_GAIN -> generateWeightGainRecommendations(dog, factors)
+            AIRecommendationType.DAILY -> generateDailyRecommendations(dog, factors)
+            AIRecommendationType.WEIGHT_LOSS -> generateWeightLossRecommendations(dog, factors, weightHistory)
+            AIRecommendationType.WEIGHT_GAIN -> generateWeightGainRecommendations(dog, factors)
             else -> generateDailyRecommendations(dog, factors)
         }
         
@@ -99,11 +102,12 @@ class AIRepository(
             throw Exception("Nicht genügend Gewichtsdaten für Vorhersage")
         }
         
-        val recentIntakes = foodIntakeRepository.getFoodIntakesForDateRange(
-            dogId,
-            LocalDate.now().minusDays(30),
-            LocalDate.now()
-        ).getOrNull() ?: emptyList()
+        val recentIntakes = mutableListOf<FoodIntake>()
+        for (i in 0..30) {
+            val date = LocalDate.now().minusDays(i.toLong())
+            val intakes = foodIntakeRepository.getFoodIntakesForDog(dogId, date).first()
+            recentIntakes.addAll(intakes)
+        }
         
         val avgDailyCalories = if (recentIntakes.isNotEmpty()) {
             recentIntakes.groupBy { it.timestamp.toLocalDate() }
@@ -225,11 +229,12 @@ class AIRepository(
             ?: throw Exception("Dog not found")
         
         val weightHistory = weightRepository.getWeightHistory(dogId).getOrNull() ?: emptyList()
-        val recentIntakes = foodIntakeRepository.getFoodIntakesForDateRange(
-            dogId,
-            LocalDate.now().minusDays(30),
-            LocalDate.now()
-        ).getOrNull() ?: emptyList()
+        val recentIntakes = mutableListOf<FoodIntake>()
+        for (i in 0..30) {
+            val date = LocalDate.now().minusDays(i.toLong())
+            val intakes = foodIntakeRepository.getFoodIntakesForDog(dogId, date).first()
+            recentIntakes.addAll(intakes)
+        }
         
         val allergies = healthRepository.getAllergiesForDog(dogId).getOrNull() ?: emptyList()
         val healthEntries = healthRepository.getHealthEntries(

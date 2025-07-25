@@ -10,7 +10,7 @@ data class DogAllergy(
     val dogId: String = "",
     val allergen: String = "",
     val allergyType: AllergyType = AllergyType.FOOD,
-    val severity: AllergySeverity = AllergySeverity.MILD,
+    val severity: DogAllergySeverity = DogAllergySeverity.MILD,
     val symptoms: List<String> = emptyList(),
     val diagnosedDate: LocalDate? = null,
     val diagnosedBy: String? = null, // Veterinarian name
@@ -26,7 +26,7 @@ enum class AllergyType(val displayName: String) {
     OTHER("Sonstige")
 }
 
-enum class AllergySeverity(val displayName: String, val colorCode: Long) {
+enum class DogAllergySeverity(val displayName: String, val colorCode: Long) {
     MILD("Leicht", 0xFFFFC107),      // Yellow
     MODERATE("Mittel", 0xFFFF9800),   // Orange
     SEVERE("Schwer", 0xFFFF5722),     // Deep Orange

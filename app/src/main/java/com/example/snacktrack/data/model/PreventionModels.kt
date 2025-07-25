@@ -42,9 +42,25 @@ enum class GoalStatus {
     REVISED
 }
 
+enum class PreventionActivityLevel {
+    LOW,
+    MODERATE,
+    HIGH,
+    VERY_HIGH
+}
+
+enum class ActivityType {
+    WALK,
+    RUN,
+    SWIM,
+    PLAY,
+    TRAINING,
+    OTHER
+}
+
 data class WeightStrategy(
     val dailyCalorieTarget: Double = 0.0,
-    val activityLevel: ActivityLevel = ActivityLevel.MODERATE,
+    val activityLevel: PreventionActivityLevel = PreventionActivityLevel.MODERATE,
     val feedingSchedule: FeedingSchedule = FeedingSchedule(),
     val treatAllowance: TreatAllowance = TreatAllowance(),
     val exercisePlan: ExercisePlan = ExercisePlan(),
@@ -68,14 +84,14 @@ data class TreatAllowance(
 data class ExercisePlan(
     val dailyMinutes: Int = 30,
     val activities: List<PlannedActivity> = emptyList(),
-    val intensityLevel: ActivityLevel = ActivityLevel.MODERATE,
+    val intensityLevel: PreventionActivityLevel = PreventionActivityLevel.MODERATE,
     val restDays: List<String> = emptyList() // days of week
 )
 
 data class PlannedActivity(
     val type: ActivityType = ActivityType.WALK,
     val duration: Int = 0, // minutes
-    val intensity: ActivityLevel = ActivityLevel.MODERATE,
+    val intensity: PreventionActivityLevel = PreventionActivityLevel.MODERATE,
     val frequency: String = "", // e.g., "daily", "3x per week"
     val notes: String? = null
 )
@@ -111,14 +127,14 @@ data class AllergyPrevention(
 
 data class KnownAllergen(
     val allergen: String = "",
-    val severity: AllergySeverity = AllergySeverity.MODERATE,
+    val severity: PreventionAllergySeverity = PreventionAllergySeverity.MODERATE,
     val reactions: List<AllergyReaction> = emptyList(),
     val diagnosedBy: String? = null,
     val diagnosedDate: LocalDate? = null,
     val crossReactants: List<String> = emptyList()
 )
 
-enum class AllergySeverity {
+enum class PreventionAllergySeverity {
     MILD,
     MODERATE,
     SEVERE,
@@ -126,14 +142,14 @@ enum class AllergySeverity {
 }
 
 data class AllergyReaction(
-    val type: ReactionType = ReactionType.SKIN,
+    val type: PreventionReactionType = PreventionReactionType.SKIN,
     val symptoms: List<String> = emptyList(),
     val onsetTime: String = "", // e.g., "immediate", "2-4 hours"
     val duration: String = "",
     val treatment: String? = null
 )
 
-enum class ReactionType {
+enum class PreventionReactionType {
     SKIN,
     DIGESTIVE,
     RESPIRATORY,
@@ -418,7 +434,7 @@ data class VaccineDose(
 )
 
 data class VaccineReaction(
-    val type: ReactionType = ReactionType.NONE,
+    val type: VaccineReactionType = VaccineReactionType.NONE,
     val symptoms: List<String> = emptyList(),
     val onsetTime: String = "",
     val duration: String = "",
@@ -426,7 +442,7 @@ data class VaccineReaction(
     val reportedToManufacturer: Boolean = false
 )
 
-enum class ReactionType {
+enum class VaccineReactionType {
     NONE,
     LOCAL_MILD,
     LOCAL_MODERATE,
@@ -502,7 +518,7 @@ enum class PlaqueLevel {
 data class ProblematicTooth(
     val toothId: String = "",
     val issue: DentalIssue = DentalIssue.PLAQUE,
-    val severity: IssueSeverity = IssueSeverity.MILD,
+    val severity: PreventionIssueSeverity = PreventionIssueSeverity.MILD,
     val treatmentNeeded: String? = null
 )
 
@@ -517,7 +533,7 @@ enum class DentalIssue {
     MALOCCLUSION
 }
 
-enum class IssueSeverity {
+enum class PreventionIssueSeverity {
     MILD,
     MODERATE,
     SEVERE,
@@ -555,7 +571,7 @@ data class HomeCareLog(
     val careType: HomeCareType = HomeCareType.BRUSHING,
     val completed: Boolean = true,
     val notes: String? = null,
-    val difficultyLevel: DifficultyLevel? = null
+    val difficultyLevel: PreventionDifficultyLevel? = null
 )
 
 enum class HomeCareType {
@@ -567,7 +583,7 @@ enum class HomeCareType {
     OTHER
 }
 
-enum class DifficultyLevel {
+enum class PreventionDifficultyLevel {
     EASY,
     MODERATE,
     DIFFICULT,
@@ -585,7 +601,7 @@ data class DentalPreventionPlan(
 
 // Risk Assessment
 
-data class RiskAssessment(
+data class PreventionRiskAssessment(
     val id: String = "",
     val dogId: String = "",
     val assessmentDate: LocalDate = LocalDate.now(),
@@ -610,11 +626,11 @@ data class AgeRelatedRisk(
     val condition: String = "",
     val currentAge: Int = 0,
     val riskAge: Int = 0,
-    val riskLevel: RiskLevel = RiskLevel.LOW,
+    val riskLevel: PreventionRiskLevel = PreventionRiskLevel.LOW,
     val monitoringRequired: List<String> = emptyList(),
 )
 
-enum class RiskLevel {
+enum class PreventionRiskLevel {
     VERY_LOW,
     LOW,
     MODERATE,
@@ -625,7 +641,7 @@ enum class RiskLevel {
 data class LifestyleRisk(
     val factor: String = "",
     val currentStatus: String = "",
-    val riskLevel: RiskLevel = RiskLevel.LOW,
+    val riskLevel: PreventionRiskLevel = PreventionRiskLevel.LOW,
     val modifiable: Boolean = true,
     val recommendations: List<String> = emptyList(),
 )
@@ -675,7 +691,7 @@ enum class CostLevel {
 data class SeasonalCare(
     val id: String = "",
     val dogId: String = "",
-    val season: Season = Season.SPRING,
+    val season: PreventionSeason = PreventionSeason.SPRING,
     val year: Int = LocalDate.now().year,
     val hazards: List<SeasonalHazard> = emptyList(),
     val preventiveMeasures: List<PreventiveMeasure> = emptyList(),
@@ -683,7 +699,7 @@ data class SeasonalCare(
     val reminders: List<SeasonalReminder> = emptyList()
 )
 
-enum class Season {
+enum class PreventionSeason {
     SPRING,
     SUMMER,
     FALL,
@@ -834,13 +850,13 @@ data class CostBenefitAnalysis(
 
 data class PreventionTrend(
     val metric: String = "",
-    val direction: TrendDirection = TrendDirection.STABLE,
+    val direction: PreventionTrendDirection = PreventionTrendDirection.STABLE,
     val magnitude: Double = 0.0,
     val confidence: Double = 0.0,
     val projection: String? = null
 )
 
-enum class TrendDirection {
+enum class PreventionTrendDirection {
     IMPROVING,
     STABLE,
     DECLINING,

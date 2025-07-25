@@ -22,7 +22,7 @@ data class FoodRecommendationItem(
     val foodName: String = "",
     val brand: String = "",
     val recommendedAmount: Double = 0.0, // in grams
-    val frequency: FeedingFrequency = FeedingFrequency.DAILY,
+    val frequency: FeedingFrequency = FeedingFrequency.TWICE_DAILY,
     val reason: String = "",
     val nutritionMatch: Float = 0f, // 0-1 score
     val allergenSafe: Boolean = true
@@ -38,7 +38,7 @@ data class RecommendationFactors(
     val preferences: List<String> = emptyList()
 )
 
-enum class RecommendationType {
+enum class AIRecommendationType {
     DAILY,          // Daily feeding plan
     WEEKLY,         // Weekly rotation
     TRANSITION,     // Food transition plan
@@ -58,7 +58,7 @@ enum class FeedingFrequency {
 /**
  * Weight prediction model
  */
-data class WeightPrediction(
+data class AIWeightPrediction(
     val id: String = "",
     val dogId: String = "",
     val predictionDate: LocalDate = LocalDate.now(),
@@ -173,13 +173,13 @@ data class HealthRiskAssessment(
 
 data class RiskFactor(
     val factor: String = "",
-    val category: RiskCategory = RiskCategory.NUTRITION,
+    val category: AIRiskCategory = AIRiskCategory.NUTRITION,
     val severity: Float = 0f, // 0-1
     val description: String = "",
     val improvementPlan: String = ""
 )
 
-enum class RiskCategory {
+enum class AIRiskCategory {
     NUTRITION,
     WEIGHT,
     ACTIVITY,

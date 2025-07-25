@@ -71,7 +71,7 @@ enum class DayOfWeek(val displayName: String) {
 /**
  * Shared shopping list for team
  */
-data class ShoppingList(
+data class TeamShoppingList(
     val id: String = "",
     val teamId: String = "",
     val name: String = "Team Einkaufsliste",

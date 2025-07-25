@@ -17,7 +17,7 @@ data class OfflineSyncItem(
     val timestamp: LocalDateTime = LocalDateTime.now(),
     val retryCount: Int = 0,
     val lastError: String? = null,
-    val syncStatus: SyncStatus = SyncStatus.PENDING,
+    val syncStatus: OfflineSyncStatus = OfflineSyncStatus.PENDING,
     val conflictResolution: ConflictResolutionStrategy? = null
 )
 
@@ -44,7 +44,7 @@ enum class EntityType {
     SHOPPING_ITEM
 }
 
-enum class SyncStatus {
+enum class OfflineSyncStatus {
     PENDING,
     IN_PROGRESS,
     COMPLETED,
@@ -132,14 +132,14 @@ data class OfflineSyncConfiguration(
     val autoSync: Boolean = true,
     val syncOnWifiOnly: Boolean = true,
     val syncOnCharging: Boolean = false,
-    val syncInterval: SyncInterval = SyncInterval.ON_APP_OPEN,
+    val syncInterval: OfflineSyncInterval = OfflineSyncInterval.ON_APP_OPEN,
     val maxRetries: Int = 3,
     val retryDelay: Long = 60000, // milliseconds
     val batchSize: Int = 50,
     val priorityOrder: List<EntityType> = EntityType.values().toList()
 )
 
-enum class SyncInterval {
+enum class OfflineSyncInterval {
     ON_APP_OPEN,
     EVERY_HOUR,
     EVERY_6_HOURS,
@@ -288,14 +288,14 @@ enum class QueuePriority {
 }
 
 data class QueueItemMetadata(
-    val source: DataSource = DataSource.USER_ACTION,
+    val source: OfflineDataSource = OfflineDataSource.USER_ACTION,
     val importance: ImportanceLevel = ImportanceLevel.NORMAL,
     val canBatch: Boolean = true,
     val requiresConnection: ConnectionRequirement = ConnectionRequirement.ANY,
     val maxAge: Long? = null // milliseconds before item expires
 )
 
-enum class DataSource {
+enum class OfflineDataSource {
     USER_ACTION,
     BACKGROUND_SYNC,
     AUTO_SAVE,
@@ -470,12 +470,12 @@ data class CorruptedItem(
     val entityType: EntityType,
     val entityId: String,
     val issue: String,
-    val severity: IssueSeverity,
+    val severity: OfflineIssueSeverity,
     val fixable: Boolean,
     val fixApplied: Boolean = false
 )
 
-enum class IssueSeverity {
+enum class OfflineIssueSeverity {
     LOW,
     MEDIUM,
     HIGH,

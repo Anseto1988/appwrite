@@ -17,13 +17,13 @@ data class TeamMember(
     val userId: String = "",
     val email: String = "",
     val name: String = "",
-    val role: TeamRole = TeamRole.VIEWER
+    val role: BasicTeamRole = BasicTeamRole.VIEWER
 )
 
 /**
  * Definiert die verfügbaren Rollen für Teammitglieder
  */
-enum class TeamRole(val displayName: String) {
+enum class BasicTeamRole(val displayName: String) {
     OWNER("Besitzer"),
     EDITOR("Bearbeiter"),
     VIEWER("Betrachter")

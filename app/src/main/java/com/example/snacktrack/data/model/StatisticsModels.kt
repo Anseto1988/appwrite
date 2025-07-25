@@ -43,7 +43,7 @@ data class AdvancedStatistics(
 data class WeightAnalytics(
     val currentWeight: Double = 0.0,
     val idealWeight: Double = 0.0,
-    val weightTrend: TrendDirection = TrendDirection.STABLE,
+    val weightTrend: StatisticsTrendDirection = StatisticsTrendDirection.STABLE,
     val weightChangePercent: Double = 0.0,
     val weightChangeAmount: Double = 0.0,
     val projectedWeight: Double = 0.0, // Next month
@@ -76,7 +76,7 @@ data class NutritionAnalytics(
 
 data class HealthAnalytics(
     val healthScore: Double = 0.0, // 0-100
-    val healthTrend: TrendDirection = TrendDirection.STABLE,
+    val healthTrend: StatisticsTrendDirection = StatisticsTrendDirection.STABLE,
     val symptomFrequency: Map<String, Int> = emptyMap(),
     val medicationAdherence: Double = 0.0,
     val vaccineStatus: VaccineStatus = VaccineStatus(),
@@ -93,8 +93,8 @@ data class HealthAnalytics(
 data class ActivityAnalytics(
     val dailyActivityMinutes: Double = 0.0,
     val recommendedActivityMinutes: Double = 0.0,
-    val activityLevel: ActivityLevel = ActivityLevel.MODERATE,
-    val activityTrend: TrendDirection = TrendDirection.STABLE,
+    val activityLevel: StatisticsActivityLevel = StatisticsActivityLevel.MODERATE,
+    val activityTrend: StatisticsTrendDirection = StatisticsTrendDirection.STABLE,
     val walkFrequency: Int = 0, // per week
     val averageWalkDuration: Double = 0.0,
     val playTimeMinutes: Double = 0.0,
@@ -110,7 +110,7 @@ data class ActivityAnalytics(
 data class CostAnalytics(
     val totalMonthlySpend: Double = 0.0,
     val averageDailyCost: Double = 0.0,
-    val costTrend: TrendDirection = TrendDirection.STABLE,
+    val costTrend: StatisticsTrendDirection = StatisticsTrendDirection.STABLE,
     val costBreakdown: CostBreakdown = CostBreakdown(),
     val costPerKg: Double = 0.0, // Cost per kg of body weight
     val budgetUtilization: Double = 0.0, // % of budget used
@@ -119,7 +119,7 @@ data class CostAnalytics(
     val priceVariationAnalysis: Map<String, PriceVariation> = emptyMap(),
     val bulkPurchaseSavings: Double = 0.0,
     val brandLoyaltyCost: Double = 0.0, // Extra cost for brand preference
-    val seasonalCostVariation: Map<Season, Double> = emptyMap()
+    val seasonalCostVariation: Map<StatisticsSeason, Double> = emptyMap()
 )
 
 data class BehavioralAnalytics(
@@ -137,12 +137,12 @@ data class BehavioralAnalytics(
 )
 
 data class PredictiveInsights(
-    val weightPrediction: WeightPrediction = WeightPrediction(),
+    val weightPrediction: StatisticsWeightPrediction = StatisticsWeightPrediction(),
     val healthPredictions: List<HealthPrediction> = emptyList(),
     val nutritionPredictions: List<NutritionPrediction> = emptyList(),
     val costPredictions: CostPrediction = CostPrediction(),
     val behaviorPredictions: List<BehaviorPrediction> = emptyList(),
-    val riskAssessment: RiskAssessment = RiskAssessment(),
+    val riskAssessment: StatisticsRiskAssessment = StatisticsRiskAssessment(),
     val recommendedInterventions: List<Intervention> = emptyList(),
     val lifestageTransitionPrediction: LifestageTransition? = null
 )
@@ -217,8 +217,8 @@ data class VaccineRecord(
 
 data class HealthRiskFactor(
     val factor: String = "",
-    val riskLevel: RiskLevel = RiskLevel.LOW,
-    val category: RiskCategory = RiskCategory.GENETIC,
+    val riskLevel: StatisticsRiskLevel = StatisticsRiskLevel.LOW,
+    val category: StatisticsRiskCategory = StatisticsRiskCategory.GENETIC,
     val mitigationStrategies: List<String> = emptyList(),
     val monitoringRequired: Boolean = false
 )
@@ -230,7 +230,7 @@ data class ConditionManagement(
     val dietCompliance: Double = 0.0,
     val monitoringFrequency: String = "",
     val lastCheckup: LocalDate? = null,
-    val trend: TrendDirection = TrendDirection.STABLE
+    val trend: StatisticsTrendDirection = StatisticsTrendDirection.STABLE
 )
 
 data class HealthEvent(
@@ -268,7 +268,7 @@ data class CostOptimization(
     val savingsAmount: Double = 0.0,
     val savingsPercent: Double = 0.0,
     val recommendation: String = "",
-    val implementationDifficulty: DifficultyLevel = DifficultyLevel.EASY
+    val implementationDifficulty: StatisticsDifficultyLevel = StatisticsDifficultyLevel.EASY
 )
 
 data class PriceVariation(
@@ -303,7 +303,7 @@ data class StressIndicator(
     val correlatedFactors: List<String> = emptyList()
 )
 
-data class WeightPrediction(
+data class StatisticsWeightPrediction(
     val predictedWeight30Days: Double = 0.0,
     val predictedWeight90Days: Double = 0.0,
     val confidenceLevel: Double = 0.0,
@@ -357,7 +357,7 @@ data class BehaviorPrediction(
     val preventiveActions: List<String> = emptyList()
 )
 
-data class RiskAssessment(
+data class StatisticsRiskAssessment(
     val overallRiskScore: Double = 0.0,
     val healthRiskScore: Double = 0.0,
     val nutritionRiskScore: Double = 0.0,
@@ -368,8 +368,8 @@ data class RiskAssessment(
 
 data class Risk(
     val name: String = "",
-    val category: RiskCategory = RiskCategory.HEALTH,
-    val severity: RiskLevel = RiskLevel.LOW,
+    val category: StatisticsRiskCategory = StatisticsRiskCategory.MEDICAL,
+    val severity: StatisticsRiskLevel = StatisticsRiskLevel.LOW,
     val likelihood: Double = 0.0,
     val impact: String = "",
     val timeframe: String = ""
@@ -446,7 +446,7 @@ data class GoalProgress(
     val goalValue: Double = 0.0,
     val currentValue: Double = 0.0,
     val progressPercent: Double = 0.0,
-    val trend: TrendDirection = TrendDirection.STABLE,
+    val trend: StatisticsTrendDirection = StatisticsTrendDirection.STABLE,
     val onTrack: Boolean = false
 )
 
@@ -467,7 +467,7 @@ enum class AnalyticsPeriod {
     CUSTOM
 }
 
-enum class TrendDirection {
+enum class StatisticsTrendDirection {
     INCREASING,
     DECREASING,
     STABLE,
@@ -488,7 +488,7 @@ enum class MuscleCondition {
     WELL_DEVELOPED
 }
 
-enum class ActivityLevel {
+enum class StatisticsActivityLevel {
     SEDENTARY,
     LOW,
     MODERATE,
@@ -587,7 +587,7 @@ enum class HealthImpactLevel {
     CRITICAL
 }
 
-enum class RiskLevel {
+enum class StatisticsRiskLevel {
     VERY_LOW,
     LOW,
     MODERATE,
@@ -595,7 +595,7 @@ enum class RiskLevel {
     VERY_HIGH
 }
 
-enum class RiskCategory {
+enum class StatisticsRiskCategory {
     GENETIC,
     ENVIRONMENTAL,
     DIETARY,
@@ -623,13 +623,13 @@ enum class SeverityLevel {
     CRITICAL
 }
 
-enum class DifficultyLevel {
+enum class StatisticsDifficultyLevel {
     EASY,
     MODERATE,
     HARD
 }
 
-enum class Season {
+enum class StatisticsSeason {
     SPRING,
     SUMMER,
     FALL,
@@ -741,7 +741,7 @@ data class ReportSection(
     val id: String = "",
     val title: String = "",
     val type: SectionType = SectionType.CHART,
-    val dataSource: DataSource = DataSource.WEIGHT,
+    val dataSource: StatisticsDataSource = StatisticsDataSource.WEIGHT,
     val visualization: VisualizationType = VisualizationType.LINE_CHART,
     val metrics: List<String> = emptyList(),
     val customization: SectionCustomization = SectionCustomization()
@@ -790,7 +790,7 @@ enum class SectionType {
     TIMELINE
 }
 
-enum class DataSource {
+enum class StatisticsDataSource {
     WEIGHT,
     NUTRITION,
     HEALTH,
