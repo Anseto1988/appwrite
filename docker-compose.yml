@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  android-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snacktrack-build
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+      - android-cache:/opt/android-sdk
+    environment:
+      - GRADLE_USER_HOME=/root/.gradle
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - ANDROID_HOME=/opt/android-sdk
+    working_dir: /app
+    command: ./gradlew build
+
+  android-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snacktrack-test
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+      - android-cache:/opt/android-sdk
+    environment:
+      - GRADLE_USER_HOME=/root/.gradle
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - ANDROID_HOME=/opt/android-sdk
+    working_dir: /app
+    command: ./gradlew test
+
+  android-lint:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snacktrack-lint
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+      - android-cache:/opt/android-sdk
+    environment:
+      - GRADLE_USER_HOME=/root/.gradle
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - ANDROID_HOME=/opt/android-sdk
+    working_dir: /app
+    command: ./gradlew lint
+
+  android-release:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snacktrack-release
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+      - android-cache:/opt/android-sdk
+    environment:
+      - GRADLE_USER_HOME=/root/.gradle
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - ANDROID_HOME=/opt/android-sdk
+      - SIGNING_KEY_ALIAS=${SIGNING_KEY_ALIAS}
+      - SIGNING_KEY_PASSWORD=${SIGNING_KEY_PASSWORD}
+      - SIGNING_STORE_PASSWORD=${SIGNING_STORE_PASSWORD}
+    working_dir: /app
+    command: ./gradlew assembleRelease
+
+volumes:
+  gradle-cache:
+  android-cache:

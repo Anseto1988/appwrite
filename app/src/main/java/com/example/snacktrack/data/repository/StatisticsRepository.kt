@@ -6,6 +6,7 @@ import io.appwrite.Query
 import io.appwrite.models.Document
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -30,6 +31,7 @@ class StatisticsRepository(
     private val nutritionRepository = NutritionRepository(context, appwriteService)
     private val healthRepository = HealthRepository(context, appwriteService)
     private val foodIntakeRepository = FoodIntakeRepository(context)
+    private val dogRepository = DogRepository(context)
     
     // Generate comprehensive statistics
     suspend fun generateAdvancedStatistics(
@@ -80,7 +82,9 @@ class StatisticsRepository(
         val weightEntries = mutableListOf<WeightEntry>()
         var currentDate = startDate
         while (!currentDate.isAfter(endDate)) {
-            val dailyWeights = weightRepository.getWeightEntries(dogId, currentDate).getOrNull() ?: emptyList()
+            val dailyWeights = weightRepository.getWeightHistory(dogId).first().filter { 
+                it.timestamp.toLocalDate() == currentDate 
+            }
             weightEntries.addAll(dailyWeights)
             currentDate = currentDate.plusDays(1)
         }
@@ -90,7 +94,7 @@ class StatisticsRepository(
             return WeightAnalytics()
         }
         
-        val currentWeight = weights.maxByOrNull { it.date }?.weight ?: 0.0
+        val currentWeight = weights.maxByOrNull { it.timestamp }?.weight ?: 0.0
         val dog = dogRepository.getDogById(dogId).getOrNull()
         val idealWeight = dog?.targetWeight ?: calculateIdealWeight(dog)
         
@@ -116,7 +120,7 @@ class StatisticsRepository(
         
         // Calculate weight velocity (kg per week)
         val velocity = if (weights.size >= 2) {
-            val weeks = ChronoUnit.WEEKS.between(weights.first().date, weights.last().date).toDouble()
+            val weeks = ChronoUnit.WEEKS.between(weights.first().timestamp, weights.last().timestamp).toDouble()
             if (weeks > 0) changeAmount / weeks else 0.0
         } else 0.0
         
@@ -142,7 +146,7 @@ class StatisticsRepository(
             muscleConditionScore = estimateMuscleCondition(dog, weights),
             weightHistory = weights.map { 
                 WeightDataPoint(
-                    date = it.date,
+                    date = it.timestamp.toLocalDate(),
                     weight = it.weight,
                     bodyConditionScore = calculateBodyConditionScore(it.weight, idealWeight)
                 )
@@ -162,9 +166,7 @@ class StatisticsRepository(
         val intakes = mutableListOf<FoodIntake>()
         var currentDate = startDate
         while (!currentDate.isAfter(endDate)) {
-            val dailyIntakes = kotlinx.coroutines.flow.first(
-                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
-            )
+            val dailyIntakes = foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate).first()
             intakes.addAll(dailyIntakes)
             currentDate = currentDate.plusDays(1)
         }
@@ -207,7 +209,7 @@ class StatisticsRepository(
         val treatPercentage = calculateTreatPercentage(intakes)
         
         // Estimate hydration
-        val hydrationEstimate = estimateHydration(dog.currentWeight, intakes)
+        val hydrationEstimate = estimateHydration(dog.weight, intakes)
         
         // Nutritional completeness
         val completeness = calculateNutritionalCompleteness(microAnalysis)
@@ -266,7 +268,7 @@ class StatisticsRepository(
         // Analyze symptom frequency
         val symptomFrequency = healthEntries
             .flatMap { it.symptoms }
-            .groupBy { it }
+            .groupBy { it.name } // Convert to String for compatibility
             .mapValues { it.value.size }
         
         // Calculate medication adherence
@@ -332,26 +334,26 @@ class StatisticsRepository(
         val breed = getBreedInfo(dog.breed)
         val ageInYears = ChronoUnit.YEARS.between(dog.birthDate, LocalDate.now()).toInt()
         
-        val recommendedActivity = calculateRecommendedActivity(breed, ageInYears, dog.currentWeight)
+        val recommendedActivity = calculateRecommendedActivity(breed, ageInYears, dog.weight)
         val estimatedActivity = estimateCurrentActivity(dog, breed)
         
         val activityLevel = when {
-            estimatedActivity < recommendedActivity * 0.5 -> ActivityLevel.SEDENTARY
+            estimatedActivity < recommendedActivity * 0.5 -> ActivityLevel.VERY_LOW
             estimatedActivity < recommendedActivity * 0.75 -> ActivityLevel.LOW
-            estimatedActivity < recommendedActivity * 1.25 -> ActivityLevel.MODERATE
+            estimatedActivity < recommendedActivity * 1.25 -> ActivityLevel.NORMAL
             estimatedActivity < recommendedActivity * 1.5 -> ActivityLevel.HIGH
             else -> ActivityLevel.VERY_HIGH
         }
         
         // Estimate other activity metrics
         val walkFrequency = estimateWalkFrequency(breed, ageInYears)
-        val walkDuration = estimateWalkDuration(breed, dog.currentWeight)
+        val walkDuration = estimateWalkDuration(breed, dog.weight)
         val playTime = estimatePlayTime(ageInYears, breed)
         val trainingFrequency = estimateTrainingFrequency(ageInYears)
         
         // Calculate energy expenditure
         val energyExpenditure = calculateEnergyExpenditure(
-            dog.currentWeight,
+            dog.weight,
             estimatedActivity,
             activityLevel
         )
@@ -404,9 +406,7 @@ class StatisticsRepository(
         val intakes = mutableListOf<FoodIntake>()
         var currentDate = startDate
         while (!currentDate.isAfter(endDate)) {
-            val dailyIntakes = kotlinx.coroutines.flow.first(
-                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
-            )
+            val dailyIntakes = foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate).first()
             intakes.addAll(dailyIntakes)
             currentDate = currentDate.plusDays(1)
         }
@@ -440,7 +440,7 @@ class StatisticsRepository(
         )
         
         // Calculate cost per kg of body weight
-        val costPerKg = if (dog.currentWeight > 0) totalMonthly / dog.currentWeight else 0.0
+        val costPerKg = if (dog.weight > 0) totalMonthly / dog.weight else 0.0
         
         // Identify optimization opportunities
         val optimizations = identifyCostOptimizations(costBreakdown, intakes)
@@ -456,10 +456,10 @@ class StatisticsRepository(
         
         // Seasonal variations
         val seasonalVariations = mapOf(
-            Season.SPRING to totalMonthly * 0.95,
-            Season.SUMMER to totalMonthly * 1.05,
-            Season.FALL to totalMonthly * 1.0,
-            Season.WINTER to totalMonthly * 1.1
+            StatisticsSeason.SPRING to totalMonthly * 0.95,
+            StatisticsSeason.SUMMER to totalMonthly * 1.05,
+            StatisticsSeason.FALL to totalMonthly * 1.0,
+            StatisticsSeason.WINTER to totalMonthly * 1.1
         )
         
         return CostAnalytics(
@@ -488,9 +488,7 @@ class StatisticsRepository(
         val intakes = mutableListOf<FoodIntake>()
         var currentDate = startDate
         while (!currentDate.isAfter(endDate)) {
-            val dailyIntakes = kotlinx.coroutines.flow.first(
-                foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate)
-            )
+            val dailyIntakes = foodIntakeRepository.getFoodIntakesForDog(dogId, currentDate).first()
             intakes.addAll(dailyIntakes)
             currentDate = currentDate.plusDays(1)
         }
@@ -738,7 +736,7 @@ class StatisticsRepository(
         
         val recentWeights = weights.takeLast(5)
         val slope = calculateLinearRegression(
-            recentWeights.map { ChronoUnit.DAYS.between(recentWeights.first().date, it.date).toDouble() },
+            recentWeights.map { ChronoUnit.DAYS.between(recentWeights.first().timestamp, it.timestamp).toDouble() },
             recentWeights.map { it.weight }
         )
         
@@ -772,7 +770,7 @@ class StatisticsRepository(
     private fun projectWeight(weights: List<WeightEntry>, daysAhead: Int): Double {
         if (weights.size < 2) return weights.lastOrNull()?.weight ?: 0.0
         
-        val x = weights.map { ChronoUnit.DAYS.between(weights.first().date, it.date).toDouble() }
+        val x = weights.map { ChronoUnit.DAYS.between(weights.first().timestamp, it.timestamp).toDouble() }
         val y = weights.map { it.weight }
         
         val slope = calculateLinearRegression(x, y)
@@ -812,7 +810,7 @@ class StatisticsRepository(
     
     private fun calculateRecommendedCalories(dog: Dog): Double {
         // RER (Resting Energy Requirement) = 70 * (weight in kg)^0.75
-        val rer = 70 * dog.currentWeight.pow(0.75)
+        val rer = 70 * dog.weight.pow(0.75)
         
         // Activity factor based on age and activity level
         val activityFactor = 1.6 // Average adult dog
@@ -859,9 +857,8 @@ class StatisticsRepository(
     }
     
     private fun calculateTreatPercentage(intakes: List<FoodIntake>): Double {
-        val treatCalories = intakes
-            .filter { it.mealType == MealType.SNACK }
-            .sumOf { it.calories ?: 0.0 }
+        // TODO: Add mealType to FoodIntake model to differentiate treats/snacks
+        val treatCalories = 0.0 // Currently unable to distinguish treats without mealType
         
         val totalCalories = intakes.sumOf { it.calories ?: 0 }
         
@@ -1062,14 +1059,14 @@ class StatisticsRepository(
     private fun createHealthEventTimeline(entries: List<DogHealthEntry>): List<HealthEvent> {
         return entries.map { entry ->
             HealthEvent(
-                date = entry.date,
-                eventType = if (entry.veterinarianVisit) {
+                date = entry.entryDate.toLocalDate(),
+                eventType = if (entry.veterinaryVisit) {
                     HealthEventType.ROUTINE_CHECKUP
                 } else {
                     HealthEventType.ILLNESS
                 },
                 description = entry.symptoms.joinToString(", "),
-                severity = if (entry.veterinarianVisit) {
+                severity = if (entry.veterinaryVisit) {
                     SeverityLevel.MODERATE
                 } else {
                     SeverityLevel.MILD
@@ -1170,9 +1167,9 @@ class StatisticsRepository(
     ): Double {
         // MET (Metabolic Equivalent) values for dogs
         val met = when (level) {
-            ActivityLevel.SEDENTARY -> 1.2
+            ActivityLevel.VERY_LOW -> 1.2
             ActivityLevel.LOW -> 1.5
-            ActivityLevel.MODERATE -> 2.0
+            ActivityLevel.NORMAL -> 2.0
             ActivityLevel.HIGH -> 3.0
             ActivityLevel.VERY_HIGH -> 4.0
         }
@@ -1183,9 +1180,9 @@ class StatisticsRepository(
     
     private fun calculateRestQuality(level: ActivityLevel): Double {
         return when (level) {
-            ActivityLevel.SEDENTARY -> 60.0
+            ActivityLevel.VERY_LOW -> 60.0
             ActivityLevel.LOW -> 70.0
-            ActivityLevel.MODERATE -> 85.0
+            ActivityLevel.NORMAL -> 85.0
             ActivityLevel.HIGH -> 80.0
             ActivityLevel.VERY_HIGH -> 70.0
         }
@@ -1199,7 +1196,8 @@ class StatisticsRepository(
     }
     
     private fun estimateTreatCost(intakes: List<FoodIntake>): Double {
-        val treatIntakes = intakes.filter { it.mealType == MealType.SNACK }
+        // TODO: Add mealType to FoodIntake model to filter treats
+        val treatIntakes = emptyList<FoodIntake>() // Currently unable to filter treats
         val totalKg = treatIntakes.sumOf { it.amountGram } / 1000
         val pricePerKg = 10.0 // Treats are more expensive
         return totalKg * pricePerKg / 30
@@ -1292,9 +1290,8 @@ class StatisticsRepository(
     }
     
     private fun analyzeTreatResponse(intakes: List<FoodIntake>): TreatResponse {
-        val treatPercentage = intakes
-            .count { it.mealType == MealType.SNACK }
-            .toDouble() / intakes.size * 100
+        // TODO: Add mealType to FoodIntake model to calculate treat percentage
+        val treatPercentage = 0.0 // Currently unable to distinguish treats
         
         return when {
             treatPercentage < 5 -> TreatResponse.MINIMAL

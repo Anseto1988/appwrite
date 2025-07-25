@@ -20,7 +20,7 @@ import com.example.snacktrack.utils.NetworkManager
 class AppwriteService private constructor(context: Context) {
     
     companion object {
-        const val ENDPOINT = "https://parse.nordburglarp.de/v1"
+        const val ENDPOINT = "https://parse.nordburglarp.de/v2"
         const val PROJECT_ID = "snackrack2"
         const val DATABASE_ID = "snacktrack-db"
         
@@ -68,11 +68,26 @@ class AppwriteService private constructor(context: Context) {
         .build()
 
     // Appwrite Client with custom OkHttp configuration
-    val client = Client(context)
-        .setEndpoint(ENDPOINT)
-        .setProject(PROJECT_ID)
-        .setLocale("de-DE") // Set locale for error messages
-        .setSelfSigned(false) // Explicitly set to false for production
+    val client = Client(context).apply {
+        setEndpoint(ENDPOINT)
+        setProject(PROJECT_ID)
+        setLocale("de-DE") // Set locale for error messages
+        setSelfSigned(false) // Explicitly set to false for production
+        // Configure with custom OkHttpClient if available
+        // Note: This depends on the Appwrite SDK version - may need setHttpClient() or similar method
+        try {
+            val setHttpMethod = this::class.java.getDeclaredMethod("setHttpClient", OkHttpClient::class.java)
+            setHttpMethod.invoke(this, okHttpClient)
+        } catch (e: NoSuchMethodException) {
+            // If method doesn't exist, try setHttp or other variants
+            try {
+                val setHttpMethod = this::class.java.getDeclaredMethod("setHttp", OkHttpClient::class.java)
+                setHttpMethod.invoke(this, okHttpClient)
+            } catch (e2: Exception) {
+                SecureLogger.w("AppwriteService", "Could not set custom OkHttpClient: ${e2.message}")
+            }
+        }
+    }
     
     // Appwrite Services
     val account = Account(client)

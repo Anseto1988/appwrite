@@ -33,9 +33,9 @@ class FoodIntakeRepository(private val context: Context) {
                 collectionId = AppwriteService.COLLECTION_FOOD_INTAKE,
                 queries = listOf(
                     Query.equal("dogId", dogId),
-                    Query.greaterThanEqual("date", startOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
-                    Query.lessThanEqual("date", endOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
-                    Query.orderDesc("date")
+                    Query.greaterThanEqual("timestamp", startOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
+                    Query.lessThanEqual("timestamp", endOfDay.format(DateTimeFormatter.ISO_DATE_TIME)),
+                    Query.orderDesc("timestamp")
                 )
             )
             
@@ -50,10 +50,7 @@ class FoodIntakeRepository(private val context: Context) {
                     amountGram = (doc.data["amount"] as? Number)?.toDouble() 
                         ?: (doc.data["amountGram"] as? Number)?.toDouble() ?: 0.0,
                     calories = (doc.data["calories"] as? Number)?.toInt() ?: 0,
-                    // Try "date" first (new schema), fallback to "timestamp" (backwards compatibility)
-                    timestamp = (doc.data["date"] as? String)?.let {
-                        LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
-                    } ?: (doc.data["timestamp"] as? String)?.let {
+                    timestamp = (doc.data["timestamp"] as? String)?.let {
                         LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
                     } ?: LocalDateTime.now(),
                     // Try "notes" first (new schema), fallback to "note" (backwards compatibility)

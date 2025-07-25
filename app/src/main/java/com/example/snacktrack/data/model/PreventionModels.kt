@@ -745,38 +745,25 @@ data class SeasonalReminder(
     val notes: String? = null
 )
 
-// Prevention Recommendations
-
-data class PreventionRecommendation(
-    val id: String = "",
-    val category: PreventionCategory = PreventionCategory.GENERAL,
-    val title: String = "",
-    val description: String = "",
-    val priority: RecommendationPriority = RecommendationPriority.MEDIUM,
-    val evidence: EvidenceLevel = EvidenceLevel.MODERATE,
-    val applicability: Double = 0.0, // 0-1 score
-    val implementationSteps: List<String> = emptyList(),
-    val expectedBenefits: List<String> = emptyList(),
-    val resources: List<PreventionResource> = emptyList()
+data class PreventionSeasonalCare(
+    val dogId: String = "",
+    val season: PreventionSeason = PreventionSeason.SPRING,
+    val year: Int = LocalDate.now().year,
+    val hazards: List<SeasonalHazard> = emptyList(),
+    val preventiveMeasures: List<PreventiveMeasure> = emptyList(),
+    val careAdjustments: CareAdjustments = CareAdjustments(),
+    val reminders: List<PreventionSeasonalReminder> = emptyList()
 )
 
-enum class PreventionCategory {
-    GENERAL,
-    NUTRITION,
-    EXERCISE,
-    DENTAL,
-    MENTAL_HEALTH,
-    ENVIRONMENTAL,
-    MEDICAL,
-    BEHAVIORAL
-}
+data class PreventionSeasonalReminder(
+    val task: String = "",
+    val dueDate: LocalDate = LocalDate.now(),
+    val recurring: Boolean = false,
+    val completed: Boolean = false,
+    val notes: String? = null
+)
 
-enum class RecommendationPriority {
-    LOW,
-    MEDIUM,
-    HIGH,
-    CRITICAL
-}
+// Prevention Recommendations - moved to HealthModels.kt to avoid duplication
 
 enum class EvidenceLevel {
     ANECDOTAL,

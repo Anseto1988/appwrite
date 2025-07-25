@@ -30,7 +30,7 @@ class WeightRepository(private val context: Context) {
                 collectionId = AppwriteService.COLLECTION_WEIGHT_ENTRIES,
                 queries = listOf(
                     Query.equal("dogId", dogId),
-                    Query.orderDesc("date")
+                    Query.orderDesc("timestamp")
                 )
             )
             
@@ -39,9 +39,7 @@ class WeightRepository(private val context: Context) {
                     id = doc.id,
                     dogId = doc.data["dogId"].toString(),
                     weight = (doc.data["weight"] as? Number)?.toDouble() ?: 0.0,
-                    timestamp = (doc.data["date"] as? String)?.let {
-                        LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
-                    } ?: (doc.data["timestamp"] as? String)?.let {
+                    timestamp = (doc.data["timestamp"] as? String)?.let {
                         LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
                     } ?: LocalDateTime.now(),
                     note = doc.data["notes"]?.toString() ?: doc.data["note"]?.toString()
@@ -62,7 +60,6 @@ class WeightRepository(private val context: Context) {
             val dataMap = mutableMapOf<String, Any>(
                 "dogId" to entry.dogId,
                 "weight" to entry.weight,
-                "date" to entry.timestamp.format(DateTimeFormatter.ISO_DATE_TIME),
                 "timestamp" to entry.timestamp.format(DateTimeFormatter.ISO_DATE_TIME)
             )
             
@@ -82,9 +79,7 @@ class WeightRepository(private val context: Context) {
                     id = response.id,
                     dogId = response.data["dogId"].toString(),
                     weight = (response.data["weight"] as? Number)?.toDouble() ?: 0.0,
-                    timestamp = (response.data["date"] as? String)?.let {
-                        LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
-                    } ?: (response.data["timestamp"] as? String)?.let {
+                    timestamp = (response.data["timestamp"] as? String)?.let {
                         LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
                     } ?: LocalDateTime.now(),
                     note = response.data["notes"]?.toString() ?: response.data["note"]?.toString()

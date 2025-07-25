@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # Enable version updates for Gradle dependencies
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    target-branch: "develop"
+    labels:
+      - "dependencies"
+      - "automated"
+    reviewers:
+      - "Anseto1988"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "/"
+    ignore:
+      # Ignore updates to Android Gradle Plugin and Gradle wrapper
+      # These should be updated manually to ensure compatibility
+      - dependency-name: "com.android.tools.build:gradle"
+      - dependency-name: "gradle"
+    groups:
+      androidx:
+        patterns:
+          - "androidx.*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+      testing:
+        patterns:
+          - "*junit*"
+          - "*mockito*"
+          - "*espresso*"
+          - "*robolectric*"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    target-branch: "develop"
+    labels:
+      - "ci"
+      - "automated"
+    reviewers:
+      - "Anseto1988"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

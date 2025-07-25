@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import com.example.snacktrack.data.service.AppwriteService
 
-class AuthRepository(private val context: Context) {
+class AuthRepository(private val context: Context) : BaseRepository() {
     
     private val appwriteService = AppwriteService.getInstance(context)
     private val account = appwriteService.account

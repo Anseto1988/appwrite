@@ -1,0 +1,55 @@
+# Configuration for GitHub labeler action
+# Automatically labels PRs based on file changes
+
+android:
+  - app/src/**/*
+  - app/build.gradle*
+  - "*.gradle"
+
+ui:
+  - app/src/main/res/**/*
+  - app/src/*/java/**/ui/**/*
+  - app/src/*/kotlin/**/ui/**/*
+  - app/src/*/java/**/view/**/*
+  - app/src/*/kotlin/**/view/**/*
+
+data:
+  - app/src/*/java/**/data/**/*
+  - app/src/*/kotlin/**/data/**/*
+  - app/src/*/java/**/database/**/*
+  - app/src/*/kotlin/**/database/**/*
+  - app/src/*/java/**/repository/**/*
+  - app/src/*/kotlin/**/repository/**/*
+
+auth:
+  - app/src/*/java/**/auth/**/*
+  - app/src/*/kotlin/**/auth/**/*
+  - app/src/*/java/**/login/**/*
+  - app/src/*/kotlin/**/login/**/*
+  - app/src/*/java/**/security/**/*
+  - app/src/*/kotlin/**/security/**/*
+
+tests:
+  - app/src/test/**/*
+  - app/src/androidTest/**/*
+  - "**/*Test.kt"
+  - "**/*Test.java"
+  - "**/test/**/*"
+
+ci:
+  - .github/**/*
+  - .circleci/**/*
+  - "*.yml"
+  - "*.yaml"
+
+documentation:
+  - "**/*.md"
+  - docs/**/*
+  - README.md
+
+dependencies:
+  - build.gradle*
+  - app/build.gradle*
+  - gradle.properties
+  - gradle/wrapper/**/*
+  - versions.gradle

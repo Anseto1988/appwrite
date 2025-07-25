@@ -813,14 +813,7 @@ enum class VisualizationType {
     TABLE
 }
 
-enum class DateRange {
-    LAST_7_DAYS,
-    LAST_30_DAYS,
-    LAST_90_DAYS,
-    LAST_YEAR,
-    ALL_TIME,
-    CUSTOM
-}
+// DateRange moved to HealthModels.kt to avoid duplication
 
 enum class ScheduleFrequency {
     DAILY,
