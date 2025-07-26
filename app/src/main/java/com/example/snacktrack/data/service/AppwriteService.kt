@@ -55,12 +55,17 @@ class AppwriteService private constructor(context: Context) {
     // Network connectivity manager
     val networkManager = NetworkManager(context)
     
-    // Configure OkHttp with caching
+    // Configure OkHttp with caching and cookie management
     private val cacheSize = 50L * 1024L * 1024L // 50 MB cache
     private val cache = Cache(File(context.cacheDir, "http_cache"), cacheSize)
     
+    // Cookie manager for session persistence
+    private val cookieJarManager = CookieJarManager(context)
+    
     private val okHttpClient = OkHttpClient.Builder()
         .cache(cache)
+        .cookieJar(cookieJarManager) // Add cookie management
+        .addInterceptor(SessionInterceptor()) // Add session interceptor for debugging
         .addInterceptor(NetworkCacheInterceptor())
         .addNetworkInterceptor(OfflineCacheInterceptor(networkManager))
         .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
@@ -79,19 +84,49 @@ class AppwriteService private constructor(context: Context) {
         // API Keys override user sessions and cause "guest" user issues
         // For Android apps, always use user authentication (email/password or OAuth)
         
-        // Configure with custom OkHttpClient if available
-        // Note: This depends on the Appwrite SDK version - may need setHttpClient() or similar method
+        // Configure with custom OkHttpClient for cookie persistence
+        // Try different methods to set the HTTP client
+        var httpClientSet = false
+        
+        // Method 1: Try setHttpClient
         try {
-            val setHttpMethod = this::class.java.getDeclaredMethod("setHttpClient", OkHttpClient::class.java)
-            setHttpMethod.invoke(this, okHttpClient)
-        } catch (e: NoSuchMethodException) {
-            // If method doesn't exist, try setHttp or other variants
+            val setHttpClientMethod = this::class.java.getDeclaredMethod("setHttpClient", OkHttpClient::class.java)
+            setHttpClientMethod.isAccessible = true
+            setHttpClientMethod.invoke(this, okHttpClient)
+            httpClientSet = true
+            SecureLogger.d("AppwriteService", "Successfully set custom OkHttpClient using setHttpClient")
+        } catch (e: Exception) {
+            SecureLogger.d("AppwriteService", "setHttpClient not available: ${e.message}")
+        }
+        
+        // Method 2: Try setHttp if setHttpClient didn't work
+        if (!httpClientSet) {
             try {
                 val setHttpMethod = this::class.java.getDeclaredMethod("setHttp", OkHttpClient::class.java)
+                setHttpMethod.isAccessible = true
                 setHttpMethod.invoke(this, okHttpClient)
-            } catch (e2: Exception) {
-                SecureLogger.w("AppwriteService", "Could not set custom OkHttpClient: ${e2.message}")
+                httpClientSet = true
+                SecureLogger.d("AppwriteService", "Successfully set custom OkHttpClient using setHttp")
+            } catch (e: Exception) {
+                SecureLogger.d("AppwriteService", "setHttp not available: ${e.message}")
             }
+        }
+        
+        // Method 3: Try direct field access
+        if (!httpClientSet) {
+            try {
+                val httpField = this::class.java.getDeclaredField("http")
+                httpField.isAccessible = true
+                httpField.set(this, okHttpClient)
+                httpClientSet = true
+                SecureLogger.d("AppwriteService", "Successfully set custom OkHttpClient using field access")
+            } catch (e: Exception) {
+                SecureLogger.d("AppwriteService", "Direct field access failed: ${e.message}")
+            }
+        }
+        
+        if (!httpClientSet) {
+            SecureLogger.e("AppwriteService", "WARNING: Could not set custom OkHttpClient - cookies may not persist!")
         }
     }
     
