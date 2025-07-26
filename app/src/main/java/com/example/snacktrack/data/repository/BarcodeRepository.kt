@@ -1406,6 +1406,231 @@ class BarcodeRepository(
         "confidence" to confidence,
         "alternatives" to alternatives
     )
+    
+    // Additional methods for BarcodeViewModel
+    
+    suspend fun getUserInventory(userId: String): Result<List<ProductInventory>> = withContext(Dispatchers.IO) {
+    try {
+        val documents = databases.listDocuments(
+            databaseId = databaseId,
+            collectionId = "inventory",
+            queries = listOf(Query.equal("userId", userId))
+        )
+        
+        val inventory = documents.documents.mapNotNull { document ->
+            val productId = document.data["productId"] as String
+            val product = getProductById(productId) ?: return@mapNotNull null
+            
+            ProductInventory(
+                id = document.id,
+                userId = document.data["userId"] as String,
+                product = product,
+                currentStock = StockLevel(
+                    quantity = (document.data["quantity"] as Number).toDouble(),
+                    unit = StockUnit.valueOf(document.data["unit"] as String),
+                    lastUpdated = LocalDateTime.parse(document.data["lastUpdated"] as String)
+                ),
+                reorderSettings = document.data["reorderSettings"]?.let { 
+                    parseReorderSettings(it as Map<String, Any?>)
+                } ?: ReorderSettings(),
+                storageLocation = document.data["location"] as? String,
+                expirationDate = document.data["expiryDate"]?.let { LocalDateTime.parse(it as String) }
+            )
+        }
+        
+        Result.success(inventory)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun getBarcodeHistory(userId: String, dogId: String, limit: Int = 10): Result<List<BarcodeHistory>> = withContext(Dispatchers.IO) {
+    try {
+        val documents = databases.listDocuments(
+            databaseId = databaseId,
+            collectionId = "barcode_history",
+            queries = listOf(
+                Query.equal("userId", userId),
+                Query.equal("dogId", dogId),
+                Query.orderDesc("timestamp"),
+                Query.limit(limit)
+            )
+        )
+        
+        val history = documents.documents.map { document ->
+            BarcodeHistory(
+                id = document.id,
+                userId = document.data["userId"] as String,
+                dogId = document.data["dogId"] as String,
+                barcode = document.data["barcode"] as String,
+                product = null, // We only store basic info in history
+                scanTimestamp = LocalDateTime.parse(document.data["timestamp"] as String),
+                action = ScanAction.valueOf(document.data["action"] as String),
+                notes = document.data["notes"] as? String
+            )
+        }
+        
+        Result.success(history)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun getProductByBarcode(barcode: String): Result<Product> = lookupProduct(barcode)
+
+    suspend fun recordBarcodeHistory(
+    userId: String,
+    dogId: String,
+    barcode: String,
+    product: Product,
+    action: ScanAction
+): Result<BarcodeHistory> = withContext(Dispatchers.IO) {
+    try {
+        val document = databases.createDocument(
+            databaseId = databaseId,
+            collectionId = "barcode_history",
+            documentId = ID.unique(),
+            data = mapOf(
+                "userId" to userId,
+                "dogId" to dogId,
+                "barcode" to barcode,
+                "productName" to product.name,
+                "productBrand" to product.brand,
+                "action" to action.name,
+                "timestamp" to LocalDateTime.now().toString()
+            )
+        )
+        
+        val history = BarcodeHistory(
+            id = document.id,
+            userId = userId,
+            dogId = dogId,
+            barcode = barcode,
+            product = product,
+            scanTimestamp = LocalDateTime.now(),
+            action = action
+        )
+        
+        Result.success(history)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun addToInventory(
+    userId: String,
+    product: Product,
+    quantity: Double,
+    unit: StockUnit
+): Result<ProductInventory> = withContext(Dispatchers.IO) {
+    try {
+        // First save the product if it doesn't exist
+        if (product.id.isEmpty()) {
+            saveProduct(product)
+        }
+        
+        val document = databases.createDocument(
+            databaseId = databaseId,
+            collectionId = "inventory",
+            documentId = ID.unique(),
+            data = mapOf(
+                "userId" to userId,
+                "productId" to product.id,
+                "quantity" to quantity,
+                "unit" to unit.name,
+                "lastUpdated" to LocalDateTime.now().toString()
+            )
+        )
+        
+        val inventory = ProductInventory(
+            id = document.id,
+            userId = userId,
+            product = product,
+            currentStock = StockLevel(
+                quantity = quantity,
+                unit = unit,
+                lastUpdated = LocalDateTime.now()
+            )
+        )
+        
+        Result.success(inventory)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun updateInventoryQuantity(inventoryId: String, newQuantity: Double): Result<Unit> = withContext(Dispatchers.IO) {
+    try {
+        databases.updateDocument(
+            databaseId = databaseId,
+            collectionId = "inventory",
+            documentId = inventoryId,
+            data = mapOf(
+                "quantity" to newQuantity,
+                "lastUpdated" to LocalDateTime.now().toString()
+            )
+        )
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun setReorderSettings(inventoryId: String, settings: ReorderSettings): Result<Unit> = withContext(Dispatchers.IO) {
+    try {
+        databases.updateDocument(
+            databaseId = databaseId,
+            collectionId = "inventory",
+            documentId = inventoryId,
+            data = mapOf(
+                "reorderSettings" to mapOf(
+                    "reorderPoint" to settings.reorderPoint,
+                    "reorderQuantity" to settings.reorderQuantity,
+                    "preferredSupplier" to settings.preferredSupplier,
+                    "autoOrder" to settings.autoOrder
+                ),
+                "lastUpdated" to LocalDateTime.now().toString()
+            )
+        )
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun searchProducts(query: String): Result<List<Product>> = withContext(Dispatchers.IO) {
+    try {
+        val documents = databases.listDocuments(
+            databaseId = databaseId,
+            collectionId = "products",
+            queries = listOf(
+                Query.search("name", query),
+                Query.limit(10)
+            )
+        )
+        
+        val products = documents.documents.map { parseProductFromDocument(it) }
+        Result.success(products)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+    suspend fun checkProductAllergens(dogId: String, product: Product): Result<List<AllergenAlert>> {
+        val result = checkProductForAllergens(dogId, product.barcode)
+        return result.map { alert ->
+            if (alert != null) listOf(alert) else emptyList()
+        }
+    }
+
+    private fun parseReorderSettings(data: Map<String, Any?>): ReorderSettings {
+        return ReorderSettings(
+            reorderPoint = (data["reorderPoint"] as? Number)?.toDouble(),
+            reorderQuantity = (data["reorderQuantity"] as Number).toDouble(),
+            preferredSupplier = data["preferredSupplier"] as? String,
+            autoOrder = data["autoOrder"] as? Boolean ?: false
+        )
+    }
 }
 
 // Placeholder classes

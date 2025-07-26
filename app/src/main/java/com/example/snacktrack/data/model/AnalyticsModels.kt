@@ -147,6 +147,8 @@ data class ActivityAnalytics(
     val energyExpenditure: Double = 0.0,
     val exerciseConsistency: Double = 0.0,
     val activityGoalProgress: Double = 0.0,
+    val activityConsistency: Float = 0.0f,
+    val exerciseTypeDistribution: Map<ExerciseType, Float> = emptyMap(),
     val restDays: Int = 0,
     val overexerciseRisk: Double = 0.0,
     val weatherImpact: Double = 0.0,
@@ -165,7 +167,12 @@ data class CostAnalytics(
     val bulkPurchaseSavings: Double = 0.0,
     val loyaltyDiscounts: Double = 0.0,
     val brandLoyaltyCost: Double = 0.0,
-    val seasonalCostAdjustment: Double = 0.0
+    val seasonalCostAdjustment: Double = 0.0,
+    val totalMonthlySpend: Double = 0.0,
+    val averageDailyCost: Double = 0.0,
+    val costPerKg: Double = 0.0,
+    val costOptimizationOpportunities: List<String> = emptyList(),
+    val projectedAnnualCost: Double = 0.0
 )
 
 // Cost breakdown
@@ -215,6 +222,9 @@ data class BehaviorAnalytics(
     val pickiness: Double = 0.0,
     val foodPreferences: List<FoodPreference> = emptyList(),
     val eatingSpeed: EatingSpeed = EatingSpeed.NORMAL,
+    val eatingBehaviorScore: Double = 0.0,
+    val foodMotivationLevel: Double = 0.0,
+    val pickeyEaterScore: Double = 0.0,
     val stressEatingPatterns: List<StressIndicator> = emptyList()
 )
 
@@ -262,7 +272,13 @@ data class ComparativeAnalysis(
     val breedComparison: BreedComparison = BreedComparison(),
     val ageGroupComparison: AgeGroupComparison = AgeGroupComparison(),
     val localAreaComparison: LocalAreaComparison = LocalAreaComparison(),
-    val similarDogsComparison: SimilarDogsComparison = SimilarDogsComparison()
+    val similarDogsComparison: SimilarDogsComparison = SimilarDogsComparison(),
+    val yourDog: ComparisonMetrics = ComparisonMetrics(),
+    val breedAverage: ComparisonMetrics = ComparisonMetrics(),
+    val ageAverage: ComparisonMetrics = ComparisonMetrics(),
+    val sampleSize: Int = 0,
+    val metrics: List<MetricComparison> = emptyList(),
+    val historicalComparison: List<HistoricalComparisonPeriod> = emptyList()
 )
 
 // Breed comparison
@@ -296,12 +312,43 @@ data class SimilarDogsComparison(
     val insights: List<String> = emptyList()
 )
 
+// Comparison metrics
+data class ComparisonMetrics(
+    val weight: Double = 0.0,
+    val activity: Double = 0.0,
+    val health: Double = 0.0,
+    val nutrition: Double = 0.0
+)
+
+// Metric comparison
+data class MetricComparison(
+    val name: String = "",
+    val yourValue: Double = 0.0,
+    val averageValue: Double = 0.0,
+    val unit: String = ""
+)
+
+// Historical comparison period
+data class HistoricalComparisonPeriod(
+    val period: String = "",
+    val periods: List<PeriodData> = emptyList()
+)
+
+// Period data
+data class PeriodData(
+    val label: String = "",
+    val value: Double = 0.0
+)
+
 // Predictive insights model
 data class PredictiveInsights(
     val weightPrediction: WeightPrediction = WeightPrediction(),
     val healthPredictions: List<PredictedHealthIssue> = emptyList(),
     val costPrediction: CostPrediction = CostPrediction(),
-    val behaviorPredictions: List<BehaviorPrediction> = emptyList()
+    val behaviorPredictions: List<BehaviorPrediction> = emptyList(),
+    val riskAssessment: RiskAssessment = RiskAssessment(),
+    val recommendedInterventions: List<String> = emptyList(),
+    val lifestageTransitionPrediction: LifestageTransition? = null
 )
 
 // Cost prediction
@@ -311,6 +358,13 @@ data class CostPrediction(
     val annualProjection: Double = 0.0,
     val inflationAdjustedCost: Double = 0.0,
     val budgetAlerts: List<String> = emptyList()
+)
+
+// Lifestage transition
+data class LifestageTransition(
+    val nextStage: String = "",
+    val expectedDate: LocalDate = LocalDate.now(),
+    val recommendations: List<String> = emptyList()
 )
 
 // Behavior prediction

@@ -47,7 +47,7 @@ fun TeamDashboardScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Team Dashboard",
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
                 actions = {
                     IconButton(onClick = { navController.navigate("team/settings/$teamId") }) {
                         Icon(Icons.Default.Settings, contentDescription = "Einstellungen")

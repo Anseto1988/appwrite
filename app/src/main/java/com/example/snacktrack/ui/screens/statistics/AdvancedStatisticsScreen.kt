@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -398,7 +399,7 @@ private fun WeightAnalyticsContent(analytics: WeightAnalytics?) {
         
         // Consistency Score
         LinearProgressIndicator(
-            progress = { analytics.consistencyScore / 100f },
+            progress = { (analytics.consistencyScore / 100.0).toFloat() },
             modifier = Modifier.fillMaxWidth()
         )
         Text(
@@ -529,8 +530,7 @@ private fun HealthAnalyticsContent(analytics: HealthAnalytics?) {
                 fontWeight = FontWeight.Bold
             )
             analytics.healthRiskFactors.forEach { risk ->
-                // RiskFactorItem expects RiskFactor but we have HealthRiskFactor
-                // RiskFactorItem(risk)
+                RiskFactorItem(risk)
                 Text(
                     "• ${risk.factor} (${risk.riskLevel})",
                     style = MaterialTheme.typography.bodyMedium,
@@ -715,7 +715,7 @@ private fun CostAnalyticsContent(analytics: CostAnalytics?) {
 }
 
 @Composable
-private fun BehavioralAnalyticsContent(analytics: BehavioralAnalytics?) {
+private fun BehavioralAnalyticsContent(analytics: BehaviorAnalytics?) {
     if (analytics == null) return
     
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -734,10 +734,10 @@ private fun BehavioralAnalyticsContent(analytics: BehavioralAnalytics?) {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    getFoodMotivationText(analytics.foodMotivationLevel),
+                    getFoodMotivationText(analytics.foodMotivation),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
-                    color = getFoodMotivationColor(analytics.foodMotivationLevel)
+                    color = getFoodMotivationColor(analytics.foodMotivation)
                 )
                 Text(
                     "Futtermotivation",
@@ -760,7 +760,7 @@ private fun BehavioralAnalyticsContent(analytics: BehavioralAnalytics?) {
         
         // Meal Time Consistency
         LinearProgressIndicator(
-            progress = { analytics.mealTimeConsistency / 100f },
+            progress = { (analytics.mealTimeConsistency / 100.0).toFloat() },
             modifier = Modifier.fillMaxWidth()
         )
         Text(
@@ -801,7 +801,7 @@ private fun PredictiveInsightsContent(insights: PredictiveInsights?) {
         PredictionCard(
             title = "Gewichtsprognose",
             prediction = "30 Tage: ${String.format("%.1f", insights.weightPrediction.predictedWeight30Days)} kg, 90 Tage: ${String.format("%.1f", insights.weightPrediction.predictedWeight90Days)} kg",
-            confidence = insights.weightPrediction.confidenceLevel,
+            confidence = insights.weightPrediction.confidenceLevel.toDouble(),
             timeframe = "Nächste 90 Tage"
         )
         
@@ -849,16 +849,20 @@ private fun ComparativeAnalysisContent(analysis: ComparativeAnalysis?) {
             title = "Rassenvergleich",
             comparison = analysis.breedComparison
         ) {
+            ComparisonMetricRow(
+                "Durchschnittsgewicht",
+                "${analysis.yourDog.weight} kg",
+                "${analysis.breedAverage.weight} kg"
+            )
+            ComparisonMetricRow(
+                "Aktivitätslevel",
+                "${analysis.yourDog.activity}",
+                "${analysis.breedAverage.activity}"
+            )
             analysis.breedComparison?.let { comparison ->
-                ComparisonMetricRow(
-                    "Durchschnittsgewicht",
-                    "${comparison.yourDog.weight} kg",
-                    "${comparison.breedAverage.weight} kg"
-                )
-                ComparisonMetricRow(
-                    "Aktivitätslevel",
-                    getActivityLevelText(comparison.yourDog.activityLevel),
-                    getActivityLevelText(comparison.breedAverage.activityLevel)
+                Text(
+                    "Gewicht Perzentil: ${(comparison.weightPercentile * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -868,11 +872,15 @@ private fun ComparativeAnalysisContent(analysis: ComparativeAnalysis?) {
             title = "Altersgruppen-Vergleich",
             comparison = analysis.ageGroupComparison
         ) {
+            ComparisonMetricRow(
+                "Gesundheitswert",
+                "${analysis.yourDog.health}",
+                "${analysis.ageAverage.health}"
+            )
             analysis.ageGroupComparison?.let { comparison ->
-                ComparisonMetricRow(
-                    "Gesundheitswert",
-                    "${comparison.yourDog.healthScore}",
-                    "${comparison.ageAverage.healthScore}"
+                Text(
+                    "Gesundheit Perzentil: ${(comparison.healthPercentile * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -882,36 +890,42 @@ private fun ComparativeAnalysisContent(analysis: ComparativeAnalysis?) {
             title = "Vergleich mit ähnlichen Hunden",
             comparison = analysis.similarDogsComparison
         ) {
-            analysis.similarDogsComparison?.let { comparison ->
-                Text(
-                    "Stichprobengröße: ${comparison.sampleSize} Hunde",
-                    style = MaterialTheme.typography.bodySmall
+            Text(
+                "Stichprobengröße: ${analysis.sampleSize} Hunde",
+                style = MaterialTheme.typography.bodySmall
+            )
+            analysis.metrics.forEach { metric ->
+                ComparisonMetricRow(
+                    metric.name,
+                    metric.yourValue.toString(),
+                    metric.averageValue.toString(),
+                    metric.unit
                 )
-                comparison.metrics.forEach { metric ->
-                    ComparisonMetricRow(
-                        metric.name,
-                        metric.yourValue,
-                        metric.averageValue,
-                        metric.unit
-                    )
-                }
             }
         }
         
         // Historical Comparison
-        analysis.historicalComparison?.let { comparison ->
-            comparison.periods.forEach { period ->
-                HistoricalComparisonCard(
-                    period.name,
-                    period.improvement,
-                    period.details
+        if (analysis.historicalComparison.isNotEmpty()) {
+            Text(
+                "Historischer Vergleich",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            analysis.historicalComparison.forEach { period ->
+                Text(
+                    period.period,
+                    style = MaterialTheme.typography.titleSmall
                 )
+                period.periods.forEach { data ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(data.label)
+                        Text(String.format("%.1f", data.value))
+                    }
+                }
             }
-        }
-        
-        // Goal Progress
-        analysis.goals?.let { goals ->
-            GoalProgressSection(goals)
         }
     }
 }
@@ -1038,7 +1052,7 @@ private fun getWeightTrendColor(trend: StatisticsTrendDirection): Color = when (
 private fun getActivityLevelText(level: StatisticsActivityLevel): String = when (level) {
     StatisticsActivityLevel.SEDENTARY -> "Inaktiv"
     StatisticsActivityLevel.LOW -> "Wenig"
-    StatisticsActivityLevel.MODERATE -> "Moderat"
+    StatisticsActivityLevel.NORMAL -> "Normal"
     StatisticsActivityLevel.HIGH -> "Hoch"
     StatisticsActivityLevel.VERY_HIGH -> "Sehr hoch"
 }
@@ -1046,7 +1060,7 @@ private fun getActivityLevelText(level: StatisticsActivityLevel): String = when 
 private fun getActivityLevelColor(level: StatisticsActivityLevel): Color = when (level) {
     StatisticsActivityLevel.SEDENTARY -> Color(0xFFF44336)
     StatisticsActivityLevel.LOW -> Color(0xFFFF9800)
-    StatisticsActivityLevel.MODERATE -> Color(0xFF4CAF50)
+    StatisticsActivityLevel.NORMAL -> Color(0xFF4CAF50)
     StatisticsActivityLevel.HIGH -> Color(0xFF2196F3)
     StatisticsActivityLevel.VERY_HIGH -> Color(0xFF9C27B0)
 }
@@ -1065,14 +1079,14 @@ private fun getFoodMotivationText(level: FoodMotivation): String = when (level) 
     FoodMotivation.LOW -> "Niedrig"
     FoodMotivation.NORMAL -> "Normal"
     FoodMotivation.HIGH -> "Hoch"
-    FoodMotivation.EXCESSIVE -> "Übermäßig"
+    FoodMotivation.OBSESSIVE -> "Übermäßig"
 }
 
 private fun getFoodMotivationColor(level: FoodMotivation): Color = when (level) {
     FoodMotivation.LOW -> Color(0xFFFF9800)
     FoodMotivation.NORMAL -> Color(0xFF4CAF50)
     FoodMotivation.HIGH -> Color(0xFF2196F3)
-    FoodMotivation.EXCESSIVE -> Color(0xFFF44336)
+    FoodMotivation.OBSESSIVE -> Color(0xFFF44336)
 }
 
 private fun getEatingSpeedText(speed: EatingSpeed): String = when (speed) {
@@ -1096,6 +1110,13 @@ enum class MessageType {
     WARNING,
     ERROR
 }
+
+// Data class for goal progress tracking
+data class GoalProgress(
+    val name: String,
+    val progress: Double,
+    val estimatedCompletion: String? = null
+)
 
 enum class ComparisonType {
     BREED,
@@ -1335,6 +1356,8 @@ private fun HealthScoreCircle(score: Double) {
     }
 }
 
+// Commented out as VaccineInfo type doesn't exist
+/*
 @Composable
 private fun VaccineStatusCard(vaccines: Map<String, VaccineInfo>) {
     Card {
@@ -1381,16 +1404,18 @@ private fun VaccineStatusCard(vaccines: Map<String, VaccineInfo>) {
         }
     }
 }
+*/
 
 @Composable
-private fun RiskFactorItem(factor: RiskFactor) {
+private fun RiskFactorItem(factor: HealthRiskFactor) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = when (factor.severity) {
-                RiskSeverity.LOW -> Color(0xFFE8F5E9)
-                RiskSeverity.MEDIUM -> Color(0xFFFFF3E0)
-                RiskSeverity.HIGH -> Color(0xFFFFEBEE)
+            containerColor = when (factor.riskLevel) {
+                RiskLevel.LOW -> Color(0xFFE8F5E9)
+                RiskLevel.MEDIUM -> Color(0xFFFFF3E0)
+                RiskLevel.HIGH -> Color(0xFFFFEBEE)
+                RiskLevel.CRITICAL -> Color(0xFFFFCDD2)
             }
         )
     ) {
@@ -1401,28 +1426,38 @@ private fun RiskFactorItem(factor: RiskFactor) {
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    factor.name,
+                    factor.factor,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
                 
                 Text(
-                    "${(factor.probability * 100).toInt()}%",
+                    factor.riskLevel.name,
                     style = MaterialTheme.typography.bodySmall,
-                    color = when (factor.severity) {
-                        RiskSeverity.LOW -> Color(0xFF4CAF50)
-                        RiskSeverity.MEDIUM -> Color(0xFFFF9800)
-                        RiskSeverity.HIGH -> Color(0xFFF44336)
+                    color = when (factor.riskLevel) {
+                        RiskLevel.LOW -> Color(0xFF4CAF50)
+                        RiskLevel.MEDIUM -> Color(0xFFFF9800)
+                        RiskLevel.HIGH -> Color(0xFFF44336)
+                        RiskLevel.CRITICAL -> Color(0xFFB71C1C)
                     }
                 )
             }
             
-            if (factor.prevention.isNotEmpty()) {
+            if (factor.description.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    "Prävention: ${factor.prevention}",
+                    factor.description,
                     style = MaterialTheme.typography.bodySmall
+                )
+            }
+            
+            if (factor.recommendations.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "Empfehlungen: ${factor.recommendations.joinToString(", ")}",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontStyle = FontStyle.Italic
                 )
             }
         }
@@ -1510,9 +1545,10 @@ private fun CostBreakdownChart(breakdown: CostBreakdown) {
             
             val categories = listOf(
                 "Futter" to breakdown.food,
-                "Tierarzt" to breakdown.veterinary,
-                "Zubehör" to breakdown.accessories,
-                "Versicherung" to breakdown.insurance,
+                "Leckerlis" to breakdown.treats,
+                "Gesundheit" to breakdown.healthcare,
+                "Pflege" to breakdown.grooming,
+                "Spielzeug" to breakdown.toys,
                 "Sonstiges" to breakdown.other
             )
             
@@ -1544,7 +1580,7 @@ private fun CostBreakdownChart(breakdown: CostBreakdown) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    "€${(breakdown.food + breakdown.veterinary + breakdown.accessories + breakdown.insurance + breakdown.other).toInt()}",
+                    "€${(breakdown.food + breakdown.treats + breakdown.healthcare + breakdown.grooming + breakdown.toys + breakdown.other).toInt()}",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -1555,35 +1591,26 @@ private fun CostBreakdownChart(breakdown: CostBreakdown) {
 }
 
 @Composable
-private fun CostOptimizationCard(suggestion: CostOptimizationSuggestion) {
+private fun CostOptimizationCard(suggestion: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE8F5E9)
         )
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    suggestion.category,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                
-                Text(
-                    "€${suggestion.potentialSaving.toInt()}/Monat",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF4CAF50)
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Default.TipsAndUpdates,
+                contentDescription = null,
+                tint = Color(0xFF4CAF50),
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                suggestion.recommendation,
+                suggestion,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -1688,14 +1715,15 @@ private fun FoodPreferenceItem(preference: FoodPreference) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            preference.food,
+            preference.foodType,
             style = MaterialTheme.typography.bodyMedium
         )
         
         Row {
+            val rating = (preference.preferenceScore * 5).toInt().coerceIn(0, 5)
             repeat(5) { index ->
                 Icon(
-                    if (index < preference.rating) Icons.Default.Star else Icons.Default.StarBorder,
+                    if (index < rating) Icons.Default.Star else Icons.Default.StarBorder,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
                     tint = Color(0xFFFFB300)
@@ -1773,15 +1801,17 @@ private fun PredictionCard(
 
 @Composable
 private fun HealthPredictionItem(prediction: HealthPrediction) {
+    val riskColor = when {
+        prediction.probability >= 0.75 -> Color(0xFFFFCDD2)
+        prediction.probability >= 0.50 -> Color(0xFFFFEBEE)
+        prediction.probability >= 0.25 -> Color(0xFFFFF3E0)
+        else -> Color(0xFFE8F5E9)
+    }
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = when (prediction.riskLevel) {
-                StatisticsRiskLevel.LOW -> Color(0xFFE8F5E9)
-                StatisticsRiskLevel.MEDIUM -> Color(0xFFFFF3E0)
-                StatisticsRiskLevel.HIGH -> Color(0xFFFFEBEE)
-                StatisticsRiskLevel.CRITICAL -> Color(0xFFFFCDD2)
-            }
+            containerColor = riskColor
         )
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -1825,7 +1855,7 @@ private fun RiskAssessmentCard(assessment: RiskAssessment) {
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            assessment.categories.forEach { (category, risk) ->
+            assessment.riskCategories.forEach { (category, riskLevel) ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1833,7 +1863,7 @@ private fun RiskAssessmentCard(assessment: RiskAssessment) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        category,
+                        category.name,
                         style = MaterialTheme.typography.bodyMedium
                     )
                     
@@ -1841,21 +1871,21 @@ private fun RiskAssessmentCard(assessment: RiskAssessment) {
                         onClick = { },
                         label = {
                             Text(
-                                when (risk.level) {
+                                when (riskLevel) {
                                     StatisticsRiskLevel.LOW -> "Niedrig"
-                                    StatisticsRiskLevel.MEDIUM -> "Mittel"
+                                    StatisticsRiskLevel.MODERATE -> "Mäßig"
                                     StatisticsRiskLevel.HIGH -> "Hoch"
-                                    StatisticsRiskLevel.CRITICAL -> "Kritisch"
+                                    StatisticsRiskLevel.VERY_HIGH -> "Sehr hoch"
                                 },
                                 style = MaterialTheme.typography.bodySmall
                             )
                         },
                         colors = AssistChipDefaults.assistChipColors(
-                            containerColor = when (risk.level) {
+                            containerColor = when (riskLevel) {
                                 StatisticsRiskLevel.LOW -> Color(0xFF4CAF50)
-                                StatisticsRiskLevel.MEDIUM -> Color(0xFFFF9800)
+                                StatisticsRiskLevel.MODERATE -> Color(0xFFFF9800)
                                 StatisticsRiskLevel.HIGH -> Color(0xFFF44336)
-                                StatisticsRiskLevel.CRITICAL -> Color(0xFF9C27B0)
+                                StatisticsRiskLevel.VERY_HIGH -> Color(0xFF9C27B0)
                             }
                         )
                     )
@@ -1866,65 +1896,35 @@ private fun RiskAssessmentCard(assessment: RiskAssessment) {
 }
 
 @Composable
-private fun InterventionCard(intervention: Intervention) {
+private fun InterventionCard(intervention: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         border = BorderStroke(
             1.dp,
-            when (intervention.urgency) {
-                InterventionUrgency.LOW -> Color(0xFF4CAF50)
-                InterventionUrgency.MEDIUM -> Color(0xFFFF9800)
-                InterventionUrgency.HIGH -> Color(0xFFF44336)
-                InterventionUrgency.IMMEDIATE -> Color(0xFF9C27B0)
-            }
+            MaterialTheme.colorScheme.primary
         )
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    intervention.type,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                
-                Text(
-                    when (intervention.urgency) {
-                        InterventionUrgency.LOW -> "Niedrig"
-                        InterventionUrgency.MEDIUM -> "Mittel"
-                        InterventionUrgency.HIGH -> "Hoch"
-                        InterventionUrgency.IMMEDIATE -> "Sofort"
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = when (intervention.urgency) {
-                        InterventionUrgency.LOW -> Color(0xFF4CAF50)
-                        InterventionUrgency.MEDIUM -> Color(0xFFFF9800)
-                        InterventionUrgency.HIGH -> Color(0xFFF44336)
-                        InterventionUrgency.IMMEDIATE -> Color(0xFF9C27B0)
-                    }
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            
-            Text(
-                intervention.recommendation,
-                style = MaterialTheme.typography.bodySmall
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Default.AutoAwesome,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
             )
-            
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                "Erwarteter Nutzen: ${intervention.expectedBenefit}",
-                style = MaterialTheme.typography.bodySmall,
-                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                intervention,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
 }
 
 @Composable
-private fun LifeStageTransitionCard(transition: LifeStageTransition) {
+private fun LifeStageTransitionCard(transition: LifestageTransition) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -1933,7 +1933,7 @@ private fun LifeStageTransitionCard(transition: LifeStageTransition) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                "Lebensphase: ${transition.fromStage} → ${transition.toStage}",
+                "Nächste Lebensphase: ${transition.nextStage}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -1941,7 +1941,7 @@ private fun LifeStageTransitionCard(transition: LifeStageTransition) {
             Spacer(modifier = Modifier.height(8.dp))
             
             Text(
-                "Übergang in ${transition.estimatedTimeframe}",
+                "Erwartetes Datum: ${transition.expectedDate}",
                 style = MaterialTheme.typography.bodySmall
             )
             
@@ -2087,7 +2087,7 @@ private fun GoalProgressSection(goals: List<GoalProgress>) {
                     Spacer(modifier = Modifier.height(4.dp))
                     
                     LinearProgressIndicator(
-                        progress = { goal.progress / 100f },
+                        progress = { (goal.progress / 100.0).toFloat() },
                         modifier = Modifier.fillMaxWidth()
                     )
                     

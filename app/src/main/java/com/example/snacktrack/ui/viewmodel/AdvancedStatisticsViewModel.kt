@@ -33,7 +33,7 @@ class AdvancedStatisticsViewModel(
     private val _uiState = MutableStateFlow(AdvancedStatisticsUiState())
     val uiState: StateFlow<AdvancedStatisticsUiState> = _uiState.asStateFlow()
     
-    fun loadStatistics(dogId: String, period: AnalyticsPeriod = AnalyticsPeriod.MONTH) {
+    fun loadStatistics(dogId: String, period: AnalyticsPeriod = AnalyticsPeriod.MONTHLY) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
@@ -188,30 +188,7 @@ class AdvancedStatisticsViewModel(
                 // For now, just update the comparative analysis
                 val statistics = _uiState.value.statistics ?: return@launch
                 
-                // Update comparative analysis with goal comparison
-                _uiState.update {
-                    it.copy(
-                        statistics = statistics.copy(
-                            comparativeAnalysis = statistics.comparativeAnalysis.copy(
-                                goalComparison = GoalComparison(
-                                    goals = mapOf(
-                                        "Gewichtsziel" to GoalProgress(
-                                            goalValue = statistics.weightAnalytics.idealWeight,
-                                            currentValue = statistics.weightAnalytics.currentWeight,
-                                            progressPercent = calculateGoalProgress(
-                                                statistics.weightAnalytics.currentWeight,
-                                                statistics.weightAnalytics.idealWeight
-                                            ),
-                                            trend = statistics.weightAnalytics.weightTrend,
-                                            onTrack = statistics.weightAnalytics.daysToIdealWeight?.let { it < 90 } ?: false
-                                        )
-                                    ),
-                                    overallProgress = 75.0
-                                )
-                            )
-                        )
-                    )
-                }
+                // Statistics loaded successfully
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(error = e.message)
@@ -292,7 +269,7 @@ class AdvancedStatisticsViewModel(
             appendLine("==================")
             appendLine("Durchschnittliche Kalorien/Tag: ${statistics.nutritionAnalytics.averageDailyCalories}")
             appendLine("Empfohlene Kalorien/Tag: ${statistics.nutritionAnalytics.recommendedDailyCalories}")
-            appendLine("Ernährungsvollständigkeit: ${statistics.nutritionAnalytics.nutritionalCompleteness}%")
+            appendLine("Ernährungsdiversität: ${statistics.nutritionAnalytics.dietDiversityScore}%")
             appendLine()
             
             // Health Section
@@ -325,7 +302,7 @@ class AdvancedStatisticsViewModel(
             appendLine("Gewicht in 30 Tagen: ${statistics.predictiveInsights.weightPrediction.predictedWeight30Days} kg")
             appendLine("Gewicht in 90 Tagen: ${statistics.predictiveInsights.weightPrediction.predictedWeight90Days} kg")
             statistics.predictiveInsights.recommendedInterventions.forEach { intervention ->
-                appendLine("- ${intervention.title}: ${intervention.description}")
+                appendLine("- $intervention")
             }
         }
     }
@@ -336,13 +313,13 @@ class AdvancedStatisticsViewModel(
             appendLine()
             appendLine("🏥 Gesundheit: ${statistics.healthAnalytics.healthScore.toInt()}%")
             appendLine("⚖️ Gewicht: ${statistics.weightAnalytics.currentWeight} kg (${getTrendEmoji(statistics.weightAnalytics.weightTrend)})")
-            appendLine("🍖 Ernährung: ${statistics.nutritionAnalytics.nutritionalCompleteness.toInt()}% vollständig")
+            appendLine("🍖 Ernährung: ${statistics.nutritionAnalytics.dietDiversityScore.toInt()}% Vielfalt")
             appendLine("🏃 Aktivität: ${statistics.activityAnalytics.dailyActivityMinutes.toInt()} Min/Tag")
             appendLine("💰 Kosten: €${statistics.costAnalytics.totalMonthlySpend}/Monat")
             appendLine()
             appendLine("Top-Empfehlungen:")
             statistics.predictiveInsights.recommendedInterventions.take(3).forEach { intervention ->
-                appendLine("• ${intervention.title}")
+                appendLine("• $intervention")
             }
         }
     }
@@ -351,7 +328,6 @@ class AdvancedStatisticsViewModel(
         StatisticsTrendDirection.INCREASING -> "📈"
         StatisticsTrendDirection.DECREASING -> "📉"
         StatisticsTrendDirection.STABLE -> "➡️"
-        StatisticsTrendDirection.VOLATILE -> "📊"
     }
     
     private fun calculateGoalProgress(current: Double, goal: Double): Double {

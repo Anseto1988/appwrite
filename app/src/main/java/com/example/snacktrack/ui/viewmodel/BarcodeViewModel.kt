@@ -45,9 +45,12 @@ class BarcodeViewModel(
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = barcodeRepository.getUserInventory(userId)
-                result.getOrNull()?.let { inventory ->
-                    _uiState.update { it.copy(inventory = inventory) }
-                }
+                result.fold(
+                    onSuccess = { inventory ->
+                        _uiState.update { it.copy(inventory = inventory) }
+                    },
+                    onFailure = { /* Handle error */ }
+                )
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             }
@@ -63,9 +66,12 @@ class BarcodeViewModel(
                     dogId = dogId,
                     limit = 10
                 )
-                result.getOrNull()?.let { history ->
-                    _uiState.update { it.copy(productHistory = history) }
-                }
+                result.fold(
+                    onSuccess = { history ->
+                        _uiState.update { it.copy(productHistory = history) }
+                    },
+                    onFailure = { /* Handle error */ }
+                )
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             }
@@ -90,31 +96,31 @@ class BarcodeViewModel(
                 
                 scanResult.getOrNull()?.let { barcodeResult ->
                     // Get product details
-                    when (val productResult = barcodeRepository.getProductByBarcode(barcodeResult.barcode)) {
-                        is Result -> {
-                            productResult.getOrNull()?.let { product ->
-                                _uiState.update { 
-                                    it.copy(
-                                        scannedProduct = product,
-                                        isLoading = false,
-                                        isScanning = false
-                                    )
-                                }
-                                
-                                // Check for allergens
-                                checkAllergens(product)
-                                
-                                // Get recommendations
-                                getRecommendations(product)
-                                
-                                // Record scan history
-                                recordScanHistory(barcodeResult.barcode, product)
-                            } ?: run {
-                                // Product not found, try to extract from image
-                                tryExtractProductInfo(bitmap, barcodeResult.barcode)
+                    val productResult = barcodeRepository.getProductByBarcode(barcodeResult.barcode)
+                    productResult.fold(
+                        onSuccess = { product ->
+                            _uiState.update { 
+                                it.copy(
+                                    scannedProduct = product,
+                                    isLoading = false,
+                                    isScanning = false
+                                )
                             }
+                            
+                            // Check for allergens
+                            launch { checkAllergens(product) }
+                            
+                            // Get recommendations
+                            launch { getRecommendations(product) }
+                            
+                            // Record scan history
+                            launch { recordScanHistory(barcodeResult.barcode, product) }
+                        },
+                        onFailure = {
+                            // Product not found, try to extract from image
+                            tryExtractProductInfo(bitmap, barcodeResult.barcode)
                         }
-                    }
+                    )
                 } ?: run {
                     _uiState.update { 
                         it.copy(
@@ -145,7 +151,7 @@ class BarcodeViewModel(
                 name = extracted.extractedData.productName ?: "Unbekanntes Produkt",
                 brand = extracted.extractedData.brand ?: "",
                 ingredients = extracted.extractedData.ingredients.map { Ingredient(name = it) },
-                source = DataSource.AI_EXTRACTED,
+                source = BarcodeDataSource.AI_EXTRACTED,
                 verificationStatus = VerificationStatus.UNVERIFIED
             )
             
@@ -174,7 +180,7 @@ class BarcodeViewModel(
     }
     
     private suspend fun getRecommendations(product: Product) {
-        val result = barcodeRepository.getProductRecommendations(dogId, product)
+        val result = barcodeRepository.getProductRecommendations(dogId, com.example.snacktrack.data.repository.RecommendationContext.GENERAL)
         result.getOrNull()?.let { recommendations ->
             _uiState.update { it.copy(recommendations = recommendations) }
         }
@@ -257,9 +263,8 @@ class BarcodeViewModel(
             
             try {
                 val result = barcodeRepository.compareProducts(
-                    products = _uiState.value.comparingProducts,
-                    criteria = criteria,
-                    dogId = dogId
+                    productIds = _uiState.value.comparingProducts.map { it.id },
+                    criteria = criteria
                 )
                 
                 result.getOrNull()?.let { comparison ->

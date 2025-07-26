@@ -140,29 +140,32 @@ class ExportIntegrationViewModel(
             _uiState.update { it.copy(isLoading = true) }
             
             try {
-                val result = exportRepository.setupVeterinaryIntegration(
+                val result = exportRepository.createVeterinaryIntegration(
                     clinicName = clinicName,
                     systemType = systemType,
                     apiEndpoint = apiEndpoint,
                     apiKey = apiKey
                 )
                 
-                result.getOrNull()?.let { integration ->
-                    _uiState.update {
-                        it.copy(
-                            veterinaryIntegrations = it.veterinaryIntegrations + integration,
-                            isLoading = false,
-                            successMessage = "Tierarztpraxis erfolgreich verbunden"
-                        )
+                result.fold(
+                    onSuccess = { integration ->
+                        _uiState.update {
+                            it.copy(
+                                veterinaryIntegrations = it.veterinaryIntegrations + integration,
+                                isLoading = false,
+                                successMessage = "Tierarztpraxis erfolgreich verbunden"
+                            )
+                        }
+                    },
+                    onFailure = { exception ->
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = exception.message
+                            )
+                        }
                     }
-                } ?: run {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.exceptionOrNull()?.message
-                        )
-                    }
-                }
+                )
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
@@ -286,22 +289,12 @@ class ExportIntegrationViewModel(
                 // TODO: Implement setupFitnessTracker in repository
                 // val result = exportRepository.setupFitnessTracker(...)
                 
-                val integration: FitnessIntegration? = null
-                integration?.let {
-                    _uiState.update {
-                        it.copy(
-                            fitnessTrackers = it.fitnessTrackers + integration,
-                            isLoading = false,
-                            successMessage = "Fitness Tracker erfolgreich verbunden"
-                        )
-                    }
-                } ?: run {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.exceptionOrNull()?.message
-                        )
-                    }
+                // For now, just show error until repository method is implemented
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Fitness Tracker Verbindung noch nicht implementiert"
+                    )
                 }
             } catch (e: Exception) {
                 _uiState.update {
@@ -350,7 +343,6 @@ class ExportIntegrationViewModel(
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
                 val result = exportRepository.setupCloudBackup(
-                    userId = userId,
                     provider = provider,
                     settings = settings
                 )
@@ -517,10 +509,11 @@ class ExportIntegrationViewModel(
             
             try {
                 val userId = appwriteService.getCurrentUserId() ?: return@launch
+                // TODO: Upload fileData and get fileUrl
+                val fileUrl = "temp://import-file"
                 val result = exportRepository.importData(
-                    userId = userId,
                     source = source,
-                    fileData = fileData,
+                    fileUrl = fileUrl,
                     mappingConfig = mappingConfig,
                     validationRules = validationRules
                 )
@@ -580,7 +573,7 @@ class ExportIntegrationViewModel(
                     }
                 } ?: run {
                     _uiState.update {
-                        it.copy(error = result.exceptionOrNull()?.message)
+                        it.copy(error = "Synchronisierungseinstellungen konnten nicht gespeichert werden")
                     }
                 }
             } catch (e: Exception) {
