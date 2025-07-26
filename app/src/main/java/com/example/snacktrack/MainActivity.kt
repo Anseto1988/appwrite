@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     SnackTrackNavGraph(
-                        navController = navController
+                        navController = navController,
+                        startDestination = "auth"
                     )
                 }
             }

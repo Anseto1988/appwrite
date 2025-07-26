@@ -310,6 +310,13 @@ class TeamViewModel(context: Context) : ViewModel() {
     }
     
     /**
+     * Fügt ein Mitglied zu einem Team hinzu (vereinfachte Version)
+     */
+    fun addMemberToTeam(teamId: String, email: String) {
+        addTeamMember(teamId, email, BasicTeamRole.VIEWER)
+    }
+    
+    /**
      * Fügt einen Benutzer zu einem Team hinzu
      */
     fun addTeamMember(teamId: String, email: String, role: BasicTeamRole) {

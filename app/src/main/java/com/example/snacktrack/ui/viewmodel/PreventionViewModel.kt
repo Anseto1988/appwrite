@@ -458,7 +458,7 @@ class PreventionViewModel(
             try {
                 // In real app, this would open a form to enter results
                 val results = ScreeningResults(
-                    overallStatus = HealthStatus.NORMAL,
+                    overallStatus = PreventionHealthStatus.NORMAL,
                     testResults = mapOf(
                         "blood_work" to TestResult(
                             value = "Normal",

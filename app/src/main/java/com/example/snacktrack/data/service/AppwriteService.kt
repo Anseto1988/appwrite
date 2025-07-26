@@ -20,7 +20,7 @@ import com.example.snacktrack.utils.NetworkManager
 class AppwriteService private constructor(context: Context) {
     
     companion object {
-        const val ENDPOINT = "https://parse.nordburglarp.de/v2"
+        const val ENDPOINT = "https://parse.nordburglarp.de/v1"
         const val PROJECT_ID = "snackrack2"
         const val DATABASE_ID = "snacktrack-db"
         

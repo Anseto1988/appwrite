@@ -18,7 +18,8 @@ data class Dog(
     val targetWeight: Double? = null,
     val activityLevel: ActivityLevel = ActivityLevel.NORMAL,
     val imageId: String? = null,
-    val teamId: String? = null
+    val teamId: String? = null,
+    val allergens: List<String> = emptyList()
 ) {
     /**
      * Berechnet den täglichen Kalorienbedarf basierend auf RER × Aktivitätsfaktor
@@ -36,10 +37,10 @@ enum class Sex(val displayName: String) {
     UNKNOWN("Unbekannt")
 }
 
-enum class ActivityLevel(val factor: Double, val displayName: String) {
-    VERY_LOW(1.2, "Sehr niedrig"),
-    LOW(1.4, "Niedrig"),
-    NORMAL(1.6, "Normal"),
-    HIGH(1.8, "Hoch"),
-    VERY_HIGH(2.0, "Sehr hoch")
+enum class ActivityLevel(val factor: Double, val displayName: String, val description: String) {
+    VERY_LOW(1.2, "Sehr niedrig", "Kastriert/sterilisiert, wenig Bewegung"),
+    LOW(1.4, "Niedrig", "Normale Haustieraktivität"),
+    NORMAL(1.6, "Normal", "Junge erwachsene Hunde"),
+    HIGH(1.8, "Hoch", "Aktive/arbeitende Hunde"),
+    VERY_HIGH(2.0, "Sehr hoch", "Hochleistungshunde")
 } 

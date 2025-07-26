@@ -206,7 +206,7 @@ fun DashboardGrid(
                 color = primary,
                 onClick = {
                     selectedDog?.let { dog ->
-                        navController.navigate(Screen.BarcodeScannerNav.createRoute(dog.id))
+                        navController.navigate(Screen.Barcode.createRoute(dog.id))
                     }
                 }
             ),
@@ -217,7 +217,7 @@ fun DashboardGrid(
                 color = secondary,
                 onClick = {
                     selectedDog?.let { dog ->
-                        navController.navigate(Screen.ManualFoodEntry.createRoute(dog.id))
+                        navController.navigate(Screen.AddFeeding.createRoute(dog.id))
                     }
                 }
             ),
@@ -226,7 +226,7 @@ fun DashboardGrid(
                 subtitle = "Austauschen",
                 icon = Icons.Default.Forum,
                 color = secondary,
-                onClick = { navController.navigate(Screen.CommunityFeed.route) }
+                onClick = { /* TODO: Community Feature */ }
             ),
             DashboardTile(
                 title = "Einstellungen",

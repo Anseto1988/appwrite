@@ -24,6 +24,25 @@ class FoodRepository(private val context: Context) {
     private val databases = appwriteService.databases
 
     /**
+     * Lädt alle Futtermittel aus der Datenbank
+     */
+    suspend fun getAllFoods(): Result<List<Food>> = withContext(Dispatchers.IO) {
+        try {
+            val response = databases.listDocuments(
+                databaseId = AppwriteService.DATABASE_ID,
+                collectionId = AppwriteService.COLLECTION_FOOD_DB,
+                queries = listOf(Query.limit(100))
+            )
+            
+            val foods = response.documents.map { documentToFood(it) }
+            Result.success(foods)
+        } catch (e: Exception) {
+            Log.e("FoodRepository", "Error getting all foods: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+    
+    /**
      * Sucht nach Lebensmitteln basierend auf einem Suchbegriff (veraltet, siehe searchFood unten)
      */
     @Deprecated("Use searchFood which returns Result<List<Food>>", ReplaceWith("searchFood(query)"))

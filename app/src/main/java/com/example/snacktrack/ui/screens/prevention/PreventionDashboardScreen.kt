@@ -1475,20 +1475,22 @@ private fun ScreeningHistoryItem(screening: HealthScreening, viewModel: Preventi
                 
                 Badge(
                     containerColor = when (results.overallStatus) {
-                        HealthStatus.EXCELLENT, HealthStatus.NORMAL -> Color.Green
-                        HealthStatus.MINOR_CONCERNS -> Color.Yellow
-                        HealthStatus.MODERATE_CONCERNS -> Orange
-                        HealthStatus.SERIOUS_CONCERNS, HealthStatus.CRITICAL -> Color.Red
+                        com.example.snacktrack.data.model.PreventionHealthStatus.EXCELLENT, 
+                        com.example.snacktrack.data.model.PreventionHealthStatus.NORMAL -> Color.Green
+                        com.example.snacktrack.data.model.PreventionHealthStatus.MINOR_CONCERNS -> Color.Yellow
+                        com.example.snacktrack.data.model.PreventionHealthStatus.MODERATE_CONCERNS -> Orange
+                        com.example.snacktrack.data.model.PreventionHealthStatus.SERIOUS_CONCERNS, 
+                        com.example.snacktrack.data.model.PreventionHealthStatus.CRITICAL -> Color.Red
                     }
                 ) {
                     Text(
                         text = when (results.overallStatus) {
-                            HealthStatus.EXCELLENT -> "Ausgezeichnet"
-                            HealthStatus.NORMAL -> "Normal"
-                            HealthStatus.MINOR_CONCERNS -> "Geringfügige Befunde"
-                            HealthStatus.MODERATE_CONCERNS -> "Moderate Befunde"
-                            HealthStatus.SERIOUS_CONCERNS -> "Ernste Befunde"
-                            HealthStatus.CRITICAL -> "Kritisch"
+                            com.example.snacktrack.data.model.PreventionHealthStatus.EXCELLENT -> "Ausgezeichnet"
+                            com.example.snacktrack.data.model.PreventionHealthStatus.NORMAL -> "Normal"
+                            com.example.snacktrack.data.model.PreventionHealthStatus.MINOR_CONCERNS -> "Geringfügige Befunde"
+                            com.example.snacktrack.data.model.PreventionHealthStatus.MODERATE_CONCERNS -> "Moderate Befunde"
+                            com.example.snacktrack.data.model.PreventionHealthStatus.SERIOUS_CONCERNS -> "Ernsthafte Befunde"
+                            com.example.snacktrack.data.model.PreventionHealthStatus.CRITICAL -> "Kritisch"
                         },
                         color = Color.White,
                         style = MaterialTheme.typography.labelSmall

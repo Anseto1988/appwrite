@@ -237,6 +237,13 @@ class HealthRepository(
         )
     }
     
+    // Vaccination Management
+    suspend fun getUpcomingVaccinations(dogId: String): Result<List<Vaccination>> = safeApiCall {
+        // TODO: Implement proper vaccination fetching from database
+        // For now, return empty list
+        emptyList<Vaccination>()
+    }
+    
     // Helper functions
     private fun documentToAllergy(document: Document<Map<String, Any>>): DogAllergy {
         return DogAllergy(

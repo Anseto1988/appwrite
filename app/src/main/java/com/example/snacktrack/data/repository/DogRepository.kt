@@ -330,6 +330,11 @@ class DogRepository(private val context: Context) : BaseRepository() {
     }
     
     /**
+     * Aktualisiert einen bestehenden Hund
+     */
+    suspend fun updateDog(dog: Dog): Result<Dog> = saveDog(dog)
+    
+    /**
      * Lädt ein Bild für einen Hund hoch
      */
     suspend fun uploadDogImage(file: File): Result<String> = withContext(Dispatchers.IO) {

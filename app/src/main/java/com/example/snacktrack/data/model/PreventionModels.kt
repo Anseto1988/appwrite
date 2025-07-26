@@ -329,14 +329,14 @@ enum class TestCategory {
 }
 
 data class ScreeningResults(
-    val overallStatus: HealthStatus = HealthStatus.NORMAL,
+    val overallStatus: PreventionHealthStatus = PreventionHealthStatus.NORMAL,
     val testResults: Map<String, TestResult> = emptyMap(),
     val abnormalFindings: List<AbnormalFinding> = emptyList(),
     val veterinarianNotes: String? = null,
     val recommendedActions: List<String> = emptyList()
 )
 
-enum class HealthStatus {
+enum class PreventionHealthStatus {
     EXCELLENT,
     NORMAL,
     MINOR_CONCERNS,

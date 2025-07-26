@@ -7,7 +7,8 @@ data class Team(
     val id: String = "",
     val name: String = "",
     val ownerId: String = "",
-    val members: List<TeamMember> = emptyList()
+    val members: List<TeamMember> = emptyList(),
+    val sharedDogs: List<String>? = null
 )
 
 /**

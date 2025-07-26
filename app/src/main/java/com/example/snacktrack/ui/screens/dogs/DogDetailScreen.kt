@@ -1,4 +1,4 @@
-package com.example.snacktrack.ui.screens.dog
+package com.example.snacktrack.ui.screens.dogs
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement

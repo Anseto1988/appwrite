@@ -1,4 +1,4 @@
-package com.example.snacktrack.ui.screens.dog
+package com.example.snacktrack.ui.screens.dogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -103,7 +103,7 @@ fun DogListScreen(
                 onAdminClick = onAdminClick,
                 onAccountClick = { navController.navigate(Screen.AccountManagement.route) },
                 onLogoutClick = onLogoutClick,
-                onCommunityClick = { navController.navigate(Screen.CommunityFeed.route) } // Navigation zur Community
+                onCommunityClick = { /* TODO: Community Feature */ } // Navigation zur Community
             )
         },
         floatingActionButton = {

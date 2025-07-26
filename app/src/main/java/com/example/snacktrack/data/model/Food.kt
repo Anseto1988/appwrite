@@ -29,4 +29,40 @@ data class Food(
      */
     val kcalPer100g: Double
         get() = (protein * 3.5) + (fat * 8.5) + (carbs * 3.5)
+    
+    /**
+     * Name des Futters (Alias für product)
+     */
+    val name: String
+        get() = product
+    
+    /**
+     * Kalorien pro Gramm
+     */
+    val caloriesPerGram: Double
+        get() = kcalPer100g / 100.0
+    
+    /**
+     * Typ des Futters (Trocken, Nass, Snack)
+     */
+    val type: String = "Unbekannt"
+    
+    /**
+     * Barcode (Alias für ean)
+     */
+    val barcode: String
+        get() = ean
+    
+    /**
+     * Detaillierte Nährstoffinformationen
+     */
+    val nutritionalInfo: Map<String, Double>
+        get() = mapOf(
+            "protein" to protein,
+            "fat" to fat,
+            "crudeFiber" to crudeFiber,
+            "rawAsh" to rawAsh,
+            "moisture" to moisture,
+            "carbs" to carbs
+        )
 } 
