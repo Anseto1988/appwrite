@@ -57,29 +57,62 @@ class AuthRepository(private val context: Context) : BaseRepository() {
      */
     suspend fun login(email: String, password: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            android.util.Log.d("AuthRepository", "=== STARTING LOGIN PROCESS ===")
+            android.util.Log.d("AuthRepository", "Email: $email")
+            android.util.Log.d("AuthRepository", "Endpoint: ${AppwriteService.ENDPOINT}")
+            android.util.Log.d("AuthRepository", "Project ID: ${AppwriteService.PROJECT_ID}")
+            
             // First, delete any existing sessions to ensure clean state
             try {
+                android.util.Log.d("AuthRepository", "Attempting to delete existing sessions...")
                 account.deleteSessions()
+                android.util.Log.d("AuthRepository", "Existing sessions deleted successfully")
             } catch (e: Exception) {
-                // Ignore errors when deleting sessions
                 android.util.Log.d("AuthRepository", "No existing sessions to delete: ${e.message}")
             }
             
+            // Small delay to ensure session is cleared
+            kotlinx.coroutines.delay(500)
+            
             // Create new email session
+            android.util.Log.d("AuthRepository", "Creating new email session...")
             val session = account.createEmailSession(email, password)
-            android.util.Log.d("AuthRepository", "Login successful. Session ID: ${session.id}, Provider: ${session.provider}")
+            android.util.Log.d("AuthRepository", "Session created successfully!")
+            android.util.Log.d("AuthRepository", "Session ID: ${session.id}")
+            android.util.Log.d("AuthRepository", "Session Provider: ${session.provider}")
+            android.util.Log.d("AuthRepository", "Session UserID: ${session.userId}")
+            android.util.Log.d("AuthRepository", "Session Current: ${session.current}")
+            
+            // Small delay to ensure session is propagated
+            kotlinx.coroutines.delay(500)
             
             // Verify we can get the user
+            android.util.Log.d("AuthRepository", "Verifying user account...")
             val user = account.get()
-            android.util.Log.d("AuthRepository", "User verified: ${user.email}, Status: ${user.status}")
+            android.util.Log.d("AuthRepository", "User verification successful!")
+            android.util.Log.d("AuthRepository", "User ID: ${user.id}")
+            android.util.Log.d("AuthRepository", "User Email: ${user.email}")
+            android.util.Log.d("AuthRepository", "User Status: ${user.status}")
+            android.util.Log.d("AuthRepository", "User Labels: ${user.labels.joinToString(", ")}")
             
             // Save session information
             val expireTime = System.currentTimeMillis() + (365L * 24 * 60 * 60 * 1000) // 1 year
             sessionManager.saveSession(session.id, user.id, user.email, expireTime)
+            android.util.Log.d("AuthRepository", "Session saved to local storage")
             
+            android.util.Log.d("AuthRepository", "=== LOGIN PROCESS COMPLETED SUCCESSFULLY ===")
             Result.success(Unit)
         } catch (e: AppwriteException) {
-            android.util.Log.e("AuthRepository", "Login failed: ${e.message}, Code: ${e.code}, Type: ${e.type}")
+            android.util.Log.e("AuthRepository", "=== LOGIN FAILED ===")
+            android.util.Log.e("AuthRepository", "Error Message: ${e.message}")
+            android.util.Log.e("AuthRepository", "Error Code: ${e.code}")
+            android.util.Log.e("AuthRepository", "Error Type: ${e.type}")
+            android.util.Log.e("AuthRepository", "Error Response: ${e.response}")
+            Result.failure(e)
+        } catch (e: Exception) {
+            android.util.Log.e("AuthRepository", "=== UNEXPECTED ERROR ===")
+            android.util.Log.e("AuthRepository", "Error: ${e.message}")
+            android.util.Log.e("AuthRepository", "Stack: ${e.stackTraceToString()}")
             Result.failure(e)
         }
     }

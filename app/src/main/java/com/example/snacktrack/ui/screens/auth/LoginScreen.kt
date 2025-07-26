@@ -230,7 +230,7 @@ fun LoginScreen(
             Text("Registrieren")
         }
         
-        // Debug button (only in debug builds)
+        // Debug buttons (only in debug builds)
         if (BuildConfig.DEBUG) {
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -244,6 +244,40 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Debug Session Status")
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            OutlinedButton(
+                onClick = {
+                    scope.launch {
+                        val connectionTest = com.example.snacktrack.utils.AppwriteConnectionTest(context)
+                        val testResult = connectionTest.runConnectionTest()
+                        errorMessage = testResult
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Test Appwrite Connection")
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            OutlinedButton(
+                onClick = {
+                    if (email.isNotBlank() && password.isNotBlank()) {
+                        scope.launch {
+                            val connectionTest = com.example.snacktrack.utils.AppwriteConnectionTest(context)
+                            val testResult = connectionTest.testLogin(email, password)
+                            errorMessage = testResult
+                        }
+                    } else {
+                        errorMessage = "Bitte E-Mail und Passwort eingeben für Login-Test"
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Test Login Process")
             }
         }
     }

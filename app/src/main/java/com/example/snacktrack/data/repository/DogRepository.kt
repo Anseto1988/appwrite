@@ -52,23 +52,42 @@ class DogRepository(private val context: Context) : BaseRepository() {
             if (!appwriteService.ensureValidSession()) {
                 Log.e("DogRepository", "Keine gültige Session. Benutzer muss sich erneut anmelden.")
                 
-                // DEBUG: Prüfe, ob wir überhaupt Sessions haben und zeige Details
+                // DEBUG: Detaillierte Session-Analyse
                 try {
-                    val sessions = appwriteService.account.listSessions()
-                    Log.d("DogRepository", "DEBUG: Gefundene Sessions: ${sessions.sessions.size}")
-                    sessions.sessions.forEachIndexed { index, session ->
-                        Log.d("DogRepository", "DEBUG: Session $index - ID: ${session.id}, Provider: ${session.provider}, Expiry: ${session.expire}")
+                    Log.d("DogRepository", "=== SESSION DEBUG START ===")
+                    Log.d("DogRepository", "Endpoint: ${AppwriteService.ENDPOINT}")
+                    Log.d("DogRepository", "Project ID: ${AppwriteService.PROJECT_ID}")
+                    
+                    // Check if we can list sessions
+                    try {
+                        val sessions = appwriteService.account.listSessions()
+                        Log.d("DogRepository", "Sessions found: ${sessions.sessions.size}")
+                        sessions.sessions.forEachIndexed { index, session ->
+                            Log.d("DogRepository", "Session $index:")
+                            Log.d("DogRepository", "  - ID: ${session.id}")
+                            Log.d("DogRepository", "  - Provider: ${session.provider}")
+                            Log.d("DogRepository", "  - UserID: ${session.userId}")
+                            Log.d("DogRepository", "  - Current: ${session.current}")
+                            Log.d("DogRepository", "  - Expire: ${session.expire}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DogRepository", "Cannot list sessions: ${e.message}")
                     }
                     
-                    // Versuche den aktuellen Account zu bekommen
+                    // Try to get account directly
                     try {
                         val account = appwriteService.account.get()
-                        Log.d("DogRepository", "ERSTAUNLICH: Account konnte trotzdem abgefragt werden: ${account.email}")
+                        Log.d("DogRepository", "UNEXPECTED: Account retrieved despite session check failure")
+                        Log.d("DogRepository", "  - ID: ${account.id}")
+                        Log.d("DogRepository", "  - Email: ${account.email}")
+                        Log.d("DogRepository", "  - Status: ${account.status}")
                     } catch (e: Exception) {
-                        Log.d("DogRepository", "Wie erwartet: Account konnte nicht abgefragt werden: ${e.message}")
+                        Log.d("DogRepository", "Expected: Cannot get account - ${e.message}")
                     }
+                    
+                    Log.d("DogRepository", "=== SESSION DEBUG END ===")
                 } catch (e: Exception) {
-                    Log.e("DogRepository", "DEBUG: Fehler beim Abruf der Sessions: ${e.message}")
+                    Log.e("DogRepository", "DEBUG ERROR: ${e.message}")
                 }
                 
                 emit(emptyList<Dog>())
