@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -113,11 +114,7 @@ fun TileDashboardScreen(
                     Color(0xFF4CAF50),
                     Color(0xFF81C784)
                 ),
-                action = {
-                    if (dogCount > 0) {
-                        navController.navigate(Screen.DogList.route)
-                    }
-                },
+                route = Screen.DogList.route, // For now navigate to dog list to select dog for feeding
                 enabled = dogCount > 0
             ),
             
@@ -131,11 +128,7 @@ fun TileDashboardScreen(
                     Color(0xFF2196F3),
                     Color(0xFF64B5F6)
                 ),
-                action = {
-                    if (dogCount > 0) {
-                        navController.navigate(Screen.DogList.route)
-                    }
-                },
+                route = Screen.DogList.route, // For now navigate to dog list to select dog for barcode scanning
                 enabled = dogCount > 0
             ),
             
@@ -149,11 +142,7 @@ fun TileDashboardScreen(
                     Color(0xFF9C27B0),
                     Color(0xFFBA68C8)
                 ),
-                action = {
-                    if (dogCount > 0) {
-                        navController.navigate(Screen.DogList.route)
-                    }
-                },
+                route = Screen.DogList.route, // For now navigate to dog list to select dog for statistics
                 enabled = dogCount > 0
             ),
             
@@ -269,7 +258,7 @@ fun TileDashboardScreen(
                             }
                         }
                     }) {
-                        Icon(Icons.Default.Logout, contentDescription = "Abmelden")
+                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Abmelden")
                     }
                 }
             )
