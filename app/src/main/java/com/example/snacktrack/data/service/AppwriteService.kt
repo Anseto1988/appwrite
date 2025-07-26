@@ -74,8 +74,11 @@ class AppwriteService private constructor(context: Context) {
         setProject(PROJECT_ID)
         setLocale("de-DE") // Set locale for error messages
         setSelfSigned(false) // Explicitly set to false for production
-        // Note: API Key is typically used server-side. 
-        // For Android apps, user authentication is the preferred method.
+        
+        // IMPORTANT: Do NOT set API Key for client-side apps!
+        // API Keys override user sessions and cause "guest" user issues
+        // For Android apps, always use user authentication (email/password or OAuth)
+        
         // Configure with custom OkHttpClient if available
         // Note: This depends on the Appwrite SDK version - may need setHttpClient() or similar method
         try {

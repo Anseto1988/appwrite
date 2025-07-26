@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.snacktrack.data.repository.AuthRepository
 import com.example.snacktrack.utils.ValidationUtils
 import kotlinx.coroutines.launch
+import com.example.snacktrack.BuildConfig
 
 @Composable
 fun LoginScreen(
@@ -223,6 +224,23 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrieren")
+        }
+        
+        // Debug button (only in debug builds)
+        if (BuildConfig.DEBUG) {
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            OutlinedButton(
+                onClick = {
+                    scope.launch {
+                        val debugInfo = authRepository.debugSessionStatus()
+                        errorMessage = debugInfo
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Debug Session Status")
+            }
         }
     }
 } 
