@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import com.example.snacktrack.data.service.AppwriteService
+import com.example.snacktrack.data.service.SessionManager
 
 class AuthRepository(private val context: Context) : BaseRepository() {
     
     private val appwriteService = AppwriteService.getInstance(context)
     private val account = appwriteService.account
+    private val sessionManager = SessionManager.getInstance(context)
     
     /**
      * Registriert einen neuen Benutzer und erstellt automatisch eine Session
@@ -33,7 +35,12 @@ class AuthRepository(private val context: Context) : BaseRepository() {
             
             // Automatically create a session for the new user
             try {
-                account.createEmailSession(email, password)
+                val session = account.createEmailSession(email, password)
+                
+                // Save session information after registration
+                val sessionUser = account.get()
+                val expireTime = System.currentTimeMillis() + (365L * 24 * 60 * 60 * 1000) // 1 year
+                sessionManager.saveSession(session.id, sessionUser.id, sessionUser.email, expireTime)
             } catch (sessionError: AppwriteException) {
                 // Log the error but don't fail registration
                 android.util.Log.w("AuthRepository", "Could not create session after registration: ${sessionError.message}")
@@ -66,6 +73,10 @@ class AuthRepository(private val context: Context) : BaseRepository() {
             val user = account.get()
             android.util.Log.d("AuthRepository", "User verified: ${user.email}, Status: ${user.status}")
             
+            // Save session information
+            val expireTime = System.currentTimeMillis() + (365L * 24 * 60 * 60 * 1000) // 1 year
+            sessionManager.saveSession(session.id, user.id, user.email, expireTime)
+            
             Result.success(Unit)
         } catch (e: AppwriteException) {
             android.util.Log.e("AuthRepository", "Login failed: ${e.message}, Code: ${e.code}, Type: ${e.type}")
@@ -79,6 +90,7 @@ class AuthRepository(private val context: Context) : BaseRepository() {
     suspend fun logout(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             account.deleteSession("current")
+            sessionManager.clearSession()
             Result.success(Unit)
         } catch (e: AppwriteException) {
             Result.failure(e)

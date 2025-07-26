@@ -142,14 +142,18 @@ fun LoginScreen(
                     authRepository.login(email.trim(), password)
                         .onSuccess {
                             isLoading = false
+                            // Debug: Verify session after login
+                            val sessionStatus = authRepository.debugSessionStatus()
+                            android.util.Log.d("LoginScreen", "Session after login: $sessionStatus")
                             onLoginSuccess()
                         }
                         .onFailure { e ->
                             isLoading = false
+                            android.util.Log.e("LoginScreen", "Login failed: ${e.message}")
                             errorMessage = when {
                                 e.message?.contains("401") == true -> "E-Mail oder Passwort falsch"
                                 e.message?.contains("network", ignoreCase = true) == true -> "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung"
-                                else -> "Anmeldung fehlgeschlagen. Bitte versuchen Sie es später erneut"
+                                else -> "Anmeldung fehlgeschlagen: ${e.message}"
                             }
                         }
                 }

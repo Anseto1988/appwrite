@@ -121,10 +121,16 @@ class AppwriteService private constructor(context: Context) {
     suspend fun ensureValidSession(): Boolean {
         return try {
             // Try to get current account - this will fail if session is invalid
-            account.get()
+            val user = account.get()
+            SecureLogger.d("AppwriteService", "Valid session found for user: ${user.email}")
             true
         } catch (e: Exception) {
-            SecureLogger.e("AppwriteService", "No valid session available", e)
+            // Check if it's specifically the guest scope error
+            if (e.message?.contains("User (role: guests) missing scope (account)") == true) {
+                SecureLogger.d("AppwriteService", "User is not authenticated (guest user)")
+            } else {
+                SecureLogger.e("AppwriteService", "Session check failed", e)
+            }
             false
         }
     }
