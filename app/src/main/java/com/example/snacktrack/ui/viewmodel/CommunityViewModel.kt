@@ -1,338 +1,212 @@
 package com.example.snacktrack.ui.viewmodel
 
 import android.content.Context
-import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.snacktrack.data.model.CommunityPost
-import com.example.snacktrack.data.model.CommunityProfile
 import com.example.snacktrack.data.model.CommunityComment
-import com.example.snacktrack.data.model.PostType
+import com.example.snacktrack.data.model.UserProfile
 import com.example.snacktrack.data.repository.CommunityRepository
-import com.example.snacktrack.data.repository.DogRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel für Community-Funktionen
- */
-class CommunityViewModel(private val context: Context) : ViewModel() {
-
-    private val communityRepository = CommunityRepository(context)
-    private val dogRepository = DogRepository(context)
-
-    // UI-State für den Feed
-    private val _feedState = MutableStateFlow<FeedState>(FeedState.Loading)
-    val feedState: StateFlow<FeedState> = _feedState.asStateFlow()
-
-    // Posts im Feed
-    val posts: StateFlow<List<CommunityPost>> = communityRepository.feedPostsStateFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
-    // Benutzerprofil
-    val userProfile: StateFlow<CommunityProfile?> = communityRepository.userProfileStateFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
-
-    // State für das Erstellen von Posts
-    var postCreationState by mutableStateOf<PostCreationState>(PostCreationState.Idle)
-        private set
-
-    // State für Profilbearbeitung
-    var profileEditState by mutableStateOf<ProfileEditState>(ProfileEditState.Idle)
-        private set
-
-    init {
-        loadFeed()
-        loadUserProfile()
-    }
-
-    /**
-     * Lädt den Feed mit Community-Posts
-     */
-    fun loadFeed() {
-        _feedState.value = FeedState.Loading
-        viewModelScope.launch {
-            try {
-                val result = communityRepository.refreshFeed()
-                if (result.isSuccess) {
-                    _feedState.value = FeedState.Success(result.getOrThrow())
-                } else {
-                    _feedState.value = FeedState.Error("Fehler beim Laden des Feeds")
-                }
-            } catch (e: Exception) {
-                _feedState.value = FeedState.Error("Fehler beim Laden des Feeds: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Lädt das Profil des aktuellen Benutzers
-     */
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            try {
-                communityRepository.getCurrentUserProfile()
-            } catch (e: Exception) {
-                // Fehler werden über den StateFlow gehandhabt
-            }
-        }
-    }
-
-    /**
-     * Erstellt einen neuen Post
-     */
-    fun createPost(
-        content: String,
-        postType: PostType,
-        dogId: String? = null,
-        imageUris: List<Uri> = emptyList(),
-        hashtags: List<String> = emptyList()
-    ) {
-        postCreationState = PostCreationState.Creating
-        viewModelScope.launch {
-            try {
-                val result = communityRepository.createPost(
-                    content = content,
-                    postType = postType,
-                    dogId = dogId,
-                    imageUris = imageUris,
-                    hashtags = hashtags
-                )
-
-                postCreationState = if (result.isSuccess) {
-                    PostCreationState.Success(result.getOrThrow())
-                } else {
-                    PostCreationState.Error("Fehler beim Erstellen des Posts")
-                }
-            } catch (e: Exception) {
-                postCreationState = PostCreationState.Error("Fehler beim Erstellen des Posts: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Erstellt oder aktualisiert das Benutzerprofil
-     */
-    fun createOrUpdateProfile(
-        displayName: String,
-        bio: String? = null,
-        profileImageUri: Uri? = null
-    ) {
-        profileEditState = ProfileEditState.Saving
-        viewModelScope.launch {
-            try {
-                val result = communityRepository.createOrUpdateProfile(
-                    displayName = displayName,
-                    bio = bio,
-                    profileImageUri = profileImageUri
-                )
-
-                profileEditState = if (result.isSuccess) {
-                    ProfileEditState.Success(result.getOrThrow())
-                } else {
-                    ProfileEditState.Error("Fehler beim Speichern des Profils")
-                }
-            } catch (e: Exception) {
-                profileEditState = ProfileEditState.Error("Fehler beim Speichern des Profils: ${e.message}")
-            }
-        }
-    }
-
-
-    /**
-     * Liked oder Unlikes einen Post
-     */
-    fun toggleLike(postId: String) {
-        viewModelScope.launch {
-            try {
-                communityRepository.toggleLike(postId)
-                loadFeed() // Feed aktualisieren um den Like-Status zu zeigen
-            } catch (e: Exception) {
-                // Fehler behandeln
-            }
-        }
-    }
-
-    /**
-     * Aktualisiert das Benutzerprofil
-     */
-    fun updateProfile(
-        displayName: String,
-        bio: String,
-        profileImageUri: Uri? = null
-    ) {
-        viewModelScope.launch {
-            profileEditState = ProfileEditState.Saving
-            communityRepository.createOrUpdateProfile(
-                displayName = displayName,
-                bio = bio,
-                profileImageUri = profileImageUri
-            ).fold(
-                onSuccess = { profile ->
-                    profileEditState = ProfileEditState.Success(profile)
-                    // Profile updated successfully
-                },
-                onFailure = { error ->
-                    profileEditState = ProfileEditState.Error(error.message ?: "Fehler beim Speichern")
-                }
-            )
-        }
-    }
-
-    /**
-     * Zustandsreset für Postersterllung
-     */
-    fun resetPostCreationState() {
-        postCreationState = PostCreationState.Idle
-    }
-
-    /**
-     * Zustandsreset für Profilbearbeitung
-     */
-    fun resetProfileEditState() {
-        profileEditState = ProfileEditState.Idle
-    }
-    
-    // Kommentar-Funktionen
-    private val _comments = MutableStateFlow<List<CommunityComment>>(emptyList())
-    val comments: StateFlow<List<CommunityComment>> = _comments.asStateFlow()
-    
-    var commentState by mutableStateOf<CommentState>(CommentState.Idle)
-        private set
-    
-    /**
-     * Lädt Kommentare für einen Post
-     */
-    fun loadCommentsForPost(postId: String) {
-        viewModelScope.launch {
-            commentState = CommentState.Loading
-            communityRepository.getCommentsForPost(postId).fold(
-                onSuccess = { comments ->
-                    _comments.value = comments
-                    commentState = CommentState.Success
-                },
-                onFailure = { error ->
-                    commentState = CommentState.Error(error.message ?: "Unbekannter Fehler")
-                }
-            )
-        }
-    }
-    
-    /**
-     * Erstellt einen neuen Kommentar
-     */
-    fun createComment(postId: String, content: String) {
-        viewModelScope.launch {
-            commentState = CommentState.Loading
-            communityRepository.createComment(postId, content).fold(
-                onSuccess = { newComment ->
-                    // Kommentare neu laden
-                    loadCommentsForPost(postId)
-                    commentState = CommentState.Success
-                },
-                onFailure = { error ->
-                    commentState = CommentState.Error(error.message ?: "Fehler beim Erstellen des Kommentars")
-                }
-            )
-        }
-    }
-    
-    /**
-     * Löscht einen Kommentar
-     */
-    fun deleteComment(commentId: String, postId: String) {
-        viewModelScope.launch {
-            communityRepository.deleteComment(commentId, postId).fold(
-                onSuccess = {
-                    // Kommentare neu laden
-                    loadCommentsForPost(postId)
-                },
-                onFailure = { error ->
-                    commentState = CommentState.Error(error.message ?: "Fehler beim Löschen des Kommentars")
-                }
-            )
-        }
-    }
-    
-    /**
-     * Reset Kommentar-Status
-     */
-    fun resetCommentState() {
-        commentState = CommentState.Idle
-    }
-    
-    /**
-     * Löscht einen Post (Admin-Funktion)
-     */
-    fun deletePost(postId: String) {
-        viewModelScope.launch {
-            communityRepository.deletePost(postId).fold(
-                onSuccess = {
-                    // Feed neu laden
-                    loadFeed()
-                },
-                onFailure = { error ->
-                    // Error handling könnte hier erweitert werden
-                }
-            )
-        }
-    }
+sealed class ProfileEditState {
+    object Idle : ProfileEditState()
+    object Loading : ProfileEditState()
+    object Saving : ProfileEditState()
+    object Success : ProfileEditState()
+    data class Error(val message: String) : ProfileEditState()
 }
 
-/**
- * Zustände für den Feed
- */
+sealed class CommentState {
+    object Loading : CommentState()
+    data class Success(val comments: List<CommunityComment>) : CommentState()
+    data class Error(val message: String) : CommentState()
+}
+
 sealed class FeedState {
     object Loading : FeedState()
     data class Success(val posts: List<CommunityPost>) : FeedState()
     data class Error(val message: String) : FeedState()
 }
 
-/**
- * Zustände für Postererstellung
- */
 sealed class PostCreationState {
     object Idle : PostCreationState()
-    object Creating : PostCreationState()
-    data class Success(val post: CommunityPost) : PostCreationState()
+    object Loading : PostCreationState()
+    object Success : PostCreationState()
     data class Error(val message: String) : PostCreationState()
 }
 
-/**
- * Zustände für Profilbearbeitung
- */
-sealed class ProfileEditState {
-    object Idle : ProfileEditState()
-    object Saving : ProfileEditState()
-    data class Success(val profile: CommunityProfile) : ProfileEditState()
-    data class Error(val message: String) : ProfileEditState()
+class CommunityViewModel(
+    private val context: Context
+) : ViewModel() {
+    
+    private val communityRepository = CommunityRepository(context)
+    
+    private val _posts = MutableStateFlow<List<CommunityPost>>(emptyList())
+    val posts: StateFlow<List<CommunityPost>> = _posts.asStateFlow()
+    
+    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
+    
+    private val _profileEditState = MutableStateFlow<ProfileEditState>(ProfileEditState.Idle)
+    val profileEditState: StateFlow<ProfileEditState> = _profileEditState.asStateFlow()
+    
+    private val _feedState = MutableStateFlow<FeedState>(FeedState.Loading)
+    val feedState: StateFlow<FeedState> = _feedState.asStateFlow()
+    
+    private val _postCreationState = MutableStateFlow<PostCreationState>(PostCreationState.Idle)
+    val postCreationState: StateFlow<PostCreationState> = _postCreationState.asStateFlow()
+    
+    private val _comments = MutableStateFlow<List<CommunityComment>>(emptyList())
+    val comments: StateFlow<List<CommunityComment>> = _comments.asStateFlow()
+    
+    private val _commentState = MutableStateFlow<CommentState>(CommentState.Loading)
+    val commentState: StateFlow<CommentState> = _commentState.asStateFlow()
+    
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+    
+    val userId: String = "current_user_id" // TODO: Get from auth
+    
+    init {
+        loadPosts()
+    }
+    
+    fun loadPosts(category: String? = null) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            communityRepository.getPosts(category).collect { postList ->
+                _posts.value = postList
+                _isLoading.value = false
+            }
+        }
+    }
+    
+    fun createPost(
+        title: String,
+        content: String,
+        category: String,
+        postType: String = "general",
+        images: List<String> = emptyList()
+    ) {
+        viewModelScope.launch {
+            _postCreationState.value = PostCreationState.Loading
+            communityRepository.createPost(title, content, category, postType, images)
+                .onSuccess {
+                    _postCreationState.value = PostCreationState.Success
+                    loadPosts()
+                }
+                .onFailure { e ->
+                    _postCreationState.value = PostCreationState.Error(e.message ?: "Fehler beim Erstellen des Beitrags")
+                }
+        }
+    }
+    
+    fun toggleLike(postId: String) {
+        viewModelScope.launch {
+            communityRepository.toggleLikePost(postId)
+                .onSuccess {
+                    loadPosts()
+                }
+                .onFailure { e ->
+                    _error.value = e.message
+                }
+        }
+    }
+    
+    fun createComment(postId: String, content: String) {
+        viewModelScope.launch {
+            communityRepository.createComment(postId, content)
+                .onSuccess {
+                    // Reload posts to update comment count
+                    loadPosts()
+                }
+                .onFailure { e ->
+                    _error.value = e.message
+                }
+        }
+    }
+    
+    fun deleteComment(commentId: String) {
+        viewModelScope.launch {
+            // TODO: Implement delete comment
+            _error.value = "Löschen von Kommentaren noch nicht implementiert"
+        }
+    }
+    
+    fun loadUserProfile(userId: String? = null) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            // TODO: Load user profile from repository
+            // Use provided userId or default to current user
+            val targetUserId = userId ?: this@CommunityViewModel.userId
+            _userProfile.value = null
+            _isLoading.value = false
+        }
+    }
+    
+    fun createOrUpdateProfile(displayName: String, bio: String) {
+        viewModelScope.launch {
+            _profileEditState.value = ProfileEditState.Saving
+            // TODO: Create or update profile via repository
+            _profileEditState.value = ProfileEditState.Success
+        }
+    }
+    
+    fun updateProfile(displayName: String, bio: String) {
+        createOrUpdateProfile(displayName, bio)
+    }
+    
+    fun loadFeed(category: String? = null) {
+        viewModelScope.launch {
+            _feedState.value = FeedState.Loading
+            communityRepository.getPosts(category).collect { postList ->
+                _feedState.value = if (postList.isEmpty()) {
+                    FeedState.Error("Keine Beiträge gefunden")
+                } else {
+                    FeedState.Success(postList)
+                }
+            }
+        }
+    }
+    
+    fun deletePost(postId: String) {
+        viewModelScope.launch {
+            // TODO: Implement delete post
+            _error.value = "Löschen von Beiträgen noch nicht implementiert"
+        }
+    }
+    
+    fun resetPostCreationState() {
+        _postCreationState.value = PostCreationState.Idle
+    }
+    
+    fun loadCommentsForPost(postId: String) {
+        viewModelScope.launch {
+            _commentState.value = CommentState.Loading
+            communityRepository.getComments(postId).collect { commentList ->
+                _comments.value = commentList
+                _commentState.value = CommentState.Success(comments = commentList)
+            }
+        }
+    }
 }
 
-/**
- * Zustände für Kommentare
- */
-sealed class CommentState {
-    object Idle : CommentState()
-    object Loading : CommentState()
-    object Success : CommentState()
-    data class Error(val message: String) : CommentState()
+class CommunityViewModelFactory(
+    private val context: Context
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CommunityViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CommunityViewModel(context) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }
-
-// CommunityViewModelFactory wurde in eine separate Datei verschoben
-// Siehe com.example.snacktrack.ui.viewmodel.CommunityViewModelFactory

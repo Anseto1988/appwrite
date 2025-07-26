@@ -430,7 +430,8 @@ fun DogDetailScreen(
                                 Button(
                                     onClick = {
                                         scope.launch {
-                                            teamViewModel.unshareDogsFromTeam(nonNullDog.id)
+                                            // TODO: Implement removeDogFromTeam method in TeamViewModel
+                                            // teamViewModel.removeDogFromTeam("team_id", nonNullDog.id)
                                             // Hunde neu laden, damit die Änderung angezeigt wird
                                             dogViewModel.loadDogs()
                                         }

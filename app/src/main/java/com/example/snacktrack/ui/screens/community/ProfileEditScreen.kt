@@ -78,8 +78,7 @@ fun ProfileEditScreen(
                         onClick = {
                             viewModel.updateProfile(
                                 displayName = displayName,
-                                bio = bio,
-                                profileImageUri = selectedImageUri
+                                bio = bio
                             )
                         },
                         enabled = displayName.isNotBlank() && profileEditState !is ProfileEditState.Saving

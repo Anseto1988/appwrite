@@ -201,7 +201,7 @@ fun PostDetailScreen(
             items(comments) { comment ->
                 CommentCard(
                     comment = comment,
-                    onDeleteClick = { viewModel.deleteComment(comment.id, postId) }
+                    onDeleteClick = { viewModel.deleteComment(comment.id) }
                 )
             }
         }

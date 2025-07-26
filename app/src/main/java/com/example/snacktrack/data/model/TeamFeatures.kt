@@ -227,17 +227,12 @@ data class TaskTemplate(
 data class TeamMemberRole(
     val userId: String = "",
     val teamId: String = "",
-    val role: TeamRole = TeamRole.MEMBER,
+    val role: TeamRole = TeamRole.VIEWER,
     val permissions: Set<TeamPermission> = emptySet(),
     val joinedAt: LocalDateTime = LocalDateTime.now()
 )
 
-enum class TeamRole(val displayName: String) {
-    OWNER("Besitzer"),
-    ADMIN("Administrator"),
-    MEMBER("Mitglied"),
-    VIEWER("Beobachter")
-}
+// TeamRole is defined in Team.kt as an alias to BasicTeamRole
 
 enum class TeamPermission {
     MANAGE_TEAM,

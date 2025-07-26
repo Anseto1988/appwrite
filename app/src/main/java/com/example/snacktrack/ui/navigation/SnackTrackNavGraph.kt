@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.snacktrack.ui.screens.auth.LoginScreen
 import com.example.snacktrack.ui.screens.auth.RegisterScreen
-import com.example.snacktrack.ui.screens.main.HomeScreen
+import com.example.snacktrack.ui.screens.main.TileDashboardScreen
 import com.example.snacktrack.ui.screens.dogs.AddDogScreen
 import com.example.snacktrack.ui.screens.dogs.DogDetailScreen
 import com.example.snacktrack.ui.screens.dogs.DogListScreen
@@ -25,6 +25,7 @@ import com.example.snacktrack.ui.screens.settings.ExportImportScreen
 import com.example.snacktrack.ui.screens.health.PreventionPlanScreen
 import com.example.snacktrack.ui.screens.team.TeamManagementScreen
 import com.example.snacktrack.ui.screens.account.AccountManagementScreen
+import com.example.snacktrack.ui.screens.community.CommunityScreen
 import com.example.snacktrack.data.service.AppwriteService
 import com.example.snacktrack.ui.viewmodel.*
 import androidx.compose.ui.platform.LocalContext
@@ -78,6 +79,7 @@ sealed class Screen(val route: String) {
     // Other Screens
     object FoodDatabase : Screen("food_database")
     object Settings : Screen("settings")
+    object Community : Screen("community")
 }
 
 @Composable
@@ -130,11 +132,8 @@ fun SnackTrackNavGraph(
             route = "main"
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(
-                    navController = navController,
-                    onNavigateToDogs = { navController.navigate(Screen.DogList.route) },
-                    onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
-                    onNavigateToFoodDatabase = { navController.navigate(Screen.FoodDatabase.route) }
+                TileDashboardScreen(
+                    navController = navController
                 )
             }
             
@@ -272,6 +271,12 @@ fun SnackTrackNavGraph(
             
             composable(Screen.FoodSubmissionAdmin.route) {
                 FoodSubmissionAdminScreen(
+                    navController = navController
+                )
+            }
+            
+            composable(Screen.Community.route) {
+                CommunityScreen(
                     navController = navController
                 )
             }

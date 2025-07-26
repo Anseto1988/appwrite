@@ -41,11 +41,11 @@ fun AccountManagementScreen(
     val teamViewModel: TeamViewModel = viewModel { TeamViewModel(context) }
     
     val teams by teamViewModel.teams.collectAsState()
-    val ownDogs by teamViewModel.ownDogs.collectAsState()
-    val searchResults by teamViewModel.searchResults.collectAsState()
+    val ownDogs by invitationViewModel.ownDogs.collectAsState()
+    val searchResults by invitationViewModel.searchResults.collectAsState()
     val isLoading by teamViewModel.isLoading.collectAsState()
-    val errorMessage by teamViewModel.errorMessage.collectAsState()
-    val successMessage by teamViewModel.successMessage.collectAsState()
+    val errorMessage by invitationViewModel.errorMessage.collectAsState()
+    val successMessage by invitationViewModel.successMessage.collectAsState()
     
     // State für Dialoge
     var showCreateTeamDialog by remember { mutableStateOf(false) }
@@ -64,7 +64,7 @@ fun AccountManagementScreen(
     LaunchedEffect(successMessage, errorMessage) {
         if (successMessage != null || errorMessage != null) {
             delay(3000)
-            teamViewModel.clearMessages()
+            invitationViewModel.clearMessages()
         }
     }
     
@@ -221,11 +221,11 @@ fun AccountManagementScreen(
         InviteUserDialog(
             onDismiss = { showInviteUserDialog = false },
             onInviteUser = { email, role ->
-                teamViewModel.addTeamMember(selectedTeam!!.id, email, role)
+                invitationViewModel.addTeamMember(selectedTeam!!.id, email)
                 showInviteUserDialog = false
             },
             onSearchUser = { email ->
-                teamViewModel.searchUsers(email)
+                invitationViewModel.searchUsers(email)
             },
             searchResults = searchResults
         )
@@ -237,7 +237,7 @@ fun AccountManagementScreen(
             dogs = ownDogs.filter { it.teamId != selectedTeam!!.id },
             onDismiss = { showShareDogDialog = false },
             onShareDog = { dogId ->
-                teamViewModel.shareDogWithTeam(dogId, selectedTeam!!.id)
+                invitationViewModel.shareDogWithTeam(dogId, selectedTeam!!.id)
                 showShareDogDialog = false
             }
         )

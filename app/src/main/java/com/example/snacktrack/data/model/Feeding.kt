@@ -1,6 +1,7 @@
 package com.example.snacktrack.data.model
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 /**
@@ -9,13 +10,14 @@ import java.time.LocalTime
 data class Feeding(
     val id: String = "",
     val dogId: String = "",
-    val foodId: String = "",
+    val foodId: String? = null,
     val foodName: String = "",
     val amount: Double = 0.0,
     val calories: Int = 0,
     val type: FeedingType = FeedingType.MAIN_MEAL,
     val date: LocalDate = LocalDate.now(),
     val time: LocalTime = LocalTime.now(),
+    val timestamp: LocalDateTime = LocalDateTime.now(),
     val notes: String? = null
 )
 

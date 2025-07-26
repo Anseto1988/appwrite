@@ -1,5 +1,7 @@
 package com.example.snacktrack.data.model
 
+import java.time.LocalDateTime
+
 /**
  * Repräsentiert ein Team im SnackTrack-System für das Teilen von Hunden
  */
@@ -8,7 +10,9 @@ data class Team(
     val name: String = "",
     val ownerId: String = "",
     val members: List<TeamMember> = emptyList(),
-    val sharedDogs: List<String>? = null
+    val sharedDogs: List<String>? = null,
+    val description: String? = null,
+    val createdAt: LocalDateTime = LocalDateTime.now()
 )
 
 /**
@@ -29,3 +33,8 @@ enum class BasicTeamRole(val displayName: String) {
     EDITOR("Bearbeiter"),
     VIEWER("Betrachter")
 }
+
+// Alias for TeamRole to maintain compatibility
+typealias TeamRole = BasicTeamRole
+
+// TeamInvitation is defined in TeamInvitation.kt

@@ -31,9 +31,26 @@ import coil.compose.AsyncImage
 import com.example.snacktrack.R
 import com.example.snacktrack.data.model.CommunityPost
 import com.example.snacktrack.data.model.CommunityProfile
+import com.example.snacktrack.data.model.UserProfile
 import com.example.snacktrack.ui.viewmodel.CommunityViewModel
 import com.example.snacktrack.ui.viewmodel.CommunityViewModelFactory
 import com.example.snacktrack.ui.viewmodel.ProfileEditState
+
+// Helper function to convert UserProfile to CommunityProfile
+private fun convertUserProfileToCommunityProfile(userProfile: UserProfile): CommunityProfile {
+    return CommunityProfile(
+        id = userProfile.userId,
+        userId = userProfile.userId,
+        displayName = userProfile.displayName,
+        bio = userProfile.bio,
+        profileImageUrl = userProfile.profileImageUrl,
+        isPremium = false,
+        followersCount = userProfile.followerCount,
+        followingCount = userProfile.followingCount,
+        postsCount = userProfile.postCount,
+        createdAt = userProfile.joinedAt.toString()
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,21 +128,20 @@ fun ProfileScreen(
                 if (isEditing) {
                     // Bearbeitungsansicht
                     ProfileEditContent(
-                        profile = profile,
+                        profile = convertUserProfileToCommunityProfile(profile),
                         onSave = { displayName, bio, imageUri ->
                             viewModel.createOrUpdateProfile(
                                 displayName = displayName,
-                                bio = bio,
-                                profileImageUri = imageUri
+                                bio = bio ?: ""
                             )
                             isEditing = false
                         },
-                        profileEditState = profileEditState
+                        profileEditState = profileEditState.collectAsState().value
                     )
                 } else {
                     // Normale Profilansicht
                     ProfileContent(
-                        profile = profile,
+                        profile = convertUserProfileToCommunityProfile(profile),
                         userPosts = userPosts,
                         navController = navController,
                         isOwnProfile = userId == null || userId == userProfile?.userId,

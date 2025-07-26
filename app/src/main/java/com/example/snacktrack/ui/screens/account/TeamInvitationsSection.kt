@@ -70,8 +70,8 @@ fun TeamInvitationsSection(
                         items(invitations) { invitation ->
                             InvitationItem(
                                 invitation = invitation,
-                                onAccept = { invitationViewModel.acceptInvitation(invitation) },
-                                onDecline = { invitationViewModel.declineInvitation(invitation) }
+                                onAccept = { invitationViewModel.acceptInvitation(invitation.id) },
+                                onDecline = { invitationViewModel.declineInvitation(invitation.id) }
                             )
                         }
                     }

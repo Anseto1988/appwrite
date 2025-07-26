@@ -14,17 +14,80 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+// Import the UI data classes from TeamDashboardViewModel
+typealias UiTeamStatistics = com.example.snacktrack.ui.viewmodel.TeamStatistics
+typealias UiTeamTask = com.example.snacktrack.ui.viewmodel.TeamTask
+typealias UiShoppingItem = com.example.snacktrack.ui.viewmodel.ShoppingItem
+typealias UiConsumptionPrediction = com.example.snacktrack.ui.viewmodel.ConsumptionPrediction
+typealias UiTeamActivity = com.example.snacktrack.ui.viewmodel.TeamActivity
+
 data class TeamFeaturesUiState(
     val isLoading: Boolean = false,
     val teamId: String = "",
-    val upcomingTasks: List<FeedingTask> = emptyList(),
-    val shoppingItems: List<ShoppingItem> = emptyList(),
-    val consumptionPredictions: List<ConsumptionPrediction> = emptyList(),
-    val recentActivities: List<TeamActivity> = emptyList(),
-    val statistics: TeamStatistics? = null,
+    val upcomingTasks: List<UiTeamTask> = emptyList(),
+    val shoppingItems: List<UiShoppingItem> = emptyList(),
+    val consumptionPredictions: List<UiConsumptionPrediction> = emptyList(),
+    val recentActivities: List<UiTeamActivity> = emptyList(),
+    val statistics: UiTeamStatistics? = null,
     val currentUserId: String = "",
     val error: String? = null
 )
+
+// Mapping functions to convert between model and UI classes
+private fun convertToUiShoppingItems(items: List<com.example.snacktrack.data.model.ShoppingItem>): List<UiShoppingItem> {
+    return items.map { item ->
+        UiShoppingItem(
+            id = item.id,
+            name = item.productName,
+            quantity = "${item.quantity} ${item.unit}",
+            isPurchased = item.isPurchased
+        )
+    }
+}
+
+private fun convertToUiConsumptionPredictions(predictions: List<com.example.snacktrack.data.model.ConsumptionPrediction>): List<UiConsumptionPrediction> {
+    return predictions.map { prediction ->
+        UiConsumptionPrediction(
+            dogName = "Dog", // TODO: Get dog name from dogId
+            foodName = prediction.foodName,
+            daysRemaining = prediction.daysUntilEmpty,
+            recommendedPurchaseDate = prediction.recommendedOrderDate.toString()
+        )
+    }
+}
+
+private fun convertToUiTeamActivities(activities: List<com.example.snacktrack.data.model.TeamActivity>): List<UiTeamActivity> {
+    return activities.map { activity ->
+        UiTeamActivity(
+            id = activity.id,
+            type = activity.activityType.name,
+            description = activity.description,
+            timestamp = activity.timestamp.toString(),
+            userId = activity.userId
+        )
+    }
+}
+
+private fun convertToUiTeamStatistics(stats: com.example.snacktrack.data.model.TeamStatistics?): UiTeamStatistics? {
+    return stats?.let {
+        UiTeamStatistics(
+            totalDogs = 0, // TODO: Calculate from team dogs
+            activeTasks = 0, // TODO: Calculate from active tasks
+            completedTasks = 0, // TODO: Calculate from completed tasks
+            memberCount = it.memberContributions.size
+        )
+    }
+}
+
+private fun convertFromUiShoppingItem(item: UiShoppingItem): com.example.snacktrack.data.model.ShoppingItem {
+    return com.example.snacktrack.data.model.ShoppingItem(
+        id = item.id,
+        productName = item.name,
+        quantity = item.quantity.split(" ").firstOrNull()?.toIntOrNull() ?: 1,
+        unit = item.quantity.split(" ").getOrNull(1) ?: "Stück",
+        isPurchased = item.isPurchased
+    )
+}
 
 class TeamFeaturesViewModel(
     private val context: android.content.Context,
@@ -75,11 +138,11 @@ class TeamFeaturesViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        upcomingTasks = tasks,
-                        shoppingItems = shoppingItems,
-                        consumptionPredictions = predictions,
-                        recentActivities = activities,
-                        statistics = stats,
+                        upcomingTasks = emptyList(), // TODO: Convert FeedingTask to UiTeamTask
+                        shoppingItems = convertToUiShoppingItems(shoppingItems),
+                        consumptionPredictions = convertToUiConsumptionPredictions(predictions),
+                        recentActivities = convertToUiTeamActivities(activities),
+                        statistics = convertToUiTeamStatistics(stats),
                         error = null
                     )
                 }
@@ -126,11 +189,7 @@ class TeamFeaturesViewModel(
                         state.copy(
                             upcomingTasks = state.upcomingTasks.map { task ->
                                 if (task.id == taskId) {
-                                    task.copy(
-                                        status = TaskStatus.COMPLETED,
-                                        completedByUserId = state.currentUserId,
-                                        completedAt = java.time.LocalDateTime.now()
-                                    )
+                                    task.copy(isCompleted = true)
                                 } else task
                             }
                         )
@@ -144,19 +203,19 @@ class TeamFeaturesViewModel(
         }
     }
     
-    fun addShoppingItem(item: ShoppingItem) {
+    fun addShoppingItem(item: UiShoppingItem) {
         viewModelScope.launch {
             try {
                 val result = teamFeaturesRepository.addItemToShoppingList(
                     _uiState.value.teamId,
-                    item,
+                    convertFromUiShoppingItem(item),
                     _uiState.value.currentUserId
                 )
                 
                 result.getOrNull()?.let { newItem ->
                     _uiState.update { state ->
                         state.copy(
-                            shoppingItems = state.shoppingItems + newItem
+                            shoppingItems = state.shoppingItems + convertToUiShoppingItems(listOf(newItem))
                         )
                     }
                 }
@@ -180,7 +239,7 @@ class TeamFeaturesViewModel(
                     _uiState.update { state ->
                         state.copy(
                             shoppingItems = state.shoppingItems.map { item ->
-                                if (item.id == itemId) updatedItem else item
+                                if (item.id == itemId) convertToUiShoppingItems(listOf(updatedItem)).first() else item
                             }
                         )
                     }
@@ -193,15 +252,12 @@ class TeamFeaturesViewModel(
         }
     }
     
-    fun addPredictionToShoppingList(prediction: ConsumptionPrediction) {
-        val shoppingItem = ShoppingItem(
-            productName = prediction.foodName,
-            brand = prediction.brand,
-            quantity = prediction.recommendedOrderQuantity,
-            unit = "Packung",
-            category = ShoppingCategory.FOOD,
-            isUrgent = prediction.daysUntilEmpty <= 3,
-            linkedFoodId = prediction.foodId
+    fun addPredictionToShoppingList(prediction: UiConsumptionPrediction) {
+        val shoppingItem = UiShoppingItem(
+            id = "temp_${System.currentTimeMillis()}",
+            name = prediction.foodName,
+            quantity = "1 Packung",
+            isPurchased = false
         )
         
         addShoppingItem(shoppingItem)
@@ -219,7 +275,7 @@ class TeamFeaturesViewModel(
                 result.getOrNull()?.let { moreActivities ->
                     _uiState.update { state ->
                         state.copy(
-                            recentActivities = state.recentActivities + moreActivities
+                            recentActivities = state.recentActivities + convertToUiTeamActivities(moreActivities)
                         )
                     }
                     activityOffset += moreActivities.size

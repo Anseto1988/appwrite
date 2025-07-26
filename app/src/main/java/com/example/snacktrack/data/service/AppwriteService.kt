@@ -20,9 +20,10 @@ import com.example.snacktrack.utils.NetworkManager
 class AppwriteService private constructor(context: Context) {
     
     companion object {
-        const val ENDPOINT = "https://parse.nordburglarp.de/v1"
-        const val PROJECT_ID = "snackrack2"
-        const val DATABASE_ID = "snacktrack-db"
+        const val ENDPOINT = AppwriteConfig.ENDPOINT
+        const val PROJECT_ID = AppwriteConfig.PROJECT_ID
+        const val DATABASE_ID = AppwriteConfig.DATABASE_ID
+        const val API_KEY = AppwriteConfig.API_KEY
         
         // Collection IDs
         const val COLLECTION_DOGS = "dogs"
@@ -73,6 +74,8 @@ class AppwriteService private constructor(context: Context) {
         setProject(PROJECT_ID)
         setLocale("de-DE") // Set locale for error messages
         setSelfSigned(false) // Explicitly set to false for production
+        // Note: API Key is typically used server-side. 
+        // For Android apps, user authentication is the preferred method.
         // Configure with custom OkHttpClient if available
         // Note: This depends on the Appwrite SDK version - may need setHttpClient() or similar method
         try {

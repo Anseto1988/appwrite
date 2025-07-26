@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.snacktrack.data.model.*
 import com.example.snacktrack.ui.components.CommonTopAppBar
-import com.example.snacktrack.ui.viewmodel.TeamViewModel
+import com.example.snacktrack.ui.viewmodel.TeamDashboardViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.platform.LocalContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -33,14 +35,15 @@ import java.util.Locale
 @Composable
 fun TeamDashboardScreen(
     navController: NavController,
-    teamId: String,
-    viewModel: TeamViewModel
+    teamId: String
 ) {
+    val context = LocalContext.current
+    val viewModel = remember { TeamDashboardViewModel(context, teamId) }
     val uiState by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
     
     LaunchedEffect(teamId) {
-        viewModel.loadTeamData(teamId)
+        viewModel.loadTeamData()
     }
     
     Scaffold(
@@ -77,8 +80,8 @@ fun TeamDashboardScreen(
                 .padding(paddingValues)
         ) {
             // Quick Stats
-            QuickStatsRow(
-                statistics = uiState.statistics,
+            QuickStatsRowContent(
+                statistics = viewModel.statistics.collectAsState().value,
                 modifier = Modifier.padding(16.dp)
             )
             
@@ -109,20 +112,17 @@ fun TeamDashboardScreen(
             
             // Content
             when (selectedTab) {
-                0 -> TasksTab(
-                    tasks = uiState.upcomingTasks,
-                    isLoading = uiState.isLoading,
-                    onTaskComplete = { taskId, notes ->
-                        viewModel.completeTask(taskId, notes)
-                    },
-                    onTaskClick = { task ->
-                        navController.navigate("team/task-detail/${task.id}")
+                0 -> TasksTabContent(
+                    tasks = viewModel.upcomingTasks.collectAsState().value,
+                    isLoading = viewModel.isLoading.collectAsState().value,
+                    onTaskComplete = { taskId ->
+                        viewModel.completeTask(taskId)
                     }
                 )
-                1 -> ShoppingTab(
-                    shoppingItems = uiState.shoppingItems,
-                    predictions = uiState.consumptionPredictions,
-                    isLoading = uiState.isLoading,
+                1 -> ShoppingTabContent(
+                    shoppingItems = viewModel.shoppingItems.collectAsState().value,
+                    predictions = viewModel.consumptionPredictions.collectAsState().value,
+                    isLoading = viewModel.isLoading.collectAsState().value,
                     onItemPurchased = { itemId ->
                         viewModel.markItemAsPurchased(itemId)
                     },
@@ -130,9 +130,9 @@ fun TeamDashboardScreen(
                         viewModel.addPredictionToShoppingList(prediction)
                     }
                 )
-                2 -> ActivityFeedTab(
-                    activities = uiState.recentActivities,
-                    isLoading = uiState.isLoading,
+                2 -> ActivityFeedTabContent(
+                    activities = viewModel.recentActivities.collectAsState().value,
+                    isLoading = viewModel.isLoading.collectAsState().value,
                     onLoadMore = {
                         viewModel.loadMoreActivities()
                     }
@@ -814,6 +814,397 @@ private fun formatActivityTime(timestamp: LocalDateTime): String {
         }
         else -> {
             timestamp.format(DateTimeFormatter.ofPattern("dd.MM. HH:mm"))
+        }
+    }
+}
+
+@Composable
+private fun QuickStatsRowContent(
+    statistics: com.example.snacktrack.ui.viewmodel.TeamStatistics?,
+    modifier: Modifier = Modifier
+) {
+    if (statistics == null) return
+    
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            StatCard(
+                title = "Aufgaben",
+                value = statistics.activeTasks.toString(),
+                subtitle = "aktiv",
+                icon = Icons.Default.TaskAlt,
+                color = Color(0xFF4CAF50)
+            )
+        }
+        
+        item {
+            StatCard(
+                title = "Hunde",
+                value = statistics.totalDogs.toString(),
+                subtitle = "im Team",
+                icon = Icons.Default.Pets,
+                color = Color(0xFF2196F3)
+            )
+        }
+        
+        item {
+            StatCard(
+                title = "Mitglieder",
+                value = statistics.memberCount.toString(),
+                subtitle = "aktiv",
+                icon = Icons.Default.Groups,
+                color = Color(0xFFFF9800)
+            )
+        }
+    }
+}
+
+@Composable
+private fun TasksTabContent(
+    tasks: List<com.example.snacktrack.ui.viewmodel.TeamTask>,
+    isLoading: Boolean,
+    onTaskComplete: (String) -> Unit
+) {
+    if (isLoading && tasks.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else if (tasks.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Keine Aufgaben vorhanden",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(tasks) { task ->
+                TaskCard(
+                    task = task,
+                    onComplete = { onTaskComplete(task.id) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TaskCard(
+    task: com.example.snacktrack.ui.viewmodel.TeamTask,
+    onComplete: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = task.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "Zugeteilt an: ${task.assignedTo}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Fällig: ${task.dueDate}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            if (!task.isCompleted) {
+                Button(
+                    onClick = onComplete,
+                    modifier = Modifier.size(40.dp),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Check,
+                        contentDescription = "Als erledigt markieren",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            } else {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = "Erledigt",
+                    tint = Color(0xFF4CAF50)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShoppingTabContent(
+    shoppingItems: List<com.example.snacktrack.ui.viewmodel.ShoppingItem>,
+    predictions: List<com.example.snacktrack.ui.viewmodel.ConsumptionPrediction>,
+    isLoading: Boolean,
+    onItemPurchased: (String) -> Unit,
+    onAddPrediction: (com.example.snacktrack.ui.viewmodel.ConsumptionPrediction) -> Unit
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (predictions.isNotEmpty()) {
+            item {
+                Text(
+                    text = "Nachkauf-Empfehlungen",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+            
+            items(predictions) { prediction ->
+                PredictionCard(
+                    prediction = prediction,
+                    onAddToList = { onAddPrediction(prediction) }
+                )
+            }
+            
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Einkaufsliste",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+        }
+        
+        if (shoppingItems.isNotEmpty()) {
+            items(shoppingItems) { item ->
+                ShoppingItemCard(
+                    item = item,
+                    onPurchased = { onItemPurchased(item.id) }
+                )
+            }
+        } else {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Einkaufsliste ist leer",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PredictionCard(
+    prediction: com.example.snacktrack.ui.viewmodel.ConsumptionPrediction,
+    onAddToList: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = prediction.foodName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "Für: ${prediction.dogName}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Leer in ${prediction.daysRemaining} Tagen",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (prediction.daysRemaining <= 3) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            Button(
+                onClick = onAddToList,
+                modifier = Modifier.size(40.dp),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Zur Liste hinzufügen",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShoppingItemCard(
+    item: com.example.snacktrack.ui.viewmodel.ShoppingItem,
+    onPurchased: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "Menge: ${item.quantity}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            if (!item.isPurchased) {
+                Button(
+                    onClick = onPurchased,
+                    modifier = Modifier.size(40.dp),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Icon(
+                        Icons.Default.ShoppingCart,
+                        contentDescription = "Als gekauft markieren",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            } else {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = "Gekauft",
+                    tint = Color(0xFF4CAF50)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActivityFeedTabContent(
+    activities: List<com.example.snacktrack.ui.viewmodel.TeamActivity>,
+    isLoading: Boolean,
+    onLoadMore: () -> Unit
+) {
+    if (isLoading && activities.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(activities) { activity ->
+                ActivityCardContent(activity = activity)
+            }
+            
+            if (activities.isNotEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TextButton(onClick = onLoadMore) {
+                            Text("Mehr laden")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActivityCardContent(
+    activity: com.example.snacktrack.ui.viewmodel.TeamActivity
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        activity.type,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                
+                Text(
+                    activity.timestamp.take(10), // Simple date format
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                activity.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

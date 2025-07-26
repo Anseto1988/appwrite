@@ -57,8 +57,10 @@ fun CreatePostScreen(
     val coroutineScope = rememberCoroutineScope()
     
     // State für die Formulardaten
+    var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var selectedPostType by remember { mutableStateOf(PostType.PHOTO) }
+    var selectedCategory by remember { mutableStateOf("general") }
     var selectedDogId by remember { mutableStateOf<String?>(null) }
     var selectedDog by remember { mutableStateOf<Dog?>(null) }
     var hashtags by remember { mutableStateOf("") }
@@ -355,19 +357,19 @@ fun CreatePostScreen(
                         .filter { it.isNotEmpty() }
                     
                     viewModel.createPost(
+                        title = title,
                         content = content,
-                        postType = selectedPostType,
-                        dogId = selectedDogId,
-                        imageUris = imageUris,
-                        hashtags = hashtagsList
+                        category = selectedCategory,
+                        postType = selectedPostType.databaseValue,
+                        images = imageUris.map { it.toString() }
                     )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
-                enabled = content.isNotEmpty() && postCreationState !is PostCreationState.Creating
+                enabled = content.isNotEmpty() && postCreationState.collectAsState().value !is PostCreationState.Loading
             ) {
-                if (postCreationState is PostCreationState.Creating) {
+                if (postCreationState.collectAsState().value is PostCreationState.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
                         strokeWidth = 2.dp,
