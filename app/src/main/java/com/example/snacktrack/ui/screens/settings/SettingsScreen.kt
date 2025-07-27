@@ -17,6 +17,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import com.example.snacktrack.ui.navigation.Screen
 import com.example.snacktrack.ui.components.CommonTopAppBar
+import com.example.snacktrack.data.repository.AuthRepository
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,6 +26,16 @@ fun SettingsScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val authRepository = remember { AuthRepository(context) }
+    var isAdmin by remember { mutableStateOf(false) }
+    
+    // Prüfe Admin-Status
+    LaunchedEffect(Unit) {
+        authRepository.isAdmin().collect { adminStatus ->
+            isAdmin = adminStatus
+        }
+    }
     
     Scaffold(
         topBar = {
@@ -122,6 +134,38 @@ fun SettingsScreen(
                 }
             }
             
+            // Admin-Bereich (nur für Admins sichtbar)
+            if (isAdmin) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            "Administration",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                        
+                        SettingsItem(
+                            icon = Icons.Default.SupervisorAccount,
+                            title = "Futter-Einreichungen verwalten",
+                            subtitle = "Neue Futtervorschläge prüfen",
+                            onClick = {
+                                navController.navigate(Screen.FoodSubmissionAdmin.route)
+                            },
+                            tint = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+                }
+            }
+            
             // Über die App
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -162,7 +206,7 @@ fun SettingsScreen(
                 )
             ) {
                 SettingsItem(
-                    icon = Icons.Default.Logout,
+                    icon = Icons.AutoMirrored.Filled.Logout,
                     title = "Abmelden",
                     subtitle = "Aus der App ausloggen",
                     onClick = {
