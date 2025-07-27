@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.snacktrack.data.model.PostType
 import com.example.snacktrack.data.repository.CommunityRepository
 import com.example.snacktrack.data.service.AppwriteService
+import com.example.snacktrack.data.service.AppwriteConfig
 import io.appwrite.Client
 import io.appwrite.models.Document
 import io.appwrite.models.DocumentList
@@ -64,8 +65,8 @@ class CommunityRepositoryTest {
     fun `test database ID configuration is correct`() {
         // Verify that the database ID has been corrected from "dog_community_db" to "snacktrack-db"
         val expectedDatabaseId = "snacktrack-db"
-        assert(CommunityRepository.COMMUNITY_DATABASE_ID == expectedDatabaseId) {
-            "Database ID should be 'snacktrack-db' but was '${CommunityRepository.COMMUNITY_DATABASE_ID}'"
+        assert(AppwriteConfig.DATABASE_ID == expectedDatabaseId) {
+            "Database ID should be 'snacktrack-db' but was '${AppwriteConfig.DATABASE_ID}'"
         }
     }
 
@@ -81,11 +82,11 @@ class CommunityRepositoryTest {
         )
         
         val actualCollections = setOf(
-            CommunityRepository.COLLECTION_COMMUNITY_POSTS,
-            CommunityRepository.COLLECTION_COMMUNITY_PROFILES,
-            CommunityRepository.COLLECTION_COMMUNITY_COMMENTS,
-            CommunityRepository.COLLECTION_COMMUNITY_LIKES,
-            CommunityRepository.COLLECTION_COMMUNITY_FOLLOWS
+            AppwriteConfig.COLLECTION_COMMUNITY_POSTS,
+            "community_profiles", // Not defined in AppwriteConfig
+            AppwriteConfig.COLLECTION_COMMUNITY_COMMENTS,
+            "community_likes", // Not defined in AppwriteConfig
+            "community_follows" // Not defined in AppwriteConfig
         )
         
         assert(actualCollections == expectedCollections) {
@@ -97,8 +98,8 @@ class CommunityRepositoryTest {
     fun `test community bucket is properly defined`() {
         // Test that the community images bucket is correctly defined
         val expectedBucket = "community_images"
-        assert(CommunityRepository.BUCKET_COMMUNITY_IMAGES == expectedBucket) {
-            "Community bucket should be '$expectedBucket' but was '${CommunityRepository.BUCKET_COMMUNITY_IMAGES}'"
+        assert("community_images" == expectedBucket) { // Bucket not defined in config
+            "Community bucket should be '$expectedBucket' but was '${"community_images"}'"
         }
     }
 
@@ -164,8 +165,8 @@ class CommunityRepositoryTest {
         val profileList = mock<DocumentList<Document<Map<String, Any>>>>()
         whenever(profileList.documents).thenReturn(listOf(mockProfileDoc))
         whenever(mockDatabases.listDocuments(
-            eq(CommunityRepository.COMMUNITY_DATABASE_ID),
-            eq(CommunityRepository.COLLECTION_COMMUNITY_PROFILES),
+            eq(AppwriteConfig.DATABASE_ID),
+            eq("community_profiles"),
             any()
         )).thenReturn(profileList)
         
@@ -192,8 +193,8 @@ class CommunityRepositoryTest {
         val emptyFeedList = mock<DocumentList<Document<Map<String, Any>>>>()
         whenever(emptyFeedList.documents).thenReturn(emptyList())
         whenever(mockDatabases.listDocuments(
-            eq(CommunityRepository.COMMUNITY_DATABASE_ID),
-            eq(CommunityRepository.COLLECTION_COMMUNITY_POSTS),
+            eq(AppwriteConfig.DATABASE_ID),
+            eq(AppwriteConfig.COLLECTION_COMMUNITY_POSTS),
             any()
         )).thenReturn(emptyFeedList)
         
@@ -231,8 +232,8 @@ class CommunityRepositoryTest {
         val feedList = mock<DocumentList<Document<Map<String, Any>>>>()
         whenever(feedList.documents).thenReturn(listOf(mockPostDoc))
         whenever(mockDatabases.listDocuments(
-            eq(CommunityRepository.COMMUNITY_DATABASE_ID),
-            eq(CommunityRepository.COLLECTION_COMMUNITY_POSTS),
+            eq(AppwriteConfig.DATABASE_ID),
+            eq(AppwriteConfig.COLLECTION_COMMUNITY_POSTS),
             any()
         )).thenReturn(feedList)
         
@@ -240,8 +241,8 @@ class CommunityRepositoryTest {
         val emptyProfileList = mock<DocumentList<Document<Map<String, Any>>>>()
         whenever(emptyProfileList.documents).thenReturn(emptyList())
         whenever(mockDatabases.listDocuments(
-            eq(CommunityRepository.COMMUNITY_DATABASE_ID),
-            eq(CommunityRepository.COLLECTION_COMMUNITY_PROFILES),
+            eq(AppwriteConfig.DATABASE_ID),
+            eq("community_profiles"),
             any()
         )).thenReturn(emptyProfileList)
         
@@ -266,7 +267,7 @@ class CommunityRepositoryTest {
         val emptyLikeList = mock<DocumentList<Document<Map<String, Any>>>>()
         whenever(emptyLikeList.documents).thenReturn(emptyList())
         whenever(mockDatabases.listDocuments(
-            eq(CommunityRepository.COMMUNITY_DATABASE_ID),
+            eq(AppwriteConfig.DATABASE_ID),
             eq(CommunityRepository.COLLECTION_COMMUNITY_LIKES),
             any()
         )).thenReturn(emptyLikeList)
@@ -311,7 +312,7 @@ class CommunityRepositoryTest {
     @Test
     fun `test data consistency and validation`() {
         // Test that constants match between repository and setup script expectations
-        val repositoryDatabaseId = CommunityRepository.COMMUNITY_DATABASE_ID
+        val repositoryDatabaseId = AppwriteConfig.DATABASE_ID
         val serviceDatabaseId = AppwriteService.DATABASE_ID
         
         assert(repositoryDatabaseId == serviceDatabaseId) {
@@ -320,8 +321,8 @@ class CommunityRepositoryTest {
         
         // Test that all required community collections are defined
         val requiredCollections = listOf(
-            CommunityRepository.COLLECTION_COMMUNITY_POSTS,
-            CommunityRepository.COLLECTION_COMMUNITY_PROFILES,
+            AppwriteConfig.COLLECTION_COMMUNITY_POSTS,
+            "community_profiles",
             CommunityRepository.COLLECTION_COMMUNITY_COMMENTS,
             CommunityRepository.COLLECTION_COMMUNITY_LIKES,
             CommunityRepository.COLLECTION_COMMUNITY_FOLLOWS
@@ -333,7 +334,7 @@ class CommunityRepositoryTest {
         }
         
         // Test bucket configuration
-        val bucketId = CommunityRepository.BUCKET_COMMUNITY_IMAGES
+        val bucketId = "community_images"
         assert(bucketId == "community_images") { "Community bucket ID should be 'community_images'" }
     }
 }

@@ -160,6 +160,10 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("io.mockk:mockk-android:1.13.8")
     
+    // Kotlin Test for assertions
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.22")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.22")
+    
     // Test runner for instrumented tests
     androidTestImplementation("androidx.test:runner:1.5.0")
     androidTestImplementation("androidx.test:rules:1.5.0")

@@ -23,7 +23,7 @@ class AppwriteService private constructor(context: Context) {
         const val ENDPOINT = AppwriteConfig.ENDPOINT
         const val PROJECT_ID = AppwriteConfig.PROJECT_ID
         const val DATABASE_ID = AppwriteConfig.DATABASE_ID
-        const val API_KEY = AppwriteConfig.API_KEY
+        val API_KEY = AppwriteConfig.API_KEY
         
         // Collection IDs
         const val COLLECTION_DOGS = "dogs"

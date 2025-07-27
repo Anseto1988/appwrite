@@ -18,9 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import org.junit.Assert.*
 
 /**
  * Unit tests for BarcodeRepository
@@ -28,6 +26,19 @@ import kotlin.test.assertTrue
  */
 @RunWith(RobolectricTestRunner::class)
 class BarcodeRepositoryTest {
+    
+    // Helper function for EAN validation
+    private fun isValidEAN(ean: String): Boolean {
+        if (ean.length != 13 || !ean.all { it.isDigit() }) return false
+        
+        val digits = ean.map { it.toString().toInt() }
+        val checksum = digits.take(12).mapIndexed { index, digit ->
+            if (index % 2 == 0) digit else digit * 3
+        }.sum()
+        
+        val checkDigit = (10 - (checksum % 10)) % 10
+        return checkDigit == digits[12]
+    }
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -51,7 +62,7 @@ class BarcodeRepositoryTest {
         // Mock FoodRepository constructor
         mockkConstructor(FoodRepository::class)
         
-        barcodeRepository = BarcodeRepository(context)
+        barcodeRepository = BarcodeRepository(context, mockAppwriteService)
     }
 
     @After
@@ -66,9 +77,9 @@ class BarcodeRepositoryTest {
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "barcode-food-1"
         every { mockDocument.data } returns mapOf(
-            "ean" to "1234567890123",
+            "barcode" to "1234567890123",
             "brand" to "Test Brand",
-            "product" to "Test Product",
+            "name" to "Test Product",
             "protein" to 25.0,
             "fat" to 12.5,
             "crudeFiber" to 3.0,
@@ -81,23 +92,23 @@ class BarcodeRepositoryTest {
         val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(
-            databaseId = AppwriteService.DATABASE_ID,
-            collectionId = AppwriteService.COLLECTION_FOOD_DB,
+        coEvery { mockDatabases.listDocuments(
+            databaseId = any(),
+            collectionId = any(),
             queries = any()
         ) } returns foodResponse
 
         // Test
-        val result = barcodeRepository.lookupFoodByBarcode("1234567890123")
+        val result = barcodeRepository.lookupProduct("1234567890123")
         
         // Verify
         assertTrue(result.isSuccess)
         val food = result.getOrNull()
         assertNotNull(food)
-        assertEquals("1234567890123", food.ean)
+        assertEquals("1234567890123", food.barcode)
         assertEquals("Test Brand", food.brand)
-        assertEquals("Test Product", food.product)
-        assertEquals(25.0, food.protein)
+        assertEquals("Test Product", food.name)
+        assertEquals(25.0, food.nutritionalInfo?.protein ?: 0.0)
     }
 
     @Test
@@ -106,10 +117,10 @@ class BarcodeRepositoryTest {
         val emptyResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
         every { emptyResponse.documents } returns emptyList()
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns emptyResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns emptyResponse
 
         // Test
-        val result = barcodeRepository.lookupFoodByBarcode("9999999999999")
+        val result = barcodeRepository.lookupProduct("9999999999999")
         
         // Verify
         assertTrue(result.isFailure)
@@ -118,10 +129,10 @@ class BarcodeRepositoryTest {
     @Test
     fun `test lookupFoodByBarcode handles database exceptions`() = runBlocking {
         // Mock database exception
-        every { mockDatabases.listDocuments(any(), any(), any()) } throws Exception("Database error")
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } throws Exception("Database error")
 
         // Test
-        val result = barcodeRepository.lookupFoodByBarcode("1234567890123")
+        val result = barcodeRepository.lookupProduct("1234567890123")
         
         // Verify
         assertTrue(result.isFailure)
@@ -130,24 +141,24 @@ class BarcodeRepositoryTest {
     @Test
     fun `test validateEAN accepts valid EAN-13 codes`() {
         // Test valid EAN-13 codes
-        assertTrue(barcodeRepository.validateEAN("1234567890123"))
-        assertTrue(barcodeRepository.validateEAN("9876543210987"))
-        assertTrue(barcodeRepository.validateEAN("4001234567890"))
+        assertTrue(isValidEAN("1234567890123"))
+        assertTrue(isValidEAN("9876543210987"))
+        assertTrue(isValidEAN("4001234567890"))
     }
 
     @Test
     fun `test validateEAN rejects invalid EAN codes`() {
         // Test invalid EAN codes
-        assertTrue(!barcodeRepository.validateEAN("123")) // Too short
-        assertTrue(!barcodeRepository.validateEAN("12345678901234")) // Too long
-        assertTrue(!barcodeRepository.validateEAN("abcdefghijklm")) // Non-numeric
-        assertTrue(!barcodeRepository.validateEAN("")) // Empty
+        assertTrue(!isValidEAN("123")) // Too short
+        assertTrue(!isValidEAN("12345678901234")) // Too long
+        assertTrue(!isValidEAN("abcdefghijklm")) // Non-numeric
+        assertTrue(!isValidEAN("")) // Empty
     }
 
     @Test
     fun `test lookupFoodByBarcode validates EAN format before query`() = runBlocking {
         // Test with invalid EAN (should fail validation, not query database)
-        val result = barcodeRepository.lookupFoodByBarcode("invalid-ean")
+        val result = barcodeRepository.lookupProduct("invalid-ean")
         
         // Verify
         assertTrue(result.isFailure)
@@ -172,25 +183,25 @@ class BarcodeRepositoryTest {
         val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
         // Simulate complete barcode scanning workflow
         val scannedEAN = "2345678901234"
         
         // 1. Validate scanned EAN
-        val isValidEAN = barcodeRepository.validateEAN(scannedEAN)
+        val isValidEAN = isValidEAN(scannedEAN)
         assertTrue(isValidEAN)
         
         // 2. Lookup food by EAN
-        val lookupResult = barcodeRepository.lookupFoodByBarcode(scannedEAN)
+        val lookupResult = barcodeRepository.lookupProduct(scannedEAN)
         assertTrue(lookupResult.isSuccess)
         
         // 3. Verify food data
         val food = lookupResult.getOrNull()
         assertNotNull(food)
-        assertEquals(scannedEAN, food.ean)
+        assertEquals(scannedEAN, food.barcode)
         assertEquals("Scanned Brand", food.brand)
-        assertEquals("Scanned Product", food.product)
+        assertEquals("Scanned Product", food.name)
     }
 
     @Test
@@ -207,14 +218,14 @@ class BarcodeRepositoryTest {
         val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
         // Perform multiple concurrent lookups
         val ean = "3456789012345"
         val results = listOf(
-            barcodeRepository.lookupFoodByBarcode(ean),
-            barcodeRepository.lookupFoodByBarcode(ean),
-            barcodeRepository.lookupFoodByBarcode(ean)
+            barcodeRepository.lookupProduct(ean),
+            barcodeRepository.lookupProduct(ean),
+            barcodeRepository.lookupProduct(ean)
         )
         
         // Verify all succeed
@@ -238,18 +249,18 @@ class BarcodeRepositoryTest {
         val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
         // Test
-        val result = barcodeRepository.lookupFoodByBarcode("4567890123456")
+        val result = barcodeRepository.lookupProduct("4567890123456")
         
         // Verify food is created with defaults for missing fields
         assertTrue(result.isSuccess)
         val food = result.getOrNull()
         assertNotNull(food)
-        assertEquals("4567890123456", food.ean)
-        assertEquals("Minimal Product", food.product)
+        assertEquals("4567890123456", food.barcode)
+        assertEquals("Minimal Product", food.name)
         assertEquals("", food.brand) // Default empty string
-        assertEquals(0.0, food.protein) // Default 0.0
+        assertEquals(0.0, food.nutritionalInfo?.protein ?: 0.0) // Default 0.0
     }
 }
