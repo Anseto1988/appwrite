@@ -381,15 +381,3 @@ class CommunityRepository(private val context: Context) : BaseRepository() {
         }
     }
 }
-
-// Data classes für Kommentare
-data class CommunityComment(
-    val id: String,
-    val postId: String,
-    val authorId: String,
-    val authorName: String,
-    val content: String,
-    val timestamp: LocalDateTime,
-    val likes: Int = 0,
-    val isLiked: Boolean = false
-)

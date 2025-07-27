@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.snacktrack.data.model.Dog
 import com.example.snacktrack.data.model.Sex
 import com.example.snacktrack.data.model.ActivityLevel
+import com.example.snacktrack.data.model.DogSize
 import com.example.snacktrack.data.repository.DogRepository
 import com.example.snacktrack.data.service.AppwriteService
 import com.example.snacktrack.ui.viewmodel.DogViewModel
@@ -60,7 +61,7 @@ class DogViewModelTest {
         
         // Replace the constructed repository with our mock
         every { anyConstructed<DogRepository>().getDogs() } returns flowOf(emptyList())
-        coEvery { anyConstructed<DogRepository>().saveDog(any()) } returns Result.success(Unit)
+        coEvery { anyConstructed<DogRepository>().saveDog(any()) } returns Result.success(mockk<Dog>())
         coEvery { anyConstructed<DogRepository>().deleteDog(any()) } returns Result.success(Unit)
         
         dogViewModel = DogViewModel(context)
@@ -93,7 +94,7 @@ class DogViewModelTest {
                 sex = Sex.MALE,
                 birthDate = LocalDate.of(2020, 1, 15),
                 weight = 25.5,
-                activityLevel = ActivityLevel.MEDIUM,
+                activityLevel = ActivityLevel.NORMAL,
                 ownerId = "owner1"
             ),
             Dog(
@@ -112,7 +113,7 @@ class DogViewModelTest {
         
         // Act
         dogViewModel.loadDogs()
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         assertEquals(2, dogViewModel.dogs.value.size)
@@ -130,7 +131,7 @@ class DogViewModelTest {
         dogViewModel.loadDogs()
         
         // Initially loading should be true, then false after completion
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         assertFalse(dogViewModel.isLoading.value) // Should be false after completion
@@ -150,12 +151,12 @@ class DogViewModelTest {
             ownerId = "owner1"
         )
         
-        coEvery { anyConstructed<DogRepository>().saveDog(testDog) } returns Result.success(Unit)
+        coEvery { anyConstructed<DogRepository>().saveDog(testDog) } returns Result.success(testDog)
         every { anyConstructed<DogRepository>().getDogs() } returns flowOf(listOf(testDog))
         
         // Act
         dogViewModel.saveDog(testDog)
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         coVerify { anyConstructed<DogRepository>().saveDog(testDog) }
@@ -167,7 +168,7 @@ class DogViewModelTest {
     fun `test saveDog with null dog sets error message`() = runBlockingTest {
         // Act
         dogViewModel.saveDog(null)
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         assertEquals("Ungültige Hundedaten", dogViewModel.errorMessage.value)
@@ -184,7 +185,7 @@ class DogViewModelTest {
             sex = Sex.MALE,
             birthDate = LocalDate.now(),
             weight = 20.0,
-            activityLevel = ActivityLevel.MEDIUM,
+            activityLevel = ActivityLevel.NORMAL,
             ownerId = "owner1"
         )
         
@@ -193,7 +194,7 @@ class DogViewModelTest {
         
         // Act
         dogViewModel.saveDog(testDog)
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         assertEquals("Database error", dogViewModel.errorMessage.value)
@@ -218,8 +219,8 @@ class DogViewModelTest {
         every { anyConstructed<DogRepository>().getDogs() } returns flowOf(emptyList())
         
         // Act
-        dogViewModel.deleteDog(testDog)
-        testDispatcher.advanceUntilIdle()
+        dogViewModel.deleteDog(testDog.id)
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         coVerify { anyConstructed<DogRepository>().deleteDog(testDog.id) }
@@ -231,10 +232,10 @@ class DogViewModelTest {
     fun `test deleteDog with null dog sets error message`() = runBlockingTest {
         // Act
         dogViewModel.deleteDog(null)
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
-        assertEquals("Ungültige Hundedaten", dogViewModel.errorMessage.value)
+        assertEquals("Ungültige Hunde-ID", dogViewModel.errorMessage.value)
         coVerify(exactly = 0) { anyConstructed<DogRepository>().deleteDog(any()) }
     }
 
@@ -248,7 +249,7 @@ class DogViewModelTest {
             sex = Sex.MALE,
             birthDate = LocalDate.now(),
             weight = 25.0,
-            activityLevel = ActivityLevel.MEDIUM,
+            activityLevel = ActivityLevel.NORMAL,
             ownerId = "owner1"
         )
         
@@ -256,8 +257,8 @@ class DogViewModelTest {
         coEvery { anyConstructed<DogRepository>().deleteDog(testDog.id) } returns Result.failure(errorException)
         
         // Act
-        dogViewModel.deleteDog(testDog)
-        testDispatcher.advanceUntilIdle()
+        dogViewModel.deleteDog(testDog.id)
+        testDispatcher.scheduler.runCurrent()
         
         // Assert
         assertEquals("Delete failed", dogViewModel.errorMessage.value)
@@ -265,12 +266,12 @@ class DogViewModelTest {
     }
 
     @Test
-    fun `test clearError clears error message`() {
+    fun `test clearErrorMessage clears error message`() {
         // Arrange - set an error first
         dogViewModel.saveDog(null)
         
         // Act
-        dogViewModel.clearError()
+        dogViewModel.clearErrorMessage()
         
         // Assert
         assertNull(dogViewModel.errorMessage.value)
@@ -287,7 +288,7 @@ class DogViewModelTest {
                 sex = Sex.MALE,
                 birthDate = LocalDate.now(),
                 weight = 20.0,
-                activityLevel = ActivityLevel.MEDIUM,
+                activityLevel = ActivityLevel.NORMAL,
                 ownerId = "owner1"
             )
         )
@@ -299,7 +300,7 @@ class DogViewModelTest {
         dogViewModel.loadDogs()
         dogViewModel.loadDogs()
         
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert - should still work correctly
         assertEquals(1, dogViewModel.dogs.value.size)
@@ -325,12 +326,12 @@ class DogViewModelTest {
             ownerId = "owner1"
         )
         
-        coEvery { anyConstructed<DogRepository>().saveDog(testDog) } returns Result.success(Unit)
+        coEvery { anyConstructed<DogRepository>().saveDog(testDog) } returns Result.success(testDog)
         every { anyConstructed<DogRepository>().getDogs() } returns flowOf(listOf(testDog))
         
         // Act
         dogViewModel.saveDog(testDog)
-        testDispatcher.advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent()
         
         // Assert - error should be cleared on successful operation
         // (This depends on implementation - the test shows the expected behavior)

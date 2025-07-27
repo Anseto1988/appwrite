@@ -63,7 +63,7 @@ class FoodRepositoryTest {
         // Mock food documents
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "food-1"
-        every { mockDocument.data } returns mapOf(
+        every { mockDocument.data } returns mapOf<String, Any>(
             "ean" to "1234567890123",
             "brand" to "Premium Dog Food",
             "product" to "Adult Chicken & Rice",
@@ -76,10 +76,10 @@ class FoodRepositoryTest {
             "imageUrl" to "https://example.com/food.jpg"
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_FOOD_DB,
             queries = any()
@@ -108,10 +108,10 @@ class FoodRepositoryTest {
     @Test
     fun `test searchFoods returns empty list when no results found`() = runBlocking {
         // Mock empty response
-        val emptyResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val emptyResponse = mockk<DocumentList<Map<String, Any>>>()
         every { emptyResponse.documents } returns emptyList()
         
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_FOOD_DB,
             queries = any()
@@ -127,7 +127,7 @@ class FoodRepositoryTest {
     @Test
     fun `test searchFoods handles database exceptions gracefully`() = runBlocking {
         // Mock database exception
-        every { mockDatabases.listDocuments(any(), any(), any()) } throws Exception("Database error")
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } throws Exception("Database error")
 
         // Test
         val result = foodRepository.searchFoods("chicken").first()
@@ -141,7 +141,7 @@ class FoodRepositoryTest {
         // Mock food document
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "specific-food-id"
-        every { mockDocument.data } returns mapOf(
+        val foodData = mutableMapOf<String, Any>(
             "ean" to "9876543210987",
             "brand" to "Healthy Pet",
             "product" to "Salmon & Sweet Potato",
@@ -150,11 +150,12 @@ class FoodRepositoryTest {
             "crudeFiber" to 4.2,
             "rawAsh" to 6.5,
             "moisture" to 12.0,
-            "additives" to "{}",
-            "imageUrl" to null
+            "additives" to "{}"
         )
+        foodData["imageUrl"] = null as Any? ?: "null"
+        every { mockDocument.data } returns foodData
         
-        every { mockDatabases.getDocument(
+        coEvery { mockDatabases.getDocument(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_FOOD_DB,
             documentId = "specific-food-id"
@@ -172,14 +173,14 @@ class FoodRepositoryTest {
         assertEquals("Healthy Pet", food.brand)
         assertEquals("Salmon & Sweet Potato", food.product)
         assertEquals(26.0, food.protein)
-        assertEquals(null, food.imageUrl)
+        assertEquals("null", food.imageUrl)
         assertTrue(food.additives.isEmpty())
     }
 
     @Test
     fun `test getFoodById returns failure with invalid ID`() = runBlocking {
         // Mock database exception for invalid ID
-        every { mockDatabases.getDocument(any(), any(), any()) } throws Exception("Document not found")
+        coEvery { mockDatabases.getDocument(any(), any(), any()) } throws Exception("Document not found")
 
         // Test
         val result = foodRepository.getFoodById("invalid-id")
@@ -193,16 +194,16 @@ class FoodRepositoryTest {
         // Mock document with minimal data
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "minimal-food"
-        every { mockDocument.data } returns mapOf(
+        every { mockDocument.data } returns mapOf<String, Any>(
             "product" to "Basic Food",
             "brand" to "Generic"
             // Missing most nutrition data
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
         // Test
         val result = foodRepository.searchFoods("basic").first()
@@ -227,17 +228,17 @@ class FoodRepositoryTest {
         // Mock document with invalid JSON in additives
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "malformed-additives"
-        every { mockDocument.data } returns mapOf(
+        every { mockDocument.data } returns mapOf<String, Any>(
             "product" to "Test Food",
             "brand" to "Test Brand",
             "additives" to "invalid-json-string",
             "protein" to 25.0
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
         // Test
         val result = foodRepository.searchFoods("test").first()
@@ -253,11 +254,11 @@ class FoodRepositoryTest {
     @Test
     fun `test search query construction includes proper parameters`() = runBlocking {
         // Mock empty response to focus on query verification
-        val emptyResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val emptyResponse = mockk<DocumentList<Map<String, Any>>>()
         every { emptyResponse.documents } returns emptyList()
         
         val querySlot = slot<List<String>>()
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_FOOD_DB,
             queries = capture(querySlot)
@@ -267,7 +268,7 @@ class FoodRepositoryTest {
         foodRepository.searchFoods("chicken rice").first()
         
         // Verify query construction
-        verify { mockDatabases.listDocuments(
+        coVerify { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_FOOD_DB,
             queries = any()
@@ -282,19 +283,20 @@ class FoodRepositoryTest {
         // Mock document with various numeric types
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "numeric-test"
-        every { mockDocument.data } returns mapOf(
+        val foodData = mutableMapOf<String, Any>(
             "product" to "Numeric Test Food",
             "protein" to 25, // Integer
             "fat" to 15.5f, // Float
             "crudeFiber" to 3.2, // Double
-            "rawAsh" to "7.8", // String (should be converted)
-            "moisture" to null // Null value
+            "rawAsh" to "7.8" // String (should be converted)
         )
+        foodData["moisture"] = null as Any? ?: 0.0
+        every { mockDocument.data } returns foodData
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>()
         every { foodResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
         // Test
         val result = foodRepository.searchFoods("numeric").first()

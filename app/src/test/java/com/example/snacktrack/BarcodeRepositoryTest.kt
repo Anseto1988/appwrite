@@ -89,8 +89,8 @@ class BarcodeRepositoryTest {
             "imageUrl" to "https://example.com/product.jpg"
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
-        every { foodResponse.documents } returns listOf(mockDocument)
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>(relaxed = true)
+        every { foodResponse.documents } returns listOf(mockDocument as Document<Map<String, Any>>)
         
         coEvery { mockDatabases.listDocuments(
             databaseId = any(),
@@ -103,19 +103,19 @@ class BarcodeRepositoryTest {
         
         // Verify
         assertTrue(result.isSuccess)
-        val food = result.getOrNull()
-        assertNotNull(food)
-        assertEquals("1234567890123", food.barcode)
-        assertEquals("Test Brand", food.brand)
-        assertEquals("Test Product", food.name)
-        assertEquals(25.0, food.nutritionalInfo?.protein ?: 0.0)
+        val product = result.getOrNull()
+        assertNotNull(product)
+        assertEquals("1234567890123", product?.barcode)
+        assertEquals("Test Brand", product?.brand)
+        assertEquals("Test Product", product?.name)
+        assertEquals(25.0, product?.nutritionalInfo?.protein ?: 0.0)
     }
 
     @Test
     fun `test lookupFoodByBarcode returns failure for non-existent EAN`() = runBlocking {
         // Mock empty response
-        val emptyResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
-        every { emptyResponse.documents } returns emptyList()
+        val emptyResponse = mockk<DocumentList<Map<String, Any>>>(relaxed = true)
+        every { emptyResponse.documents } returns emptyList<Document<Map<String, Any>>>()
         
         coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns emptyResponse
 
@@ -164,7 +164,7 @@ class BarcodeRepositoryTest {
         assertTrue(result.isFailure)
         
         // Verify database was not queried for invalid EAN
-        verify(exactly = 0) { mockDatabases.listDocuments(any(), any(), any()) }
+        coVerify(exactly = 0) { mockDatabases.listDocuments(any(), any(), any()) }
     }
 
     @Test
@@ -173,15 +173,15 @@ class BarcodeRepositoryTest {
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "scanned-food"
         every { mockDocument.data } returns mapOf(
-            "ean" to "2345678901234",
+            "barcode" to "2345678901234",
             "brand" to "Scanned Brand",
-            "product" to "Scanned Product",
+            "name" to "Scanned Product",
             "protein" to 28.0,
             "fat" to 15.0
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
-        every { foodResponse.documents } returns listOf(mockDocument)
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>(relaxed = true)
+        every { foodResponse.documents } returns listOf(mockDocument as Document<Map<String, Any>>)
         
         coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
@@ -199,9 +199,9 @@ class BarcodeRepositoryTest {
         // 3. Verify food data
         val food = lookupResult.getOrNull()
         assertNotNull(food)
-        assertEquals(scannedEAN, food.barcode)
-        assertEquals("Scanned Brand", food.brand)
-        assertEquals("Scanned Product", food.name)
+        assertEquals(scannedEAN, food?.barcode)
+        assertEquals("Scanned Brand", food?.brand)
+        assertEquals("Scanned Product", food?.name)
     }
 
     @Test
@@ -210,13 +210,13 @@ class BarcodeRepositoryTest {
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "concurrent-food"
         every { mockDocument.data } returns mapOf(
-            "ean" to "3456789012345",
+            "barcode" to "3456789012345",
             "brand" to "Concurrent Brand",
-            "product" to "Concurrent Product"
+            "name" to "Concurrent Product"
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
-        every { foodResponse.documents } returns listOf(mockDocument)
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>(relaxed = true)
+        every { foodResponse.documents } returns listOf(mockDocument as Document<Map<String, Any>>)
         
         coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
@@ -231,7 +231,7 @@ class BarcodeRepositoryTest {
         // Verify all succeed
         results.forEach { result ->
             assertTrue(result.isSuccess)
-            assertEquals(ean, result.getOrNull()?.ean)
+            assertEquals(ean, result.getOrNull()?.barcode)
         }
     }
 
@@ -241,13 +241,13 @@ class BarcodeRepositoryTest {
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "minimal-barcode-food"
         every { mockDocument.data } returns mapOf(
-            "ean" to "4567890123456",
-            "product" to "Minimal Product"
+            "barcode" to "4567890123456",
+            "name" to "Minimal Product"
             // Missing brand, nutrition data, etc.
         )
         
-        val foodResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
-        every { foodResponse.documents } returns listOf(mockDocument)
+        val foodResponse = mockk<DocumentList<Map<String, Any>>>(relaxed = true)
+        every { foodResponse.documents } returns listOf(mockDocument as Document<Map<String, Any>>)
         
         coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns foodResponse
 
@@ -258,9 +258,9 @@ class BarcodeRepositoryTest {
         assertTrue(result.isSuccess)
         val food = result.getOrNull()
         assertNotNull(food)
-        assertEquals("4567890123456", food.barcode)
-        assertEquals("Minimal Product", food.name)
-        assertEquals("", food.brand) // Default empty string
-        assertEquals(0.0, food.nutritionalInfo?.protein ?: 0.0) // Default 0.0
+        assertEquals("4567890123456", food?.barcode)
+        assertEquals("Minimal Product", food?.name)
+        assertEquals("", food?.brand ?: "") // Default empty string
+        assertEquals(0.0, food?.nutritionalInfo?.protein ?: 0.0) // Default 0.0
     }
 }

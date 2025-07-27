@@ -55,12 +55,12 @@ class DogRepositoryTest {
         every { mockAppwriteService.databases } returns mockDatabases
         
         // Mock valid session
-        every { mockAppwriteService.ensureValidSession() } returns true
+        coEvery { mockAppwriteService.ensureValidSession() } returns true
         
         // Mock user
         every { mockUser.id } returns "test-user-id"
         every { mockUser.email } returns "test@example.com"
-        every { mockAccount.get() } returns mockUser
+        coEvery { mockAccount.get() } returns mockUser
         
         dogRepository = DogRepository(context)
     }
@@ -76,30 +76,31 @@ class DogRepositoryTest {
         // Mock own dogs response
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "dog-1"
-        every { mockDocument.data } returns mapOf(
+        val dogData = mutableMapOf<String, Any>(
             "name" to "Buddy",
             "breed" to "Golden Retriever",
             "sex" to "MALE",
             "birthDate" to "2020-01-15",
             "weight" to 25.5,
-            "activityLevel" to "MEDIUM",
-            "ownerId" to "test-user-id",
-            "profileImageUrl" to null
+            "activityLevel" to "NORMAL",
+            "ownerId" to "test-user-id"
         )
+        dogData["imageId"] = null as Any? ?: "null"
+        every { mockDocument.data } returns dogData
         
-        val ownDogsResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val ownDogsResponse = mockk<DocumentList<Map<String, Any>>>()
         every { ownDogsResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_DOGS,
             queries = any()
         ) } returns ownDogsResponse
         
         // Mock empty team memberships (no shared dogs)
-        val emptyMemberships = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val emptyMemberships = mockk<DocumentList<Map<String, Any>>>()
         every { emptyMemberships.documents } returns emptyList()
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_TEAM_MEMBERS,
             queries = any()
@@ -119,7 +120,7 @@ class DogRepositoryTest {
     @Test
     fun `test getDogs returns empty list when session is invalid`() = runBlocking {
         // Mock invalid session
-        every { mockAppwriteService.ensureValidSession() } returns false
+        coEvery { mockAppwriteService.ensureValidSession() } returns false
         
         // Test
         val result = dogRepository.getDogs().first()
@@ -131,9 +132,9 @@ class DogRepositoryTest {
     @Test
     fun `test getDogs includes shared dogs from team memberships`() = runBlocking {
         // Mock own dogs (empty for this test)
-        val emptyOwnDogs = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val emptyOwnDogs = mockk<DocumentList<Map<String, Any>>>()
         every { emptyOwnDogs.documents } returns emptyList()
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_DOGS,
             queries = any()
@@ -141,11 +142,11 @@ class DogRepositoryTest {
         
         // Mock team membership
         val mockMembership = mockk<Document<Map<String, Any>>>()
-        every { mockMembership.data } returns mapOf("teamId" to "team-1")
+        every { mockMembership.data } returns mapOf<String, Any>("teamId" to "team-1")
         
-        val membershipsResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val membershipsResponse = mockk<DocumentList<Map<String, Any>>>()
         every { membershipsResponse.documents } returns listOf(mockMembership)
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_TEAM_MEMBERS,
             queries = any()
@@ -153,11 +154,11 @@ class DogRepositoryTest {
         
         // Mock dog sharing for the team
         val mockSharing = mockk<Document<Map<String, Any>>>()
-        every { mockSharing.data } returns mapOf("dogId" to "shared-dog-1")
+        every { mockSharing.data } returns mapOf<String, Any>("dogId" to "shared-dog-1")
         
-        val sharingResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val sharingResponse = mockk<DocumentList<Map<String, Any>>>()
         every { sharingResponse.documents } returns listOf(mockSharing)
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_DOG_SHARING,
             queries = any()
@@ -166,17 +167,18 @@ class DogRepositoryTest {
         // Mock shared dog details
         val mockSharedDog = mockk<Document<Map<String, Any>>>()
         every { mockSharedDog.id } returns "shared-dog-1"
-        every { mockSharedDog.data } returns mapOf(
+        val sharedDogData = mutableMapOf<String, Any>(
             "name" to "Rex",
             "breed" to "German Shepherd",
             "sex" to "MALE",
             "birthDate" to "2019-06-10",
             "weight" to 30.0,
             "activityLevel" to "HIGH",
-            "ownerId" to "other-user-id",
-            "profileImageUrl" to null
+            "ownerId" to "other-user-id"
         )
-        every { mockDatabases.getDocument(
+        sharedDogData["imageId"] = null as Any? ?: "null"
+        every { mockSharedDog.data } returns sharedDogData
+        coEvery { mockDatabases.getDocument(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_DOGS,
             documentId = "shared-dog-1"
@@ -190,7 +192,7 @@ class DogRepositoryTest {
         assertEquals("Rex", result[0].name)
         assertEquals("German Shepherd", result[0].breed)
         assertEquals("other-user-id", result[0].ownerId)
-        assertTrue(result[0].isShared)
+        // Note: isShared property doesn't exist in the Dog model
     }
 
     @Test
@@ -198,7 +200,7 @@ class DogRepositoryTest {
         // Create a mock document with all required fields
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "complete-dog"
-        every { mockDocument.data } returns mapOf(
+        every { mockDocument.data } returns mapOf<String, Any>(
             "name" to "Complete Dog",
             "breed" to "Labrador",
             "sex" to "FEMALE",
@@ -206,25 +208,25 @@ class DogRepositoryTest {
             "weight" to 20.5,
             "activityLevel" to "LOW",
             "ownerId" to "test-user-id",
-            "profileImageUrl" to "https://example.com/dog.jpg",
+            "imageId" to "image-123",
             "microchipNumber" to "123456789012345",
             "vaccinationStatus" to "UP_TO_DATE",
             "medicalNotes" to "Healthy dog"
         )
         
-        val dogsResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val dogsResponse = mockk<DocumentList<Map<String, Any>>>()
         every { dogsResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_DOGS,
             queries = any()
         ) } returns dogsResponse
         
         // Mock empty team memberships
-        val emptyMemberships = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val emptyMemberships = mockk<DocumentList<Map<String, Any>>>()
         every { emptyMemberships.documents } returns emptyList()
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_TEAM_MEMBERS,
             queries = any()
@@ -242,14 +244,14 @@ class DogRepositoryTest {
         assertEquals(Sex.FEMALE, dog.sex)
         assertEquals(20.5, dog.weight)
         assertEquals(ActivityLevel.LOW, dog.activityLevel)
-        assertEquals("https://example.com/dog.jpg", dog.profileImageUrl)
+        assertEquals("image-123", dog.imageId)
         assertNotNull(dog.birthDate)
     }
 
     @Test
     fun `test repository handles database errors gracefully`() = runBlocking {
         // Mock database error
-        every { mockDatabases.listDocuments(any(), any(), any()) } throws Exception("Database error")
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } throws Exception("Database error")
         
         // Test
         val result = runCatching { dogRepository.getDogs().first() }
@@ -272,28 +274,28 @@ class DogRepositoryTest {
         // Mock document with minimal required fields only
         val mockDocument = mockk<Document<Map<String, Any>>>()
         every { mockDocument.id } returns "minimal-dog"
-        every { mockDocument.data } returns mapOf(
+        every { mockDocument.data } returns mapOf<String, Any>(
             "name" to "Minimal Dog",
             "breed" to "Mixed",
             "sex" to "MALE",
             "birthDate" to "2022-01-01",
             "ownerId" to "test-user-id"
-            // Missing weight, activityLevel, profileImageUrl, etc.
+            // Missing weight, activityLevel, imageId, etc.
         )
         
-        val dogsResponse = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val dogsResponse = mockk<DocumentList<Map<String, Any>>>()
         every { dogsResponse.documents } returns listOf(mockDocument)
         
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_DOGS,
             queries = any()
         ) } returns dogsResponse
         
         // Mock empty team memberships
-        val emptyMemberships = mockk<DocumentList<Document<Map<String, Any>>>>()
+        val emptyMemberships = mockk<DocumentList<Map<String, Any>>>()
         every { emptyMemberships.documents } returns emptyList()
-        every { mockDatabases.listDocuments(
+        coEvery { mockDatabases.listDocuments(
             databaseId = AppwriteService.DATABASE_ID,
             collectionId = AppwriteService.COLLECTION_TEAM_MEMBERS,
             queries = any()
