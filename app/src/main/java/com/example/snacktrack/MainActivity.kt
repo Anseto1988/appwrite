@@ -11,7 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.snacktrack.ui.navigation.SnackTrackNavGraph
+import com.example.snacktrack.ui.navigation.Screen
+import com.example.snacktrack.ui.components.BottomNavigationBar
 import com.example.snacktrack.ui.theme.SnacktrackTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,14 +24,34 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+            val navBackStackEntry = navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry.value?.destination?.route
+            
+            // Zeige Bottom Navigation nur auf Hauptseiten
+            val showBottomBar = when (currentRoute) {
+                "login", "register", "auth" -> false
+                else -> currentRoute != null && (
+                    currentRoute == Screen.Home.route ||
+                    currentRoute == Screen.DogList.route ||
+                    currentRoute == Screen.Community.route ||
+                    currentRoute == Screen.Settings.route ||
+                    currentRoute.startsWith("main/")
+                )
+            }
 
             SnacktrackTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        if (showBottomBar) {
+                            BottomNavigationBar(navController = navController)
+                        }
+                    }
                 ) { innerPadding ->
                     SnackTrackNavGraph(
                         navController = navController,
-                        startDestination = "auth"
+                        startDestination = "auth",
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }

@@ -13,8 +13,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.snacktrack.ui.components.CommonTopAppBar
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import com.example.snacktrack.ui.navigation.Screen
+import com.example.snacktrack.ui.components.CommonTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +29,16 @@ fun SettingsScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Einstellungen",
-                onBackClick = { navController.navigateUp() }
+                showBackButton = true,
+                onBackClick = { navController.navigateUp() },
+                onAdminClick = { },
+                onAccountClick = { navController.navigate(Screen.AccountManagement.route) },
+                onLogoutClick = { 
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onCommunityClick = { navController.navigate(Screen.Community.route) }
             )
         }
     ) { paddingValues ->

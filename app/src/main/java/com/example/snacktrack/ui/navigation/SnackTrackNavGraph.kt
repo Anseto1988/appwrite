@@ -85,14 +85,16 @@ sealed class Screen(val route: String) {
 @Composable
 fun SnackTrackNavGraph(
     navController: NavHostController,
-    startDestination: String = "auth"
+    startDestination: String = "auth",
+    modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier
 ) {
     val context = LocalContext.current
     val appwriteService = remember { AppwriteService.getInstance(context) }
     
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         // Auth Navigation
         navigation(
