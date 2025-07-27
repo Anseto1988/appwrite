@@ -51,3 +51,27 @@ claude-flow
 claude-flow.bat
 claude-flow.ps1
 hive-mind-prompt-*.txt
+
+# Environment and API keys
+.env
+*.env
+apikeys.xml
+secrets.properties
+**/apikeys.xml
+**/secrets.json
+
+# Node modules (should not be in Android project)
+node_modules/
+
+# Compiled output
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+logs/
+temp/

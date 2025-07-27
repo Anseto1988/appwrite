@@ -1,0 +1,629 @@
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 1 stopped Daemons could not be reused, use --status for details
+Reusing configuration cache.
+> Task :app:preBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:buildKotlinToolingMetadata
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugJacocoPropertiesFile UP-TO-DATE
+> Task :app:l8DexDesugarLibDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:generateReleaseBuildConfig FROM-CACHE
+> Task :app:generateReleaseResources FROM-CACHE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:packageReleaseResources FROM-CACHE
+> Task :app:parseReleaseLocalResources FROM-CACHE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:extractDeepLinksRelease FROM-CACHE
+> Task :app:javaPreCompileRelease FROM-CACHE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processReleaseMainManifest FROM-CACHE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:processReleaseManifest FROM-CACHE
+> Task :app:processReleaseManifestForPackage FROM-CACHE
+> Task :app:extractProguardFiles
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:mergeReleaseAssets
+> Task :app:mergeReleaseResources FROM-CACHE
+> Task :app:compressReleaseAssets FROM-CACHE
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:writeReleaseAppMetadata
+> Task :app:validateSigningRelease
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues FROM-CACHE
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileReleaseUnitTest FROM-CACHE
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:checkReleaseAarMetadata
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:expandReleaseL8ArtProfileWildcards FROM-CACHE
+> Task :app:processReleaseResources FROM-CACHE
+> Task :app:convertLinkedResourcesToProtoRelease FROM-CACHE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs
+> Task :app:collectReleaseDependencies
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libbarhopper_v3.so, libimage_processing_util_jni.so.
+
+> Task :app:extractReleaseNativeSymbolTables FROM-CACHE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:sdkReleaseDependencyData
+> Task :app:packageDebugUnitTestForUnitTest
+> Task :app:packageReleaseUnitTestForUnitTest
+> Task :app:jacocoDebug UP-TO-DATE
+> Task :app:dexBuilderDebug UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:mergeProjectDexDebug UP-TO-DATE
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:generateReleaseUnitTestConfig
+> Task :app:generateDebugUnitTestConfig
+> Task :app:packageDebug UP-TO-DATE
+> Task :app:assembleDebug UP-TO-DATE
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:generateDebugLintReportModel
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:generateDebugUnitTestLintModel
+
+> Task :app:compileDebugUnitTestKotlin
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:21:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:22:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:23:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:54:47 No value passed for parameter 'appwriteService'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:82:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:84:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:88:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:91:40 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:94:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:96:9 Unresolved reference 'assertNotNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:97:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:97:44 Unresolved reference 'ean'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:98:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:98:41 Unresolved reference 'brand'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:99:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:99:43 Unresolved reference 'product'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:100:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:100:33 Unresolved reference 'protein'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:109:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:109:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:112:40 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:115:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:121:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:124:40 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:127:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:133:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:133:38 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:134:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:134:38 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:135:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:135:38 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:141:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:141:39 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:142:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:142:39 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:143:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:143:39 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:144:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:144:39 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:150:40 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:153:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:156:45 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:173:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:175:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:175:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:181:44 Unresolved reference 'validateEAN'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:182:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:185:46 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:186:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:190:9 Unresolved reference 'assertNotNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:191:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:191:39 Unresolved reference 'ean'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:192:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:192:44 Unresolved reference 'brand'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:193:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:193:46 Unresolved reference 'product'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:208:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:210:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:210:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:215:13 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:215:31 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:216:31 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:217:31 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:221:17 Not enough information to infer type argument for 'T'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:221:27 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:222:13 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:222:31 Unresolved reference 'isSuccess'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:223:13 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:223:38 None of the following candidates is applicable:
+fun <T> Array<out T>.getOrNull(index: Int): T?
+fun BooleanArray.getOrNull(index: Int): Boolean?
+fun ByteArray.getOrNull(index: Int): Byte?
+fun CharArray.getOrNull(index: Int): Char?
+fun DoubleArray.getOrNull(index: Int): Double?
+fun FloatArray.getOrNull(index: Int): Float?
+fun IntArray.getOrNull(index: Int): Int?
+fun LongArray.getOrNull(index: Int): Long?
+fun ShortArray.getOrNull(index: Int): Short?
+fun <T> List<T>.getOrNull(index: Int): T?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun UByteArray.getOrNull(index: Int): UByte?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun UIntArray.getOrNull(index: Int): UInt?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun ULongArray.getOrNull(index: Int): ULong?
+@SinceKotlin(...) @ExperimentalUnsignedTypes() fun UShortArray.getOrNull(index: Int): UShort?
+fun CharSequence.getOrNull(index: Int): Char?
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:223:51 Unresolved reference 'ean'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:239:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:241:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:241:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:244:40 Unresolved reference 'lookupFoodByBarcode'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:247:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:249:9 Unresolved reference 'assertNotNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:250:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:250:44 Unresolved reference 'ean'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:251:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:251:46 Unresolved reference 'product'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:252:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:252:31 Unresolved reference 'brand'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:253:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/BarcodeRepositoryTest.kt:253:32 Unresolved reference 'protein'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:67:36 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:68:83 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:84:13 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:84:33 Unresolved reference 'COLLECTION_COMMUNITY_POSTS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:85:33 Unresolved reference 'COLLECTION_COMMUNITY_PROFILES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:86:33 Unresolved reference 'COLLECTION_COMMUNITY_COMMENTS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:87:33 Unresolved reference 'COLLECTION_COMMUNITY_LIKES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:88:33 Unresolved reference 'COLLECTION_COMMUNITY_FOLLOWS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:100:36 Unresolved reference 'BUCKET_COMMUNITY_IMAGES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:101:90 Unresolved reference 'BUCKET_COMMUNITY_IMAGES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:116:79 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:132:48 Argument type mismatch: actual type is 'kotlin.collections.Map<kotlin.String, it(kotlin.Comparable<*>? & java.io.Serializable?)>', but 'kotlin.collections.Map<kotlin.String, kotlin.Any>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:136:42 Unresolved reference 'createOrUpdateProfile'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:144:25 Unresolved reference 'displayName'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:145:25 Unresolved reference 'bio'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:165:52 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:167:36 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:168:36 Unresolved reference 'COLLECTION_COMMUNITY_PROFILES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:170:23 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:195:36 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:196:36 Unresolved reference 'COLLECTION_COMMUNITY_POSTS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:198:23 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:203:24 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.PostType', but 'kotlin.String' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:204:13 No parameter with name 'hashtags' found.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:204:13 No value passed for parameter 'title'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:204:13 No value passed for parameter 'category'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:232:49 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:234:36 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:235:36 Unresolved reference 'COLLECTION_COMMUNITY_POSTS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:237:23 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:243:36 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:244:36 Unresolved reference 'COLLECTION_COMMUNITY_PROFILES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:246:23 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:249:42 Unresolved reference 'refreshFeed'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:254:23 Overload resolution ambiguity between candidates:
+@InlineOnly() fun <T> Array<out T>.isNotEmpty(): Boolean
+@InlineOnly() fun BooleanArray.isNotEmpty(): Boolean
+@InlineOnly() fun ByteArray.isNotEmpty(): Boolean
+@InlineOnly() fun CharArray.isNotEmpty(): Boolean
+@InlineOnly() fun DoubleArray.isNotEmpty(): Boolean
+@InlineOnly() fun FloatArray.isNotEmpty(): Boolean
+@InlineOnly() fun IntArray.isNotEmpty(): Boolean
+@InlineOnly() fun LongArray.isNotEmpty(): Boolean
+@InlineOnly() fun ShortArray.isNotEmpty(): Boolean
+@InlineOnly() fun <T> Collection<T>.isNotEmpty(): Boolean
+@InlineOnly() fun <K, V> Map<out K, V>.isNotEmpty(): Boolean
+@InlineOnly() fun CharSequence.isNotEmpty(): Boolean
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:255:23 Overload resolution ambiguity between candidates:
+fun <T> Array<out T>.first(): T
+fun BooleanArray.first(): Boolean
+fun ByteArray.first(): Byte
+fun CharArray.first(): Char
+fun DoubleArray.first(): Double
+fun FloatArray.first(): Float
+fun IntArray.first(): Int
+fun LongArray.first(): Long
+fun ShortArray.first(): Short
+fun <T> Iterable<T>.first(): T
+fun <T> List<T>.first(): T
+@SinceKotlin(...) @ExperimentalUnsignedTypes() @InlineOnly() fun UByteArray.first(): UByte
+@SinceKotlin(...) @ExperimentalUnsignedTypes() @InlineOnly() fun UIntArray.first(): UInt
+@SinceKotlin(...) @ExperimentalUnsignedTypes() @InlineOnly() fun ULongArray.first(): ULong
+@SinceKotlin(...) @ExperimentalUnsignedTypes() @InlineOnly() fun UShortArray.first(): UShort
+@SinceKotlin(...) fun CharProgression.first(): Char
+@SinceKotlin(...) fun IntProgression.first(): Int
+@SinceKotlin(...) fun LongProgression.first(): Long
+@SinceKotlin(...) fun UIntProgression.first(): UInt
+@SinceKotlin(...) fun ULongProgression.first(): ULong
+fun <T> Sequence<T>.first(): T
+fun CharSequence.first(): Char
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:255:32 Unresolved reference 'content'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:269:36 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:270:36 Unresolved reference 'COLLECTION_COMMUNITY_LIKES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:272:23 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>!' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:286:42 Unresolved reference 'toggleLike'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:299:49 Unresolved reference 'createOrUpdateProfile'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:303:73 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.PostType', but 'kotlin.String' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:303:73 No value passed for parameter 'category'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:307:46 Unresolved reference 'refreshFeed'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:314:56 Unresolved reference 'COMMUNITY_DATABASE_ID'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:323:13 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:323:33 Unresolved reference 'COLLECTION_COMMUNITY_POSTS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:324:33 Unresolved reference 'COLLECTION_COMMUNITY_PROFILES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:325:33 Unresolved reference 'COLLECTION_COMMUNITY_COMMENTS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:326:33 Unresolved reference 'COLLECTION_COMMUNITY_LIKES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:327:33 Unresolved reference 'COLLECTION_COMMUNITY_FOLLOWS'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:330:29 Not enough information to infer type argument for 'T'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:330:39 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/CommunityRepositoryTest.kt:336:44 Unresolved reference 'BUCKET_COMMUNITY_IMAGES'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:25:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:26:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:27:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:58:37 Suspend function 'suspend fun ensureValidSession(): Boolean' should be called only from a coroutine or another suspend function.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:63:29 Suspend function 'suspend fun get(): User<Map<String, Any>>' should be called only from a coroutine or another suspend function.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:79:45 Argument type mismatch: actual type is 'kotlin.collections.Map<K, V>', but 'kotlin.collections.Map<kotlin.String, kotlin.Any>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:91:53 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:93:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:97:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:102:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:106:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:112:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:113:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:114:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:115:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:116:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:122:37 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:128:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:136:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:140:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:147:57 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:148:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:152:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:159:53 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:160:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:164:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:169:46 Argument type mismatch: actual type is 'kotlin.collections.Map<K, V>', but 'kotlin.collections.Map<kotlin.String, kotlin.Any>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:179:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:189:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:190:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:191:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:192:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:193:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:193:30 Unresolved reference 'isShared'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:216:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:218:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:222:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:227:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:231:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:237:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:239:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:240:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:241:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:242:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:243:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:244:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:245:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:245:57 Unresolved reference 'profileImageUrl'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:246:9 Unresolved reference 'assertNotNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:252:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:258:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:267:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:285:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:287:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:291:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:296:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:300:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:306:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:308:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:309:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogRepositoryTest.kt:310:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:27:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:28:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:29:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:30:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:63:76 Argument type mismatch: actual type is 'kotlin.Result<kotlin.Unit>', but 'kotlin.Result<com.example.snacktrack.data.model.Dog>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:80:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:81:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:82:9 Unresolved reference 'assertNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:96:47 Unresolved reference 'MEDIUM'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:115:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:118:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:119:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:120:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:121:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:133:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:136:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:153:78 Argument type mismatch: actual type is 'kotlin.Result<kotlin.Unit>', but 'kotlin.Result<com.example.snacktrack.data.model.Dog>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:158:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:162:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:163:9 Unresolved reference 'assertNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:170:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:173:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:187:43 Unresolved reference 'MEDIUM'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:196:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:199:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:200:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:221:32 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.Dog', but 'kotlin.String?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:222:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:226:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:227:9 Unresolved reference 'assertNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:234:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:237:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:251:43 Unresolved reference 'MEDIUM'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:259:32 Argument type mismatch: actual type is 'com.example.snacktrack.data.model.Dog', but 'kotlin.String?' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:260:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:263:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:264:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:273:22 Unresolved reference 'clearError'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:276:9 Unresolved reference 'assertNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:290:47 Unresolved reference 'MEDIUM'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:302:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:305:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:306:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:307:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:314:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:328:78 Argument type mismatch: actual type is 'kotlin.Result<kotlin.Unit>', but 'kotlin.Result<com.example.snacktrack.data.model.Dog>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:333:24 '@Deprecated(...) fun advanceUntilIdle(): Long' is deprecated. This function delegates to the test scheduler, which may cause confusing behavior unless made explicit.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/DogViewModelTest.kt:337:9 Unresolved reference 'assertFalse'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:23:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:24:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:25:15 Unresolved reference 'test'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:80:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:82:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:86:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:92:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:94:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:95:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:96:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:97:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:98:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:99:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:100:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:101:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:102:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:103:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:104:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:105:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:114:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:118:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:124:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:130:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:136:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:144:45 Argument type mismatch: actual type is 'kotlin.collections.Map<K, V>', but 'kotlin.collections.Map<kotlin.String, kotlin.Any>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:157:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:167:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:169:9 Unresolved reference 'assertNotNull'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:170:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:170:46 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:171:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:171:43 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:172:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:172:41 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:173:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:173:51 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:174:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:174:32 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:175:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:175:32 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:176:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:176:24 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'com.example.snacktrack.data.model.Food?'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:182:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:188:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:203:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:205:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:205:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:211:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:213:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:214:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:215:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:216:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:217:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:218:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:219:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:220:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:221:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:222:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:238:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:240:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:240:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:246:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:248:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:249:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:250:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:260:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:264:21 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:270:32 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:277:9 Unresolved reference 'assertTrue'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:285:45 Argument type mismatch: actual type is 'kotlin.collections.Map<K, V>', but 'kotlin.collections.Map<kotlin.String, kotlin.Any>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:295:50 Argument type mismatch: actual type is 'kotlin.collections.List<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'kotlin.collections.List<io.appwrite.models.Document<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:297:31 Suspension functions can only be called within coroutine body.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:297:76 Argument type mismatch: actual type is 'io.appwrite.models.DocumentList<io.appwrite.models.Document<kotlin.collections.Map<kotlin.String, kotlin.Any>>>', but 'io.appwrite.models.DocumentList<kotlin.collections.Map<kotlin.String, kotlin.Any>>' was expected.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:303:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:305:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:306:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:307:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:308:9 Unresolved reference 'assertEquals'.
+e: file:///home/anseto/programe/snacktrack/app/src/test/java/com/example/snacktrack/FoodRepositoryTest.kt:309:9 Unresolved reference 'assertEquals'.
+
+> Task :app:compileDebugUnitTestKotlin FAILED
+> Task :app:lintAnalyzeDebug FAILED
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :app:compileReleaseKotlin
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/BarcodeRepository.kt:169:67 Java type mismatch: inferred type is 'kotlin.Nothing?', but 'kotlin.String' was expected.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/BarcodeRepository.kt:946:59 '@Deprecated(...) @DeprecatedSinceKotlin(...) @InlineOnly() fun String.toLowerCase(): String' is deprecated. Use lowercase() instead.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/BarcodeRepository.kt:1008:42 '@Deprecated(...) @DeprecatedSinceKotlin(...) @InlineOnly() fun String.toLowerCase(): String' is deprecated. Use lowercase() instead.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/BarcodeRepository.kt:1019:61 '@Deprecated(...) @DeprecatedSinceKotlin(...) @InlineOnly() fun String.toLowerCase(): String' is deprecated. Use lowercase() instead.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/BarcodeRepository.kt:1022:50 '@Deprecated(...) @DeprecatedSinceKotlin(...) @InlineOnly() fun String.toLowerCase(): String' is deprecated. Use lowercase() instead.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/BarcodeRepository.kt:1434:45 Unchecked cast of 'kotlin.Any' to 'kotlin.collections.Map<kotlin.String, kotlin.Any?>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/NutritionRepository.kt:337:50 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.List<kotlin.collections.Map<kotlin.String, kotlin.Any>>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/OfflineRepository.kt:110:21 This is a delicate API and its use requires care. Make sure you fully read and understand documentation of the declaration that is marked as a delicate API.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/OfflineRepository.kt:184:24 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'kotlin.Any?'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/OfflineRepository.kt:326:28 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'kotlin.Any?'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/OfflineRepository.kt:378:21 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'kotlin.Any?'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/OfflineRepository.kt:850:52 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'kotlin.Any?'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1646:54 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.List<kotlin.collections.Map<kotlin.String, kotlin.Any>>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1647:52 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1648:54 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/StatisticsRepository.kt:1658:70 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/TeamFeaturesRepository.kt:576:62 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/data/repository/TeamFeaturesRepository.kt:646:49 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any>'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/ai/AIRecommendationsScreen.kt:74:49 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:78:44 '@property:Deprecated(...) val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:194:26 '@property:Deprecated(...) val LocalLifecycleOwner: ProvidableCompositionLocal<LifecycleOwner>' is deprecated. Moved to lifecycle-runtime-compose library in androidx.lifecycle.compose package.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:620:5 '@Deprecated(...) @ExperimentalMaterial3Api() @Composable() @ComposableInferredTarget(...) fun AlertDialog(onDismissRequest: () -> Unit, modifier: Modifier = ..., properties: DialogProperties = ..., content: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Use BasicAlertDialog instead.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:845:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:855:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/barcode/BarcodeScannerScreen.kt:1163:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/CommunityScreen.kt:41:38 '@property:Deprecated(...) val Icons.Filled.HelpOutline: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.HelpOutline.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/CreatePostScreen.kt:90:13 Check for instance is always 'false'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/CreatePostScreen.kt:343:17 Check for instance is always 'false'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/PostDetailScreen.kt:185:37 Check for instance is always 'false'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/ProfileEditScreen.kt:59:13 Check for instance is always 'false'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/ProfileEditScreen.kt:84:63 Check for instance is always 'true'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/ProfileEditScreen.kt:86:29 Check for instance is always 'false'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/community/ProfileEditScreen.kt:239:17 Check for instance is always 'false'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/dogs/AddDogScreen.kt:130:52 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/dogs/EditDogScreen.kt:172:60 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/export/ExportIntegrationScreen.kt:71:43 '@property:Deprecated(...) val Icons.Filled.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowForward.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/export/ExportIntegrationScreen.kt:181:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/export/ExportIntegrationScreen.kt:436:31 '@property:Deprecated(...) val Icons.Filled.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowForward.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/health/HealthOverviewScreen.kt:464:29 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/main/HomeScreen.kt:74:44 '@property:Deprecated(...) val Icons.Filled.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:198:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/nutrition/NutritionDashboardScreen.kt:466:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:326:29 '@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:568:43 '@property:Deprecated(...) val Icons.Filled.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowForward.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:862:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:897:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:964:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/offline/OfflineSettingsScreen.kt:1000:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:393:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:490:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:977:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1084:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1099:41 '@property:Deprecated(...) val Icons.Filled.HelpOutline: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.HelpOutline.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1390:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1657:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:1985:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/prevention/PreventionDashboardScreen.kt:2070:25 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/settings/SettingsScreen.kt:65:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/settings/SettingsScreen.kt:101:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/settings/SettingsScreen.kt:135:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/settings/SettingsScreen.kt:154:42 '@property:Deprecated(...) val Icons.Filled.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:95:46 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:128:46 '@property:Deprecated(...) val Icons.Filled.DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:172:46 '@property:Deprecated(...) val Icons.Filled.CompareArrows: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.CompareArrows.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:238:34 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:248:34 '@property:Deprecated(...) val Icons.Filled.DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:373:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:425:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:576:38 '@property:Deprecated(...) val Icons.Filled.DirectionsWalk: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsWalk.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:1261:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:1571:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:1693:74 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:1694:74 '@property:Deprecated(...) val Icons.Filled.TrendingDown: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingDown.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/AdvancedStatisticsScreen.kt:1695:43 '@property:Deprecated(...) val Icons.Filled.TrendingFlat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingFlat.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/statistics/StatisticsScreen.kt:592:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamDashboardScreen.kt:500:37 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamManagementScreen.kt:229:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/screens/team/TeamManagementScreen.kt:239:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/HealthViewModel.kt:203:46 '@property:Deprecated(...) val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/ui/viewmodel/OfflineViewModel.kt:535:25 Unchecked cast of 'kotlin.Any' to 'T'.
+w: file:///home/anseto/programe/snacktrack/app/src/main/java/com/example/snacktrack/utils/NetworkManager.kt:38:55 'val isConnected: Boolean' is deprecated. Deprecated in Java.
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileDebugUnitTestKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:lintAnalyzeDebug'.
+> A failure occurred while executing com.android.build.gradle.internal.lint.AndroidLintWorkAction
+   > Unexpected failure during lint analysis (this is a bug in lint or one of the libraries it depends on)
+     
+     Message: Unexpected failure during lint analysis (this is a bug in lint or one of the libraries it depends on)
+     
+     Message: Unexpected failure during lint analysis of MainActivity.kt (this is a bug in lint or one of the libraries it depends on)
+     
+     Message: Found class org.jetbrains.kotlin.analysis.api.resolution.KaCallableMemberCall, but interface was expected
+     
+     The crash seems to involve the detector \\\`androidx.lifecycle.lint.NonNullableMutableLiveDataDetector\\\`.
+     You can try disabling it with something like this:
+         android {
+             lint {
+                 disable "NullSafeMutableLiveData"
+             }
+         }
+     
+     Stack: \\\`IncompatibleClassChangeError:NonNullableMutableLiveDataDetector$createUastHandler$1.visitCallExpression(NonNullableMutableLiveDataDetector.kt:140)←UElementVisitor$DispatchUastVisitor.visitCallExpression(UElementVisitor.kt:412)←UElementVisitor$DelegatingUastVisitor.visitCallExpression(UElementVisitor.kt:756)←UCallExpression.accept(UCallExpression.kt:94)←ImplementationUtilsKt.acceptList(implementationUtils.kt:15)←UBlockExpression.accept(UBlockExpression.kt:21)←UMethod.accept(UMethod.kt:45)←ImplementationUtilsKt.acceptList(implementationUtils.kt:15)←AbstractKotlinUClass.accept(AbstractKotlinUClass.kt:213)←ImplementationUtilsKt.acceptList(implementationUtils.kt:15)←UFile.accept(UFile.kt:89)←UastLintUtilsKt.acceptSourceFile(UastLintUtils.kt:953)←UElementVisitor$visitFile$3.run(UElementVisitor.kt:216)←LintClient.runReadAction(LintClient.kt:1781)←LintDriver$LintClientWrapper.runReadAction(LintDriver.kt:2747)←UElementVisitor.visitFile(UElementVisitor.kt:213)←LintDriver$visitUastDetectors$1.run(LintDriver.kt:2048)←LintClient.runReadAction(LintClient.kt:1781)←LintDriver$LintClientWrapper.runReadAction(LintDriver.kt:2747)←LintDriver.visitUastDetectors(LintDriver.kt:2048)←LintDriver.visitUast(LintDriver.kt:2010)←LintDriver.runFileDetectors(LintDriver.kt:1284)←LintDriver.checkProject(LintDriver.kt:1070)←LintDriver.checkProjectRoot(LintDriver.kt:622)←LintDriver.access$checkProjectRoot(LintDriver.kt:174)←LintDriver$analyzeOnly$1.invoke(LintDriver.kt:445)←LintDriver$analyzeOnly$1.invoke(LintDriver.kt:442)←LintDriver.doAnalyze(LintDriver.kt:501)←LintDriver.analyzeOnly(LintDriver.kt:442)←LintCliClient$analyzeOnly$1.invoke(LintCliClient.kt:258)←LintCliClient$analyzeOnly$1.invoke(LintCliClient.kt:255)←LintCliClient.run(LintCliClient.kt:312)←LintCliClient.analyzeOnly(LintCliClient.kt:255)←Main.run(Main.java:1766)←Main.run(Main.java:282)←NativeMethodAccessorImpl.invoke0(NativeMethodAccessorImpl.java:-2)←NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)←DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)←Method.invoke(Method.java:569)←AndroidLintWorkAction.invokeLintMainRunMethod(AndroidLintWorkAction.kt:103)←AndroidLintWorkAction.runLint(AndroidLintWorkAction.kt:90)←AndroidLintWorkAction.execute(AndroidLintWorkAction.kt:64)←DefaultWorkerServer.execute(DefaultWorkerServer.java:63)←NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)←NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)←ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)←NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)←AbstractWorker$1.call(AbstractWorker.java:44)←AbstractWorker$1.call(AbstractWorker.java:41)←DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)←DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)←DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)←DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)←DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)←DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)←DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)←AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)←NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)←DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)←FutureTask.run(FutureTask.java:264)←DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:195)←DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:128)←DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:170)←Factories$1.create(Factories.java:31)←DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:267)←DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:131)←DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:136)←DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:165)←DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:134)←Executors$RunnableAdapter.call(Executors.java:539)←FutureTask.run(FutureTask.java:264)←ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)←AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)←ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)←ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)←Thread.run(Thread.java:840)\\\`
+     
+     You can run with --stacktrace or set environment variable \\\`LINT_PRINT_STACKTRACE=true\\\` to dump a full stacktrace to stdout.
+     Stack: \`RuntimeException:LintDriver$Companion.handleDetectorError(LintDriver.kt:3740)←LintDriver$Companion.handleDetectorError$default(LintDriver.kt:3607)←LintDriver$Companion.handleDetectorError(LintDriver.kt:3603)←UElementVisitor.visitFile(UElementVisitor.kt:242)←LintDriver$visitUastDetectors$1.run(LintDriver.kt:2048)←LintClient.runReadAction(LintClient.kt:1781)←LintDriver$LintClientWrapper.runReadAction(LintDriver.kt:2747)←LintDriver.visitUastDetectors(LintDriver.kt:2048)←LintDriver.visitUast(LintDriver.kt:2010)←LintDriver.runFileDetectors(LintDriver.kt:1284)←LintDriver.checkProject(LintDriver.kt:1070)←LintDriver.checkProjectRoot(LintDriver.kt:622)←LintDriver.access$checkProjectRoot(LintDriver.kt:174)←LintDriver$analyzeOnly$1.invoke(LintDriver.kt:445)←LintDriver$analyzeOnly$1.invoke(LintDriver.kt:442)←LintDriver.doAnalyze(LintDriver.kt:501)←LintDriver.analyzeOnly(LintDriver.kt:442)←LintCliClient$analyzeOnly$1.invoke(LintCliClient.kt:258)←LintCliClient$analyzeOnly$1.invoke(LintCliClient.kt:255)←LintCliClient.run(LintCliClient.kt:312)←LintCliClient.analyzeOnly(LintCliClient.kt:255)←Main.run(Main.java:1766)←Main.run(Main.java:282)←NativeMethodAccessorImpl.invoke0(NativeMethodAccessorImpl.java:-2)←NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)←DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)←Method.invoke(Method.java:569)←AndroidLintWorkAction.invokeLintMainRunMethod(AndroidLintWorkAction.kt:103)←AndroidLintWorkAction.runLint(AndroidLintWorkAction.kt:90)←AndroidLintWorkAction.execute(AndroidLintWorkAction.kt:64)←DefaultWorkerServer.execute(DefaultWorkerServer.java:63)←NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)←NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)←ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)←NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)←AbstractWorker$1.call(AbstractWorker.java:44)←AbstractWorker$1.call(AbstractWorker.java:41)←DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)←DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)←DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)←DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)←DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)←DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)←DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)←AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)←NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)←DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)←FutureTask.run(FutureTask.java:264)←DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:195)←DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:128)←DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:170)←Factories$1.create(Factories.java:31)←DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:267)←DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:131)←DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:136)←DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:165)←DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:134)←Executors$RunnableAdapter.call(Executors.java:539)←FutureTask.run(FutureTask.java:264)←ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)←AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)←ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)←ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)←Thread.run(Thread.java:840)\`
+     
+     You can run with --stacktrace or set environment variable \`LINT_PRINT_STACKTRACE=true\` to dump a full stacktrace to stdout.
+     Stack: `RuntimeException:LintDriver$Companion.handleDetectorError(LintDriver.kt:3740)←LintDriver$Companion.handleDetectorError$default(LintDriver.kt:3607)←LintDriver$Companion.handleDetectorError(LintDriver.kt:3603)←LintDriver$analyzeOnly$1.invoke(LintDriver.kt:447)←LintDriver$analyzeOnly$1.invoke(LintDriver.kt:442)←LintDriver.doAnalyze(LintDriver.kt:501)←LintDriver.analyzeOnly(LintDriver.kt:442)←LintCliClient$analyzeOnly$1.invoke(LintCliClient.kt:258)←LintCliClient$analyzeOnly$1.invoke(LintCliClient.kt:255)←LintCliClient.run(LintCliClient.kt:312)←LintCliClient.analyzeOnly(LintCliClient.kt:255)←Main.run(Main.java:1766)←Main.run(Main.java:282)←NativeMethodAccessorImpl.invoke0(NativeMethodAccessorImpl.java:-2)←NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)←DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)←Method.invoke(Method.java:569)←AndroidLintWorkAction.invokeLintMainRunMethod(AndroidLintWorkAction.kt:103)←AndroidLintWorkAction.runLint(AndroidLintWorkAction.kt:90)←AndroidLintWorkAction.execute(AndroidLintWorkAction.kt:64)←DefaultWorkerServer.execute(DefaultWorkerServer.java:63)←NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)←NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)←ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)←NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)←AbstractWorker$1.call(AbstractWorker.java:44)←AbstractWorker$1.call(AbstractWorker.java:41)←DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)←DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)←DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)←DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)←DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)←DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)←DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)←AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)←NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)←DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)←FutureTask.run(FutureTask.java:264)←DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:195)←DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:128)←DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:170)←Factories$1.create(Factories.java:31)←DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:267)←DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:131)←DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:136)←DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:165)←DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:134)←Executors$RunnableAdapter.call(Executors.java:539)←FutureTask.run(FutureTask.java:264)←ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)←AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)←ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)←ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)←Thread.run(Thread.java:840)`
+     
+     You can run with --stacktrace or set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 54s
+92 actionable tasks: 32 executed, 19 from cache, 41 up-to-date
+Configuration cache entry reused.
