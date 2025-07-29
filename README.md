@@ -58,14 +58,24 @@ SnackTrack is a comprehensive Android application for tracking and managing your
    - Select "Open an existing project"
    - Navigate to the cloned directory
 
-3. **Configure Appwrite**
-   - Copy `.env.example` to `.env`
-   - Add your Appwrite endpoint and API credentials:
+3. **Configure Environment Variables**
+   - Copy `env.template` to `.env`:
+     ```bash
+     cp env.template .env
      ```
-     APPWRITE_ENDPOINT=https://parse.nordburglarp.de/v2
-     APPWRITE_PROJECT_ID=your_project_id
-     APPWRITE_API_KEY=your_api_key
+   - Edit `.env` file and add your Appwrite credentials:
      ```
+     APPWRITE_ENDPOINT=https://your-appwrite-instance.com/v1
+     APPWRITE_PROJECT_ID=your_project_id_here
+     APPWRITE_DATABASE_ID=your_database_id_here
+     APPWRITE_API_KEY=your_api_key_here
+     ```
+   
+   **Important Security Notes:**
+   - Never commit the `.env` file to version control
+   - Keep your API keys secure and rotate them regularly
+   - Use different API keys for development and production
+   - The `.env` file is automatically excluded in `.gitignore`
 
 4. **Build the project**
    ```bash
@@ -147,6 +157,22 @@ Run all tests:
 4. Test on multiple devices
 5. Upload to Google Play Store
 
+## OAuth Configuration
+
+If your app uses OAuth authentication (e.g., Google Sign-In), you'll need to configure the callback URL:
+
+1. **Update AndroidManifest.xml**
+   - The callback scheme is currently set to `appwrite-callback-snackrack2`
+   - If using a different project ID, update the scheme in `AndroidManifest.xml`:
+     ```xml
+     <data android:scheme="appwrite-callback-YOUR_PROJECT_ID" />
+     ```
+
+2. **Configure OAuth Provider**
+   - Add these redirect URIs in your OAuth provider console:
+     - `https://your-appwrite-endpoint/v1/account/sessions/oauth2/callback/google/YOUR_PROJECT_ID`
+     - `appwrite-callback-YOUR_PROJECT_ID://auth`
+
 ## Troubleshooting
 
 ### Common Issues
@@ -156,13 +182,15 @@ Run all tests:
    - Ensure you have JDK 11 or higher
 
 2. **Appwrite connection errors**
-   - Verify endpoint URL in AppwriteService
-   - Check API key configuration
+   - Verify endpoint URL in `.env` file
+   - Check API key configuration in `.env` file
    - Ensure network permissions in AndroidManifest.xml
+   - Verify all environment variables are properly set
 
 3. **Build errors**
    - Clean and rebuild: `./gradlew clean build`
    - Invalidate caches in Android Studio
+   - Ensure `.env` file exists with all required variables
 
 ## License
 

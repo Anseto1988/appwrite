@@ -55,9 +55,9 @@ class NutritionRepository(
             totalCalories += intake.calories
             
             // If we have detailed nutrition info
-            intake.protein?.let { totalProtein += it * (intake.amountGram / 100) }
-            intake.fat?.let { totalFat += it * (intake.amountGram / 100) }
-            intake.carbs?.let { totalCarbs += it * (intake.amountGram / 100) }
+            intake.protein?.let { totalProtein += it * (intake.amountGram / 100.0) }
+            intake.fat?.let { totalFat += it * (intake.amountGram / 100.0) }
+            intake.carbs?.let { totalCarbs += it * (intake.amountGram / 100.0) }
             
             // Categorize as treat if it's a small portion or marked as treat
             if (intake.amountGram < 50 || intake.note?.contains("Leckerli", ignoreCase = true) == true) {

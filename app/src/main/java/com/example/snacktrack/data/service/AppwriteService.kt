@@ -20,9 +20,9 @@ import com.example.snacktrack.utils.NetworkManager
 class AppwriteService private constructor(context: Context) {
     
     companion object {
-        const val ENDPOINT = AppwriteConfig.ENDPOINT
-        const val PROJECT_ID = AppwriteConfig.PROJECT_ID
-        const val DATABASE_ID = AppwriteConfig.DATABASE_ID
+        val ENDPOINT = AppwriteConfig.ENDPOINT
+        val PROJECT_ID = AppwriteConfig.PROJECT_ID
+        val DATABASE_ID = AppwriteConfig.DATABASE_ID
         val API_KEY = AppwriteConfig.API_KEY
         
         // Collection IDs

@@ -18,12 +18,11 @@ import io.appwrite.services.Databases
 import io.appwrite.services.Storage
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.*
+import io.mockk.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import java.time.LocalDateTime
@@ -35,35 +34,33 @@ import java.time.format.DateTimeFormatter
 @RunWith(RobolectricTestRunner::class)
 class CommunityRepositoryTest {
 
-    @Mock
-    private lateinit var mockAppwriteService: AppwriteService
-    
-    @Mock
-    private lateinit var mockDatabases: Databases
-    
-    @Mock
-    private lateinit var mockStorage: Storage
-    
-    @Mock
-    private lateinit var mockAccount: Account
-    
-    @Mock
-    private lateinit var mockClient: Client
+    private val mockAppwriteService = mockk<AppwriteService>()
+    private val mockDatabases = mockk<Databases>()
+    private val mockStorage = mockk<Storage>()
+    private val mockAccount = mockk<Account>()
+    private val mockClient = mockk<Client>()
     
     private lateinit var context: Context
     private lateinit var communityRepository: CommunityRepository
 
     @Before
     fun setup() {
-        MockitoAnnotations.openMocks(this)
         context = RuntimeEnvironment.getApplication()
         
         // Mock AppwriteService singleton
-        whenever(mockAppwriteService.databases).thenReturn(mockDatabases)
-        whenever(mockAppwriteService.storage).thenReturn(mockStorage)
-        whenever(mockAppwriteService.account).thenReturn(mockAccount)
+        mockkObject(AppwriteService)
+        every { AppwriteService.getInstance(any()) } returns mockAppwriteService
+        every { mockAppwriteService.databases } returns mockDatabases
+        every { mockAppwriteService.storage } returns mockStorage
+        every { mockAppwriteService.account } returns mockAccount
         
         communityRepository = CommunityRepository(context)
+    }
+    
+    @After
+    fun tearDown() {
+        clearAllMocks()
+        unmockkAll()
     }
 
     @Test
@@ -111,24 +108,16 @@ class CommunityRepositoryTest {
     @Test
     fun `test post creation workflow`() = runBlocking {
         // Mock account response
-        val mockUser = mock<User<Map<String, Any>>>()
-        whenever(mockUser.id).thenReturn("test-user-id")
-        whenever(mockUser.name).thenReturn("Test User")
-        whenever(mockAccount.get()).thenReturn(mockUser)
+        val mockUser = mockk<User<Map<String, Any>>>()
+        every { mockUser.id } returns "test-user-id"
+        every { mockUser.name } returns "Test User"
+        coEvery { mockAccount.get() } returns mockUser
         
-        // Mock AppwriteService to return our mocked account
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        whenever(mockService.ensureValidSession()).thenReturn(true)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        // Mock ensureValidSession on the already mocked appwriteService
+        coEvery { mockAppwriteService.ensureValidSession() } returns true
         
         // Mock post creation
-        val mockDocument = mock<Document<Map<String, Any>>>()
+        val mockDocument = mockk<Document<Map<String, Any>>>()
         val postData = mapOf(
             "authorId" to "test-user-id",
             "authorName" to "Test User",
@@ -142,9 +131,9 @@ class CommunityRepositoryTest {
             "imageIds" to emptyList<String>(),
             "likedBy" to emptyList<String>()
         )
-        whenever(mockDocument.id).thenReturn("post-id")
-        whenever(mockDocument.data).thenReturn(postData)
-        whenever(mockDatabases.createDocument(any(), any(), any(), any())).thenReturn(mockDocument)
+        every { mockDocument.id } returns "post-id"
+        every { mockDocument.data } returns postData
+        coEvery { mockDatabases.createDocument(any(), any(), any(), any()) } returns mockDocument
         
         // Test post creation
         val result = communityRepository.createPost(
@@ -165,24 +154,16 @@ class CommunityRepositoryTest {
     @Test
     fun `test get posts functionality`() = runBlocking {
         // Mock account response
-        val mockUser = mock<User<Map<String, Any>>>()
-        whenever(mockUser.id).thenReturn("test-user-id")
-        whenever(mockUser.name).thenReturn("Test User")
-        whenever(mockAccount.get()).thenReturn(mockUser)
+        val mockUser = mockk<User<Map<String, Any>>>()
+        every { mockUser.id } returns "test-user-id"
+        every { mockUser.name } returns "Test User"
+        coEvery { mockAccount.get() } returns mockUser
         
-        // Mock AppwriteService
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        whenever(mockService.ensureValidSession()).thenReturn(true)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        // Mock ensureValidSession on the already mocked appwriteService  
+        coEvery { mockAppwriteService.ensureValidSession() } returns true
         
         // Mock posts response
-        val mockPostDoc = mock<Document<Map<String, Any>>>()
+        val mockPostDoc = mockk<Document<Map<String, Any>>>()
         val postData = mapOf(
             "authorId" to "test-user-id",
             "authorName" to "Test User",
@@ -196,17 +177,17 @@ class CommunityRepositoryTest {
             "imageIds" to emptyList<String>(),
             "likedBy" to listOf("test-user-id")
         )
-        whenever(mockPostDoc.id).thenReturn("post-id")
-        whenever(mockPostDoc.data).thenReturn(postData)
+        every { mockPostDoc.id } returns "post-id"
+        every { mockPostDoc.data } returns postData
         
-        val postsList = mock<DocumentList<Map<String, Any>>>()
+        val postsList = mockk<DocumentList<Map<String, Any>>>()
         @Suppress("UNCHECKED_CAST")
-        whenever(postsList.documents).thenReturn(listOf(mockPostDoc as Document<Map<String, Any>>))
-        whenever(mockDatabases.listDocuments(
+        every { postsList.documents } returns listOf(mockPostDoc as Document<Map<String, Any>>)
+        coEvery { mockDatabases.listDocuments(
             eq(AppwriteConfig.DATABASE_ID),
             eq(AppwriteConfig.COLLECTION_COMMUNITY_POSTS),
             any()
-        )).thenReturn(postsList)
+        ) } returns postsList
         
         // Test get posts
         val posts = communityRepository.getPosts().first()
@@ -220,24 +201,16 @@ class CommunityRepositoryTest {
     @Test
     fun `test search posts functionality`() = runBlocking {
         // Mock account response
-        val mockUser = mock<User<Map<String, Any>>>()
-        whenever(mockUser.id).thenReturn("test-user-id")
-        whenever(mockUser.name).thenReturn("Test User")
-        whenever(mockAccount.get()).thenReturn(mockUser)
+        val mockUser = mockk<User<Map<String, Any>>>()
+        every { mockUser.id } returns "test-user-id"
+        every { mockUser.name } returns "Test User"
+        coEvery { mockAccount.get() } returns mockUser
         
-        // Mock AppwriteService
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        whenever(mockService.ensureValidSession()).thenReturn(true)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        // Mock ensureValidSession on the already mocked appwriteService  
+        coEvery { mockAppwriteService.ensureValidSession() } returns true
         
         // Mock search results
-        val mockPostDoc = mock<Document<Map<String, Any>>>()
+        val mockPostDoc = mockk<Document<Map<String, Any>>>()
         val postData = mapOf(
             "authorId" to "test-user-id",
             "authorName" to "Test User",
@@ -251,13 +224,13 @@ class CommunityRepositoryTest {
             "imageIds" to emptyList<String>(),
             "likedBy" to emptyList<String>()
         )
-        whenever(mockPostDoc.id).thenReturn("search-post-id")
-        whenever(mockPostDoc.data).thenReturn(postData)
+        every { mockPostDoc.id } returns "search-post-id"
+        every { mockPostDoc.data } returns postData
         
-        val searchList = mock<DocumentList<Map<String, Any>>>()
+        val searchList = mockk<DocumentList<Map<String, Any>>>()
         @Suppress("UNCHECKED_CAST")
-        whenever(searchList.documents).thenReturn(listOf(mockPostDoc as Document<Map<String, Any>>))
-        whenever(mockDatabases.listDocuments(any(), any(), any())).thenReturn(searchList)
+        every { searchList.documents } returns listOf(mockPostDoc as Document<Map<String, Any>>)
+        coEvery { mockDatabases.listDocuments(any(), any(), any()) } returns searchList
         
         // Test search
         val posts = communityRepository.searchPosts("search").first()
@@ -270,40 +243,30 @@ class CommunityRepositoryTest {
     @Test
     fun `test like toggle functionality`() = runBlocking {
         // Mock account
-        val mockUser = mock<io.appwrite.models.User<Map<String, Any>>>()
-        whenever(mockUser.id).thenReturn("test-user-id")
-        whenever(mockAccount.get()).thenReturn(mockUser)
-        
-        // Mock AppwriteService
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        val mockUser = mockk<io.appwrite.models.User<Map<String, Any>>>()
+        every { mockUser.id } returns "test-user-id"
+        coEvery { mockAccount.get() } returns mockUser
         
         // Mock post retrieval with no likes
-        val mockPostDoc = mock<Document<Map<String, Any>>>()
+        val mockPostDoc = mockk<Document<Map<String, Any>>>()
         val postData = mapOf(
             "likedBy" to emptyList<String>(),
             "likes" to 0
         )
-        whenever(mockPostDoc.data).thenReturn(postData)
-        whenever(mockDatabases.getDocument(
+        every { mockPostDoc.data } returns postData
+        coEvery { mockDatabases.getDocument(
             eq(AppwriteConfig.DATABASE_ID),
             eq(AppwriteConfig.COLLECTION_COMMUNITY_POSTS),
             eq("test-post-id")
-        )).thenReturn(mockPostDoc)
+        ) } returns mockPostDoc
         
         // Mock post update
-        val updatedDoc = mock<Document<Map<String, Any>>>()
-        whenever(updatedDoc.data).thenReturn(mapOf(
+        val updatedDoc = mockk<Document<Map<String, Any>>>()
+        every { updatedDoc.data } returns mapOf(
             "likedBy" to listOf("test-user-id"),
             "likes" to 1
-        ))
-        whenever(mockDatabases.updateDocument(any(), any(), any(), any())).thenReturn(updatedDoc)
+        )
+        coEvery { mockDatabases.updateDocument(any(), any(), any(), any()) } returns updatedDoc
         
         // Test like toggle (add like)
         val result = communityRepository.toggleLikePost("test-post-id")
@@ -316,18 +279,10 @@ class CommunityRepositoryTest {
     @Test
     fun `test error handling for invalid database operations`() = runBlocking {
         // Mock account failure
-        whenever(mockAccount.get()).thenThrow(RuntimeException("Authentication failed"))
+        coEvery { mockAccount.get() } throws RuntimeException("Authentication failed")
         
-        // Mock AppwriteService
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        whenever(mockService.ensureValidSession()).thenReturn(true)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        // Mock ensureValidSession on the already mocked appwriteService  
+        coEvery { mockAppwriteService.ensureValidSession() } returns true
         
         // Test post creation with auth failure  
         val postResult = communityRepository.createPost(
@@ -350,23 +305,13 @@ class CommunityRepositoryTest {
     @Test
     fun `test comment creation functionality`() = runBlocking {
         // Mock account response
-        val mockUser = mock<User<Map<String, Any>>>()
-        whenever(mockUser.id).thenReturn("test-user-id")
-        whenever(mockUser.name).thenReturn("Test User")
-        whenever(mockAccount.get()).thenReturn(mockUser)
-        
-        // Mock AppwriteService
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        val mockUser = mockk<User<Map<String, Any>>>()
+        every { mockUser.id } returns "test-user-id"
+        every { mockUser.name } returns "Test User"
+        coEvery { mockAccount.get() } returns mockUser
         
         // Mock comment creation
-        val mockCommentDoc = mock<Document<Map<String, Any>>>()
+        val mockCommentDoc = mockk<Document<Map<String, Any>>>()
         val commentData = mapOf(
             "postId" to "test-post-id",
             "authorId" to "test-user-id",
@@ -376,15 +321,15 @@ class CommunityRepositoryTest {
             "likes" to 0,
             "likedBy" to emptyList<String>()
         )
-        whenever(mockCommentDoc.id).thenReturn("comment-id")
-        whenever(mockCommentDoc.data).thenReturn(commentData)
-        whenever(mockDatabases.createDocument(any(), any(), any(), any())).thenReturn(mockCommentDoc)
+        every { mockCommentDoc.id } returns "comment-id"
+        every { mockCommentDoc.data } returns commentData
+        coEvery { mockDatabases.createDocument(any(), any(), any(), any()) } returns mockCommentDoc
         
         // Mock post retrieval for comment count update
-        val mockPostDoc = mock<Document<Map<String, Any>>>()
-        whenever(mockPostDoc.data).thenReturn(mapOf("comments" to 0))
-        whenever(mockDatabases.getDocument(any(), any(), any())).thenReturn(mockPostDoc)
-        whenever(mockDatabases.updateDocument(any(), any(), any(), any())).thenReturn(mockPostDoc)
+        val mockPostDoc = mockk<Document<Map<String, Any>>>()
+        every { mockPostDoc.data } returns mapOf("comments" to 0)
+        coEvery { mockDatabases.getDocument(any(), any(), any()) } returns mockPostDoc
+        coEvery { mockDatabases.updateDocument(any(), any(), any(), any()) } returns mockPostDoc
         
         // Test comment creation
         val result = communityRepository.createComment("test-post-id", "Test comment content")
@@ -399,23 +344,13 @@ class CommunityRepositoryTest {
     @Test
     fun `test get comments functionality`() = runBlocking {
         // Mock account response
-        val mockUser = mock<User<Map<String, Any>>>()
-        whenever(mockUser.id).thenReturn("test-user-id")
-        whenever(mockUser.name).thenReturn("Test User")
-        whenever(mockAccount.get()).thenReturn(mockUser)
-        
-        // Mock AppwriteService
-        val mockService = mock<AppwriteService>()
-        whenever(mockService.account).thenReturn(mockAccount)
-        whenever(mockService.databases).thenReturn(mockDatabases)
-        
-        // Use reflection to set the private appwriteService field
-        val serviceField = CommunityRepository::class.java.getDeclaredField("appwriteService")
-        serviceField.isAccessible = true
-        serviceField.set(communityRepository, mockService)
+        val mockUser = mockk<User<Map<String, Any>>>()
+        every { mockUser.id } returns "test-user-id"
+        every { mockUser.name } returns "Test User"
+        coEvery { mockAccount.get() } returns mockUser
         
         // Mock comment response
-        val mockCommentDoc = mock<Document<Map<String, Any>>>()
+        val mockCommentDoc = mockk<Document<Map<String, Any>>>()
         val commentData = mapOf(
             "postId" to "test-post-id",
             "authorId" to "test-user-id",
@@ -425,17 +360,17 @@ class CommunityRepositoryTest {
             "likes" to 0,
             "likedBy" to emptyList<String>()
         )
-        whenever(mockCommentDoc.id).thenReturn("comment-id")
-        whenever(mockCommentDoc.data).thenReturn(commentData)
+        every { mockCommentDoc.id } returns "comment-id"
+        every { mockCommentDoc.data } returns commentData
         
-        val commentsList = mock<DocumentList<Map<String, Any>>>()
+        val commentsList = mockk<DocumentList<Map<String, Any>>>()
         @Suppress("UNCHECKED_CAST")
-        whenever(commentsList.documents).thenReturn(listOf(mockCommentDoc as Document<Map<String, Any>>))
-        whenever(mockDatabases.listDocuments(
+        every { commentsList.documents } returns listOf(mockCommentDoc as Document<Map<String, Any>>)
+        coEvery { mockDatabases.listDocuments(
             eq(AppwriteConfig.DATABASE_ID),
             eq(AppwriteConfig.COLLECTION_COMMUNITY_COMMENTS),
             any()
-        )).thenReturn(commentsList)
+        ) } returns commentsList
         
         // Test get comments
         val comments = communityRepository.getComments("test-post-id").first()

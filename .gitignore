@@ -55,10 +55,20 @@ hive-mind-prompt-*.txt
 # Environment and API keys
 .env
 *.env
+.env.*
+!env.template
 apikeys.xml
 secrets.properties
 **/apikeys.xml
 **/secrets.json
+**/secrets.xml
+*.key
+*.keystore
+*.jks
+# Local configuration files that might contain sensitive data
+local.properties
+signing.properties
+keystore.properties
 
 # Node modules (should not be in Android project)
 node_modules/
@@ -81,3 +91,4 @@ hive-github-manager.sh
 hive_github_manager.py
 hive-push.log
 HIVE_GITHUB_MANAGER_README.md
+setup-github-auth.sh

@@ -1,7 +1,24 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+}
+
+// Load environment variables from .env file
+val envFile = file("../.env")
+val envProperties = Properties()
+if (envFile.exists()) {
+    envProperties.load(FileInputStream(envFile))
+}
+
+// Function to get environment variable with fallback to system environment
+fun getEnvVar(key: String, defaultValue: String = ""): String {
+    return envProperties.getProperty(key) 
+        ?: System.getenv(key) 
+        ?: defaultValue
 }
 
 android {
@@ -20,6 +37,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        
+        // Add BuildConfig fields for environment variables
+        buildConfigField("String", "APPWRITE_ENDPOINT", "\"${getEnvVar("APPWRITE_ENDPOINT", "https://cloud.appwrite.io/v1")}\"")
+        buildConfigField("String", "APPWRITE_PROJECT_ID", "\"${getEnvVar("APPWRITE_PROJECT_ID", "")}\"")
+        buildConfigField("String", "APPWRITE_DATABASE_ID", "\"${getEnvVar("APPWRITE_DATABASE_ID", "")}\"")
+        buildConfigField("String", "APPWRITE_API_KEY", "\"${getEnvVar("APPWRITE_API_KEY", "")}\"")
     }
 
     buildTypes {

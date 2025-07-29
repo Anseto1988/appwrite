@@ -1,15 +1,18 @@
 package com.example.snacktrack.data.service
 
+import com.example.snacktrack.BuildConfig
+
 /**
  * Appwrite configuration constants
+ * Values are loaded from environment variables via BuildConfig
  */
 object AppwriteConfig {
-    const val ENDPOINT = "https://parse.nordburglarp.de/v1"
-    const val PROJECT_ID = "snackrack2"
-    val API_KEY = System.getenv("APPWRITE_API_KEY") ?: ""
+    val ENDPOINT = BuildConfig.APPWRITE_ENDPOINT
+    val PROJECT_ID = BuildConfig.APPWRITE_PROJECT_ID
+    val API_KEY = BuildConfig.APPWRITE_API_KEY
     
     // Database IDs
-    const val DATABASE_ID = "snacktrack-db"
+    val DATABASE_ID = BuildConfig.APPWRITE_DATABASE_ID.ifEmpty { "snacktrack-db" }
     
     // Collection IDs
     const val COLLECTION_USERS = "users"

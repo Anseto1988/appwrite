@@ -10,7 +10,7 @@ AUTO-SYNC TO GITHUB after every change
 Worker Type Assignments (10 Workers Total):
 
 github-manager - Handles all Git operations, auto-pushes to master, manages gradle.properties
-appwrite-backend - Manages Appwrite console with API key: standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5
+appwrite-backend - Manages Appwrite console with API key: [REMOVED_FOR_SECURITY]
 researcher - Analyzes existing codebase and identifies all errors
 architect - Designs fixes and continuous development structure
 developer - Implements fixes and new features
@@ -189,7 +189,7 @@ javascript// Connect to Appwrite
 const appwriteConfig = {
   endpoint: 'https://cloud.appwrite.io/v1',
   projectId: 'YOUR_PROJECT_ID',
-  apiKey: 'standard_6ecfcfdc68e8b72e8b7a6b10e6385848df6fb9b1a778918e8582a8f58319881aa90fe956d9feec7a534488b1d43f147fb170ca4c6197f646c0148b708400ee2a98e06b036f6dabc17128ee3388eebf088dd981f94e23f288658e19dd7f8d7b0c1a7ce1988f8cbc5e15b49ca4538166c217935c1b0164dd156388ce87012ea8c5'
+  apiKey: '[REMOVED_FOR_SECURITY]'
 };
 
 // Tasks for Appwrite worker:

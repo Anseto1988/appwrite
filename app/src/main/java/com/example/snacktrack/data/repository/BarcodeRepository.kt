@@ -1105,9 +1105,15 @@ class BarcodeRepository(
     
     private fun parseInventoryFromDocument(document: Document<Map<String, Any>>): ProductInventory {
         // Parse inventory from document
+        val productData = document.data["product"] as? Map<String, Any> ?: emptyMap()
         return ProductInventory(
             id = document.id,
-            product = Product() // This would need proper parsing
+            product = Product(
+                id = productData["id"] as? String ?: "",
+                barcode = productData["barcode"] as? String ?: "",
+                name = productData["name"] as? String ?: "",
+                brand = productData["brand"] as? String ?: ""
+            )
             // Parse other fields...
         )
     }
