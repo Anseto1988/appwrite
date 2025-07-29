@@ -56,7 +56,7 @@ hive-mind-prompt-*.txt
 .env
 *.env
 .env.*
-!env.template
+!.env.template
 apikeys.xml
 secrets.properties
 **/apikeys.xml

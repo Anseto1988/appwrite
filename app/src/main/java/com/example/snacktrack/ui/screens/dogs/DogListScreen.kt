@@ -65,6 +65,7 @@ import com.example.snacktrack.ui.components.CommonTopAppBar
 import com.example.snacktrack.ui.navigation.Screen
 import com.example.snacktrack.ui.theme.Green
 import com.example.snacktrack.ui.viewmodel.DogViewModel
+import com.example.snacktrack.ui.state.LocalGlobalDogState
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
@@ -81,6 +82,7 @@ fun DogListScreen(
     val scope = rememberCoroutineScope()
     val dogRepository = remember { DogRepository(context) }
     val dogViewModel = remember { DogViewModel(context) }
+    val globalDogState = LocalGlobalDogState.current
 
     val dogs by dogRepository.getDogs().collectAsState(initial = emptyList())
     var isLoading by remember { mutableStateOf(true) }
@@ -92,6 +94,13 @@ fun DogListScreen(
 
     LaunchedEffect(Unit) {
         isLoading = false
+    }
+    
+    // Automatisch den ersten Hund auswählen, wenn noch keiner ausgewählt ist
+    LaunchedEffect(dogs) {
+        if (dogs.isNotEmpty() && globalDogState.currentDogId == null) {
+            globalDogState.selectDog(dogs.first())
+        }
     }
 
     Scaffold(
@@ -164,9 +173,15 @@ fun DogListScreen(
                         DogItem(
                             dog = dog,
                             dogViewModel = dogViewModel,
-                            onClick = remember(dog.id) { { onDogClick(dog.id) } },
+                            onClick = remember(dog.id) { 
+                                { 
+                                    globalDogState.selectDog(dog)
+                                    onDogClick(dog.id) 
+                                } 
+                            },
                             onEditClick = remember(dog.id) {
                                 {
+                                    globalDogState.selectDog(dog)
                                     // Navigiere zum Bearbeiten des Hundes
                                     navController.navigate(Screen.EditDog.createRoute(dog.id))
                                 }

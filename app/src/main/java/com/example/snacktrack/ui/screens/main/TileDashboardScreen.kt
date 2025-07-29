@@ -28,6 +28,8 @@ import com.example.snacktrack.data.repository.DogRepository
 import com.example.snacktrack.data.repository.TeamRepository
 import com.example.snacktrack.data.service.AppwriteService
 import com.example.snacktrack.ui.navigation.Screen
+import com.example.snacktrack.ui.navigation.NavigationHelper
+import com.example.snacktrack.ui.state.LocalGlobalDogState
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -55,6 +57,7 @@ fun TileDashboardScreen(
     val authRepository = remember { AuthRepository(context) }
     val dogRepository = remember { DogRepository(context) }
     val teamRepository = remember { TeamRepository(context) }
+    val globalDogState = LocalGlobalDogState.current
     
     var userName by remember { mutableStateOf("") }
     var dogCount by remember { mutableStateOf(0) }
@@ -114,7 +117,9 @@ fun TileDashboardScreen(
                     Color(0xFF4CAF50),
                     Color(0xFF81C784)
                 ),
-                route = Screen.DogList.route, // For now navigate to dog list to select dog for feeding
+                action = {
+                    NavigationHelper.navigateToAddFeeding(navController, globalDogState)
+                },
                 enabled = dogCount > 0
             ),
             
@@ -128,7 +133,9 @@ fun TileDashboardScreen(
                     Color(0xFF2196F3),
                     Color(0xFF64B5F6)
                 ),
-                route = Screen.DogList.route, // For now navigate to dog list to select dog for barcode scanning
+                action = {
+                    NavigationHelper.navigateToBarcode(navController, globalDogState)
+                },
                 enabled = dogCount > 0
             ),
             
@@ -142,7 +149,9 @@ fun TileDashboardScreen(
                     Color(0xFF9C27B0),
                     Color(0xFFBA68C8)
                 ),
-                route = Screen.DogList.route, // For now navigate to dog list to select dog for statistics
+                action = {
+                    NavigationHelper.navigateToStatistics(navController, globalDogState)
+                },
                 enabled = dogCount > 0
             ),
             
