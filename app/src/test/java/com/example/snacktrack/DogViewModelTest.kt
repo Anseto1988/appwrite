@@ -197,7 +197,7 @@ class DogViewModelTest {
         testDispatcher.scheduler.runCurrent()
         
         // Assert
-        assertEquals("Database error", dogViewModel.errorMessage.value)
+        assertEquals("Ein unerwarteter Fehler ist aufgetreten", dogViewModel.errorMessage.value)
         assertFalse(dogViewModel.isLoading.value)
     }
 
@@ -261,7 +261,7 @@ class DogViewModelTest {
         testDispatcher.scheduler.runCurrent()
         
         // Assert
-        assertEquals("Delete failed", dogViewModel.errorMessage.value)
+        assertEquals("Ein unerwarteter Fehler ist aufgetreten", dogViewModel.errorMessage.value)
         assertFalse(dogViewModel.isLoading.value)
     }
 

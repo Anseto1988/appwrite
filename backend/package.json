@@ -1,0 +1,21 @@
+{
+  "name": "snacktrack-backend-scripts",
+  "version": "1.0.0",
+  "description": "Backend scripts for SnackTrack Appwrite configuration",
+  "scripts": {
+    "verify": "node verify-appwrite-connection.js",
+    "init-db": "node init-database-schema.js",
+    "setup": "npm install && npm run verify && npm run init-db",
+    "test-connection": "node verify-appwrite-connection.js",
+    "create-collections": "node create-collections.js",
+    "setup-indexes": "node setup-indexes.js",
+    "setup-permissions": "node setup-permissions.js"
+  },
+  "dependencies": {
+    "node-appwrite": "^14.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
+}
