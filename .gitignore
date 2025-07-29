@@ -75,3 +75,9 @@ node_modules/
 *.cache
 logs/
 temp/
+
+# HIVE-MIND GitHub Manager Scripts
+hive-github-manager.sh
+hive_github_manager.py
+hive-push.log
+HIVE_GITHUB_MANAGER_README.md
